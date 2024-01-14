@@ -1,3 +1,5 @@
+using SunamoI18N.Values;
+
 namespace SunamoWinStd;
 
 
@@ -103,7 +105,7 @@ public partial class PHWin //: IPHWin
     /// <param name="s"></param>
     /// <param name="waitMs"></param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs /*= Consts.waitMsOpenInBrowser*/, bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
+    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = Consts.waitMsOpenInBrowser, bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
         if (forceAttemptHttps)
         {
@@ -158,7 +160,13 @@ public partial class PHWin //: IPHWin
         }
     }
 
-    public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl /*= false*/, int waitMs /*= Consts.waitMsOpenInBrowser*/)
+    /// <summary>
+    /// 12-1-24 nevím proč bych neměl mít default values takže je vracím
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="throwExIsNotValidUrl"></param>
+    /// <param name="waitMs"></param>
+    public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl = false, int waitMs = Consts.waitMsOpenInBrowser)
     {
         OpenInBrowser(defBr, uri, waitMs);
     }

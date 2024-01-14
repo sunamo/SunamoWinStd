@@ -3,15 +3,15 @@
     <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version>24.1.7.1</Version>
-	  <Description>Windows-specific code on net8.0 moniker</Description>
+    <Version>24.1.14.1</Version>
+    <Description>Windows-specific code on net8.0 moniker</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SunamoCl" Version="24.1.8.2" />
-    <PackageReference Include="SunamoCollectionsGeneric" Version="24.1.5.1" />
-    <PackageReference Include="SunamoEnums" Version="24.1.7.2" />
-    <PackageReference Include="SunamoExceptions" Version="24.1.5.1" />
-    <PackageReference Include="SunamoValues" Version="24.1.9.2" />
+    <PackageReference Include="SunamoCollectionsGeneric" Version="24.1.10.1" />
+    <PackageReference Include="SunamoEnums" Version="24.1.10.1" />
+    <PackageReference Include="SunamoExceptions" Version="24.1.11.1" />
+    <PackageReference Include="SunamoShared" Version="24.1.12.1" />
+    <PackageReference Include="SunamoValues" Version="24.1.10.1" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
