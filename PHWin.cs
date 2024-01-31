@@ -40,18 +40,18 @@ public partial class PHWin
 
     public static Editor preferredEditor = Editor.Code;
 
-    public static void PreferredEditor(string f)
+    public static async Task PreferredEditor(string f)
     {
         switch (preferredEditor)
         {
             case Editor.Code:
-                PHWin.Code(f);
+                await PHWin.Code(f);
                 break;
             case Editor.Codium:
                 PHWin.Codium(f);
                 break;
             case Editor.CodeInsider:
-                PHWin.CodeInsider(f);
+                await PHWin.CodeInsider(f);
                 break;
             default:
                 ThrowEx.NotImplementedCase(preferredEditor);
@@ -72,7 +72,7 @@ public partial class PHWin
         AddBrowsers();
         foreach (var item in path)
         {
-            if (!FS.ExistsFile(item.Value))
+            if (!File.Exists(item.Value))
             {
                 doesntExists.Add(item.Value);
             }

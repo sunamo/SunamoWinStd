@@ -1,5 +1,3 @@
-using SunamoI18N.Values;
-
 namespace SunamoWinStd;
 
 
@@ -12,7 +10,7 @@ public partial class PHWin //: IPHWin
     const string WebStorm64Exe = "WebStorm64.exe";
     const string CodeInsiderExe = "Code - Insiders.exe";
 
-    public static async void Codium(string defFile)
+    public static async Task Codium(string defFile)
     {
         await BreakIfTenIde();
 
@@ -42,6 +40,7 @@ public partial class PHWin //: IPHWin
         //        await
         //#endif
         //ThreadHelper.Sleep(1500);
+        await Task.Delay(1500);
     }
 
     public static async Task Code(string defFile)
@@ -59,14 +58,14 @@ public partial class PHWin //: IPHWin
         PH.RunFromPath(CodeExe, defFile, false);
     }
 
-    public static void WebStorm64(string defFile)
+    public static async Task WebStorm64(string defFile)
     {
         PH.RunFromPath(WebStorm64Exe, defFile, false);
     }
 
-    public static void CodeInsider(string defFile)
+    public static async Task CodeInsider(string defFile)
     {
-        BreakIfTenIde();
+        await BreakIfTenIde();
         PH.RunFromPath(CodeInsiderExe, defFile, false);
     }
 
@@ -204,7 +203,7 @@ public partial class PHWin //: IPHWin
                     break;
                 case Browsers.Firefox: //2
                     b = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
-                    if (!FS.ExistsFile(b))
+                    if (!File.Exists(b))
                     {
                         b = @"C:\Program Files\Mozilla Firefox\firefox.exe";
                     }
@@ -221,7 +220,7 @@ public partial class PHWin //: IPHWin
                                     // Opera has version also when is installing to PF, it cant be changed
                                     //b = @"C:\Program Files\Opera\65.0.3467.78\opera.exe";
                     b = WindowsOSHelper.FileIn(@"C:\Program Files\Opera\", "opera.exe");
-                    if (!FS.ExistsFile(b))
+                    if (!File.Exists(b))
                     {
                         b = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera", "opera.exe");
                     }
@@ -229,7 +228,7 @@ public partial class PHWin //: IPHWin
                     break;
                 case Browsers.Vivaldi://5
                     b = @"C:\Program Files\Vivaldi\Application\vivaldi.exe";
-                    if (!FS.ExistsFile(b))
+                    if (!File.Exists(b))
                     {
                         b = WindowsOSHelper.FileIn(UserFoldersWin.Local, XlfKeys.Vivaldi, "vivaldi.exe");
                     }
@@ -240,7 +239,7 @@ public partial class PHWin //: IPHWin
                 //    break;
                 //case Browsers.Maxthon:
                 //    b = @"C:\Program Files (x86)\Maxthon5\Bin\Maxthon.exe";
-                //    if (!FS.ExistsFile(b))
+                //    if (!File.Exists(b))
                 //    {
                 //        b = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Maxthon\Application", "Maxthon.exe");
                 //    }
@@ -307,7 +306,7 @@ public partial class PHWin //: IPHWin
                     // tady se to skutečně jmenuje MicrosoftEdge.exe
                     b = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
 
-                    if (!FS.ExistsFile(b))
+                    if (!File.Exists(b))
                     {
                         //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
                         b = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
@@ -336,7 +335,7 @@ public partial class PHWin //: IPHWin
 
     private static void NullIfNotExists(ref string b)
     {
-        if (!FS.ExistsFile(b))
+        if (!File.Exists(b))
         {
             b = null;
         }

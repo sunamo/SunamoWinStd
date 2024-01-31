@@ -1,5 +1,3 @@
-using SunamoI18N.Values;
-
 namespace SunamoWinStd;
 /// <summary>
 /// Provides access to NTFS junction points in .Net.

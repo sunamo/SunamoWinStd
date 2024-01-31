@@ -1,5 +1,3 @@
-using SunamoStringTrim;
-
 namespace SunamoWinStd;
 /// <summary>
 /// Must be in Win because use powershell
