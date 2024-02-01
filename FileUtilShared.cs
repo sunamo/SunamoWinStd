@@ -72,7 +72,7 @@ static public partial class FileUtil
         List<Process> processes = new List<Process>();
         int res = RmStartSession(out handle, 0, key);
         if (res != 0)
-            ThrowEx.Custom(sess.i18n(XlfKeys.CouldNotBeginRestartSessionUnableToDetermineFileLocker) + ".");
+            throw new Exception("CouldNotBeginRestartSessionUnableToDetermineFileLocker");
         try
         {
             const int ERROR_MORE_DATA = 234;
@@ -83,7 +83,7 @@ static public partial class FileUtil
             {
                 if (throwEx)
                 {
-                    ThrowEx.Custom(sess.i18n(XlfKeys.CouldNotRegisterResource) + ".");
+                    throw new Exception("CouldNotRegisterResource.");
                 }
 
             }
@@ -119,7 +119,7 @@ static public partial class FileUtil
                 {
                     if (throwEx)
                     {
-                        ThrowEx.Custom(sess.i18n(XlfKeys.CouldNotListProcessesLockingResource) + ".");
+                        throw new Exception("CouldNotListProcessesLockingResource");
                     }
 
                 }
@@ -128,7 +128,7 @@ static public partial class FileUtil
             {
                 if (throwEx)
                 {
-                    ThrowEx.Custom(sess.i18n(XlfKeys.CouldNotListProcessesLockingResourceFailedToGetSizeOfResult) + ".");
+                    throw new Exception("CouldNotListProcessesLockingResourceFailedToGetSizeOfResult");
                 }
 
             }

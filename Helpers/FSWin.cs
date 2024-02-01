@@ -1,4 +1,8 @@
+
 namespace SunamoWinStd.Helpers;
+using SunamoFileSystem;
+using SunamoThisApp;
+
 
 
 //using cl;
@@ -33,10 +37,10 @@ public partial class FSWin //: IFSWin
     public static void DeleteFileOrFolderMaybeLocked(string p)
     {
         Console.WriteLine("DeleteFileOrFolderMaybeLocked: " + p);
-        if (FSSE.ExistsFile(p))
+        if (File.Exists(p))
         {
             DeleteFileMaybeLocked(p);
-            if (FSSE.ExistsFile(p))
+            if (File.Exists(p))
             {
                 ThisApp.Error(p + " could not be deleted! Press enter to continue!");
                 Console.ReadLine();
@@ -46,9 +50,9 @@ public partial class FSWin //: IFSWin
                 ThisApp.Success(p + " was deleted completely!");
             }
         }
-        else if (FS.ExistsDirectory(p))
+        else if (Directory.Exists(p))
         {
-            var files = FS.GetFiles(p, true);
+            var files = Directory.GetFiles(p, "*", SearchOption.AllDirectories);
 
             foreach (var item in files)
             {
@@ -58,8 +62,8 @@ public partial class FSWin //: IFSWin
                 //}
                 DeleteFileMaybeLocked(item);
             }
-            files = FS.GetFiles(p, true);
-            if (files.Count == 0)
+            files = Directory.GetFiles(p, "*", SearchOption.AllDirectories);
+            if (files.Length == 0)
             {
                 Directory.Delete(p, true);
                 ThisApp.Success(p + " was deleted completely!");
@@ -97,25 +101,25 @@ public partial class FSWin //: IFSWin
     /// <param name="v"></param>
     public static void MoveFolderMaybeLocked(string arg1, string v)
     {
-        FSSE.WithEndSlash(ref arg1);
-        FSSE.WithEndSlash(ref v);
+        FS.WithEndSlash(ref arg1);
+        FS.WithEndSlash(ref v);
 
-        var files = FS.GetFiles(arg1, true);
+        var files = Directory.GetFiles(arg1, "*", SearchOption.AllDirectories);
         foreach (var item in files)
         {
             var np = item.Replace(arg1, v);
             var pr = FileUtil.WhoIsLocking(item, false);
             Terminate(pr);
 
-            FSSE.CreateUpfoldersPsysicallyUnlessThere(np);
-            if (FSSE.ExistsFile(item))
+            FS.CreateUpfoldersPsysicallyUnlessThere(np);
+            if (File.Exists(item))
             {
                 File.Move(item, np);
             }
         }
 
-        files = FS.GetFiles(arg1, true);
-        if (files.Count == 0)
+        files = Directory.GetFiles(arg1, "*", SearchOption.AllDirectories);
+        if (files.Length == 0)
         {
             Directory.Delete(arg1, true);
         }

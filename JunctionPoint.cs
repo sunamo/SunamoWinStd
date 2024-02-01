@@ -1,4 +1,8 @@
+
 namespace SunamoWinStd;
+using SunamoPS;
+using SunamoWinStd._sunamo;
+
 /// <summary>
 /// Provides access to NTFS junction points in .Net.
 /// </summary>
@@ -21,7 +25,7 @@ public static class JunctionPoint
 #endif
  MklinkH(string source, string target)
     {
-        if (!FSSE.ExistsFile(target))
+        if (!File.Exists(target))
         {
             ThrowEx.DirectoryExists(target);
         }
@@ -39,7 +43,7 @@ public static class JunctionPoint
     {
         Dictionary<string, string> dict = new Dictionary<string, string>();
 
-        var folders = FS.GetFoldersEveryFolder(folderFrom, AllStrings.asterisk);
+        var folders = Directory.GetDirectories(folderFrom, AllStrings.asterisk);
         foreach (var item in folders)
         {
             var target = GetTarget(item);
@@ -70,9 +74,9 @@ public static class JunctionPoint
  MklinkJ(string source, string target)
     {
 
-        if (!FS.ExistsDirectory(target))
+        if (!Directory.Exists(target))
         {
-            var f = FSSE.ExistsFile(Path.Combine(target, "_.txt"));
+            var f = File.Exists(Path.Combine(target, "_.txt"));
             ThrowEx.DirectoryExists(target);
         }
 
@@ -99,7 +103,7 @@ public static class JunctionPoint
 #endif
  MklinkD(string source, string target)
     {
-        if (!FS.ExistsDirectory(target))
+        if (!Directory.Exists(target))
         {
             ThrowEx.DirectoryExists(target);
         }
@@ -305,17 +309,17 @@ public static class JunctionPoint
     {
         targetDir = Path.GetFullPath(targetDir);
 
-        if (!FS.ExistsDirectory(targetDir))
-            ThrowEx.Custom(sess.i18n(XlfKeys.TargetPathDoesNotExistOrIsNotADirectory) + ".");
+        if (!Directory.Exists(targetDir))
+            throw new Exception("TargetPathDoesNotExistOrIsNotADirectory");
 
-        if (FS.ExistsDirectory(junctionPoint))
+        if (Directory.Exists(junctionPoint))
         {
             if (!overwrite)
-                ThrowEx.Custom(sess.i18n(XlfKeys.DirectoryAlreadyExistsAndOverwriteParameterIsFalse) + ".");
+                throw new Exception("DirectoryAlreadyExistsAndOverwriteParameterIsFalse");
         }
         else
         {
-            FS.CreateDirectory(junctionPoint);
+            Directory.CreateDirectory(junctionPoint);
         }
 
         using (SafeFileHandle handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericWrite))
@@ -345,7 +349,7 @@ public static class JunctionPoint
                     inBuffer, targetDirBytes.Length + 20, nint.Zero, 0, out bytesReturned, nint.Zero);
 
                 if (!result)
-                    ThrowLastWin32Error(sess.i18n(XlfKeys.UnableToCreateJunctionPoint) + ".");
+                    ThrowLastWin32Error("UnableToCreateJunctionPoint");
             }
             finally
             {
@@ -369,10 +373,10 @@ public static class JunctionPoint
     /// <param name="junctionPoint">The junction point path</param>
     public static void Delete(string junctionPoint)
     {
-        if (!FS.ExistsDirectory(junctionPoint))
+        if (!Directory.Exists(junctionPoint))
         {
-            if (FSSE.ExistsFile(junctionPoint))
-                ThrowEx.Custom(sess.i18n(XlfKeys.PathIsNotAJunctionPoint) + ".");
+            if (File.Exists(junctionPoint))
+                throw new Exception("PathIsNotAJunctionPoint");
 
             return;
         }
@@ -396,7 +400,7 @@ public static class JunctionPoint
                     inBuffer, 8, nint.Zero, 0, out bytesReturned, nint.Zero);
 
                 if (!result)
-                    ThrowLastWin32Error(sess.i18n(XlfKeys.UnableToDeleteJunctionPoint) + ".");
+                    ThrowLastWin32Error("UnableToDeleteJunctionPoint");
             }
             finally
             {
@@ -405,11 +409,11 @@ public static class JunctionPoint
 
             try
             {
-                FS.TryDeleteDirectory(junctionPoint);
+                Directory.Delete(junctionPoint);
             }
             catch (IOException ex)
             {
-                ThrowEx.Custom(sess.i18n(XlfKeys.UnableToDeleteJunctionPoint) + ".");
+                throw new Exception("UnableToDeleteJunctionPoint");
             }
         }
     }
@@ -431,7 +435,7 @@ public static class JunctionPoint
     /// or some other error occurs</exception>
     public static bool Exists(string path)
     {
-        if (!FS.ExistsDirectory(path))
+        if (!Directory.Exists(path))
             return false;
 
         using (SafeFileHandle handle = OpenReparsePoint(path, EFileAccess.GenericRead))
@@ -462,7 +466,7 @@ public static class JunctionPoint
         //{
         //    string target = InternalGetTarget(handle);
         //    if (target == null)
-        //        ThrowEx.Custom(sess.i18n(XlfKeys.PathIsNotAJunctionPoint)+".");
+        //        throw new Exception(sess.i18n(XlfKeys.PathIsNotAJunctionPoint)+".");
 
         //    return target;
         //}
@@ -485,7 +489,7 @@ public static class JunctionPoint
                 if (error == ERROR_NOT_A_REPARSE_POINT)
                     return null;
 
-                ThrowLastWin32Error(sess.i18n(XlfKeys.UnableToGetInformationAboutJunctionPoint) + ".");
+                ThrowLastWin32Error("UnableToGetInformationAboutJunctionPoint");
             }
 
             REPARSE_DATA_BUFFER reparseDataBuffer = (REPARSE_DATA_BUFFER)
@@ -521,13 +525,13 @@ public static class JunctionPoint
             EFileAttributes.BackupSemantics | EFileAttributes.OpenReparsePoint, nint.Zero), true);
 
         if (Marshal.GetLastWin32Error() != 0)
-            ThrowLastWin32Error(sess.i18n(XlfKeys.UnableToOpenReparsePoint) + ".");
+            ThrowLastWin32Error("UnableToOpenReparsePoint");
 
         return reparsePointHandle;
     }
 
     private static void ThrowLastWin32Error(string message)
     {
-        ThrowEx.Custom(message + Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        throw new Exception(message + Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
     }
 }

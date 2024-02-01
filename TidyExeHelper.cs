@@ -1,24 +1,13 @@
+
 namespace SunamoWinStd;
+using SunamoPS;
+using SunamoWinStd._sunamo;
+
 public class TidyExeHelper
 {
     //public static object FS { get; private set; }
 
-    public static string WriteTidyConfigToExecutableLocation()
-    {
-        var tidy_config = FS.GetFileInStartupPath("tidy_config.txt");
 
-        if (!FSSE.ExistsFile(tidy_config))
-        {
-            EmbeddedResourcesH eh = new EmbeddedResourcesH(typeof(TidyExeHelper).Assembly, "win");
-
-            var stream = eh.GetStream("Resources/tidy_config.txt");
-            var content = BTS.StringFromStream(stream);
-
-            TF.WriteAllText(tidy_config, content);
-        }
-
-        return tidy_config;
-    }
 
     public static Tuple<FileInfo, string> GenerateMapInfo(string mapDirectory, string fileExtension)
     {
@@ -58,8 +47,8 @@ public class TidyExeHelper
         var mapInfo = GenerateMapInfo(Path.GetTempPath(), ".txt");
         //WriteToFile(mapInfo, "abc");
 
-        var random = RandomHelper.RandomString(5, false, false, true, false);
-        var temp = Path.Combine(Path.GetTempPath(), random);
+        //var random = RandomHelper.RandomString(5, false, false, true, false);
+        var temp = Path.GetTempFileName();
         MemoryMappedFile m = null;
         int max, capacity;
         max = capacity = 1024 * 1024 * 2;
@@ -85,7 +74,7 @@ public class TidyExeHelper
 #if ASYNC
     await
 #endif
- PowershellRunner.ci.Invoke(CA.ToListString(comment));
+ PowershellRunner.ci.Invoke(new List<string>([comment]));
 
         if (result[0].Count > 0)
         {
@@ -98,7 +87,9 @@ public class TidyExeHelper
 
         using (var accesor = m.CreateViewStream())
         {
-            output = BTS.StringFromStream(accesor);
+            StreamReader reader = new StreamReader(accesor);
+            string text = reader.ReadToEnd();
+            output = text;
         }
 
         m.Dispose();

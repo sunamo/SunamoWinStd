@@ -1,4 +1,11 @@
+
 namespace SunamoWinStd;
+using SunamoGitBashBuilder;
+using SunamoPS;
+using SunamoString;
+using SunamoWinStd._sunamo;
+using System.Web;
+
 /// <summary>
 /// Must be in Win because use powershell
 /// In shared cannot because win derife from shared.
@@ -31,7 +38,7 @@ public class GitHelper
         int countFiles = 0;
         if (release)
         {
-            countFiles = FS.GetFiles(fullPathFolder, FS.MascFromExtension(), SearchOption.AllDirectories).Count;
+            countFiles = Directory.GetFiles(fullPathFolder, "*.*", SearchOption.AllDirectories).Count();
         }
 
         if (fullPathFolder.Contains("SunamoCzAdmin"))
@@ -45,7 +52,7 @@ public class GitHelper
             gitStatus.Cd(fullPathFolder);
             gitStatus.Status();
 
-            var result = new List<List<string>>(CAG.ToList<List<string>>(new List<string>(), new List<string>()));
+            var result = new List<List<string>>(new List<List<string>>([new List<string>(), new List<string>()]));
             // 2. or powershell
             if (release)
             {
@@ -58,7 +65,7 @@ public class GitHelper
 
             var statusOutput = result[1];
             // If solution has changes
-            var hasChanges = CA.ReturnWhichContains(statusOutput, "nothing to commit").Count == 0;
+            var hasChanges = statusOutput.Where(d => d.Contains("nothing to commit")).Count() == 0;
             if (!hasChanges)
             {
                 foreach (var lineStatus in statusOutput)
@@ -91,7 +98,7 @@ public class GitHelper
             }
 
             // or/and is a git repository
-            var isGitRepository = CA.ReturnWhichContains(statusOutput, "not a git repository").Count == 0;
+            var isGitRepository = statusOutput.Where(d => d.Contains("not a git repository")).Count() == 0;// CA.ReturnWhichContains(, ).Count == 0;
             if (hasChanges && isGitRepository)
             {
                 gitBashBuilder.Cd(fullPathFolder);
@@ -158,23 +165,23 @@ public class GitHelper
 
     public static string NameOfRepoFromOriginUri(string s)
     {
-        s = UH.UrlDecode(s);
+        s = HttpUtility.UrlDecode(s);
         if (s.StartsWith(b1))
         {
             s = s.Replace(b1, string.Empty);
         }
         else if (s.StartsWith(b2_s))
         {
-            s = SH.GetTextBetweenSimple(s, b2_s, b2_e, true);
+            s = SunamoWinStd._sunamo.SH.GetTextBetweenSimple(s, b2_s, b2_e, true);
         }
         else if (s.StartsWith(b3_s))
         {
-            s = SH.GetTextBetweenSimple(s, b3_s, b2_e, true);
+            s = SunamoWinStd._sunamo.SH.GetTextBetweenSimple(s, b3_s, b2_e, true);
         }
         else if (s.StartsWith(b4))
         {
             s = s.Replace(b4, string.Empty);
-            s = SHTrim.TrimEnd(s, Consts.gitFolderName);
+            s = SunamoWinStd._sunamo.SHTrim.TrimEnd(s, Consts.gitFolderName);
         }
         else if (s.StartsWith(b5))
         {
@@ -187,7 +194,7 @@ public class GitHelper
 
         if (s.Contains(AllStrings.slash))
         {
-            ThrowEx.Custom(s + " - name of repo contains still /");
+            throw new Exception(s + " - name of repo contains still /");
         }
 
         return s;

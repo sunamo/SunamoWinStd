@@ -182,7 +182,7 @@ public class ReparsePoint
                         printString = new string(buffer.ReparseTarget, buffer.PrintNameOffset / 2, buffer.PrintNameLength / 2);
                         tag = subsString.StartsWith(@"\??\Volume") ? TagType.MountPoint : TagType.JunctionPoint;
                     }
-                    Debug.Assert(!(string.IsNullOrEmpty(subsString) && string.IsNullOrEmpty(printString)), sess.i18n(XlfKeys.FailedToRetrieveParsePoint));
+                    //Debug.Assert(!(string.IsNullOrEmpty(subsString) && string.IsNullOrEmpty(printString)), sess.i18n(XlfKeys.FailedToRetrieveParsePoint));
                     // the printstring should give us what we want
                     if (!string.IsNullOrEmpty(printString))
                     {
@@ -192,17 +192,17 @@ public class ReparsePoint
                     {
                         // if not we can use the substring with a bit of tweaking
                         normalisedTarget = subsString;
-                        Debug.Assert(normalisedTarget.Length > 2, sess.i18n(XlfKeys.TargetStringTooShort));
-                        Debug.Assert(
-                            normalisedTarget.StartsWith(@"\??\") && (normalisedTarget[5] == ':' || normalisedTarget.StartsWith(@"\??\Volume")) ||
-                            !normalisedTarget.StartsWith(@"\??\") && normalisedTarget[1] != ':',
-                            sess.i18n(XlfKeys.MalformedSubsString));
-                        // Junction points must be absolute
-                        Debug.Assert(
-                                buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK ||
-                                normalisedTarget.StartsWith(@"\??\Volume") ||
-                                normalisedTarget[1] == ':',
-                            sess.i18n(XlfKeys.RelativeJunctionPoint));
+                        //Debug.Assert(normalisedTarget.Length > 2, sess.i18n(XlfKeys.TargetStringTooShort));
+                        //Debug.Assert(
+                        //    normalisedTarget.StartsWith(@"\??\") && (normalisedTarget[5] == ':' || normalisedTarget.StartsWith(@"\??\Volume")) ||
+                        //    !normalisedTarget.StartsWith(@"\??\") && normalisedTarget[1] != ':',
+                        //    sess.i18n(XlfKeys.MalformedSubsString));
+                        //// Junction points must be absolute
+                        //Debug.Assert(
+                        //        buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK ||
+                        //        normalisedTarget.StartsWith(@"\??\Volume") ||
+                        //        normalisedTarget[1] == ':',
+                        //    sess.i18n(XlfKeys.RelativeJunctionPoint));
                         if (normalisedTarget.StartsWith(@"\??\"))
                         {
                             normalisedTarget = normalisedTarget.Substring(4);

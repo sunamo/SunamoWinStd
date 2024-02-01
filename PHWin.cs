@@ -1,4 +1,7 @@
+
 namespace SunamoWinStd;
+using SunamoEnums.Enums;
+
 
 public partial class PHWin
 {
@@ -30,7 +33,7 @@ public partial class PHWin
         if (!pathExe.ContainsKey(codeExe))
         {
             var fi = WindowsOSHelper.FileIn(local, v, codeExe);
-            fi = FS.GetDirectoryName(fi);
+            fi = Path.GetDirectoryName(fi);
             pathExe.Add(codeExe, fi);
 
             return fi;
@@ -87,7 +90,7 @@ public partial class PHWin
 
     public static void OpenInAllBrowsers(string uri)
     {
-        OpenInAllBrowsers(CA.ToListString(uri));
+        OpenInAllBrowsers(new List<string>([uri]));
     }
 
     public static void OpenInAllBrowsers(IList<string> uris)

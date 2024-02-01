@@ -1,4 +1,8 @@
+
 namespace SunamoWinStd.Helpers;
+using SunamoInterfaces.Interfaces;
+using SunamoStringGetLines;
+
 public class ClipboardHelperWinStd : IClipboardHelper
 {
     static TextCopy.Clipboard textCopy = new TextCopy.Clipboard();
@@ -43,12 +47,12 @@ public class ClipboardHelperWinStd : IClipboardHelper
 
     public void SetLines(List<string> d)
     {
-        SetText(SHJoin.JoinNL(d));
+        SetText(string.Join(Environment.NewLine, d));
     }
 
     public void SetList(List<string> d)
     {
-        SetText(SHJoin.JoinNL(d));
+        SetText(string.Join(Environment.NewLine, d));
     }
 
     public void SetText(string s)

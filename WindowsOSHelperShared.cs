@@ -1,4 +1,7 @@
+
 namespace SunamoWinStd;
+using SunamoWinStd._sunamo;
+
 
 public partial class WindowsOSHelper
 {
@@ -10,12 +13,12 @@ public partial class WindowsOSHelper
 
     public static string FileIn(string folder, string exe)
     {
-        if (FS.ExistsDirectory(folder))
+        if (Directory.Exists(folder))
         {
             var masc = string.Empty; //FS.MascFromExtension(exe);
             masc = exe;
 
-            return FS.GetFiles(folder, masc, SearchOption.AllDirectories).FirstOrDefault();
+            return Directory.GetFiles(folder, masc, SearchOption.AllDirectories).FirstOrDefault();
         }
         return string.Empty;
     }
@@ -35,6 +38,6 @@ public partial class WindowsOSHelper
     {
         // return ed\w
         var un = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-        return SH.TextAfter(un, @"\");
+        return un.Substring(un.IndexOf(@"\"));
     }
 }

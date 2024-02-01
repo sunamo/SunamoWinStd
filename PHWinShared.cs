@@ -1,4 +1,8 @@
+
 namespace SunamoWinStd;
+using SunamoEnums.Enums;
+using SunamoWinStd._sunamo;
+
 
 
 public partial class PHWin //: IPHWin
@@ -82,7 +86,7 @@ public partial class PHWin //: IPHWin
     {
         if (path.Count == 0)
         {
-            var all = EnumHelper.GetValues<Browsers>();
+            var all = Enum.GetValues<Browsers>();
             foreach (var item in all)
             {
                 if (item != Browsers.None)
@@ -115,12 +119,12 @@ public partial class PHWin //: IPHWin
         BreakIfTen();
         s = PH.NormalizeUri(s);
 
-        if (!UH.HasHttpProtocol(s))
+        if (!s.StartsWith("http"))
         {
-            s = SH.WrapWithQm(s, false);
+            s = "https://" + s;
         }
 
-        if (!UH.IsUri(s))
+        if (!Uri.TryCreate(s, new UriCreationOptions { }, out Uri _))
         {
             if (throwExIsNotValidUrl)
             {
@@ -128,6 +132,8 @@ public partial class PHWin //: IPHWin
             }
             return;
         }
+
+
 
         //if (prohlizec == Browsers.Chrome)
         //{
@@ -178,7 +184,7 @@ public partial class PHWin //: IPHWin
     static int countOfBrowsers = 0;
     static PHWin()
     {
-        var brs = EnumHelper.GetValues<Browsers>();
+        var brs = Enum.GetValues<Browsers>().ToList();
         countOfBrowsers = brs.Count;
         // None is deleting automatically
         //countOfBrowsers--;
@@ -230,7 +236,7 @@ public partial class PHWin //: IPHWin
                     b = @"C:\Program Files\Vivaldi\Application\vivaldi.exe";
                     if (!File.Exists(b))
                     {
-                        b = WindowsOSHelper.FileIn(UserFoldersWin.Local, XlfKeys.Vivaldi, "vivaldi.exe");
+                        b = WindowsOSHelper.FileIn(UserFoldersWin.Local, "Vivaldi", "vivaldi.exe");
                     }
                     NullIfNotExists(ref b);
                     break;
@@ -348,23 +354,24 @@ public partial class PHWin //: IPHWin
     /// <param name="what"></param>
     public static void SearchInAll(IList array, string what)
     {
-        //var br = Browsers.Chrome;
-        PHWin.AddBrowser();
-        foreach (var item in array)
-        {
-            opened++;
-            string uri = UriWebServices.FromChromeReplacement(item.ToString(), what);
-            PHWin.OpenInBrowser(uri, true, 50);
-            if (opened % 10 == 0)
-            {
-                Debugger.Break();
-            }
-        }
+        throw new NotImplementedException();
+        ////var br = Browsers.Chrome;
+        //PHWin.AddBrowser();
+        //foreach (var item in array)
+        //{
+        //    opened++;
+        //    string uri = UriWebServices.FromChromeReplacement(item.ToString(), what);
+        //    PHWin.OpenInBrowser(uri, true, 50);
+        //    if (opened % 10 == 0)
+        //    {
+        //        Debugger.Break();
+        //    }
+        //}
     }
 
     public static void AssignSearchInAll()
     {
         //AddBrowsers();
-        UriWebServices.AssignSearchInAll(PHWin.SearchInAll);
+        //UriWebServices.AssignSearchInAll(PHWin.SearchInAll);
     }
 }
