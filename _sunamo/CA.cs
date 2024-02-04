@@ -5,37 +5,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace SunamoWinStd._sunamo
+namespace SunamoWinStd._sunamo;
+
+internal class CA
 {
-    internal class CA
+    internal static List<string> ToLower(List<string> slova)
     {
-        internal static List<string> ToLower(List<string> slova)
+        for (int i = 0; i < slova.Count; i++)
         {
-            for (int i = 0; i < slova.Count; i++)
-            {
-                slova[i] = slova[i].ToLower();
-            }
-            return slova;
+            slova[i] = slova[i].ToLower();
         }
-        internal static List<string> Trim(List<string> l)
-        {
-            for (var i = 0; i < l.Count; i++) l[i] = l[i].Trim();
+        return slova;
+    }
+    internal static List<string> Trim(List<string> l)
+    {
+        for (var i = 0; i < l.Count; i++) l[i] = l[i].Trim();
 
-            return l;
-        }
+        return l;
+    }
 
-        static string Replace(string s, string from, string to)
-        {
-            return s.Replace(from, to);
-        }
+    static string Replace(string s, string from, string to)
+    {
+        return s.Replace(from, to);
+    }
 
-        internal static void Replace(List<string> files_in, string what, string forWhat)
+    internal static void Replace(List<string> files_in, string what, string forWhat)
+    {
+        for (int i = 0; i < files_in.Count; i++)
         {
-            for (int i = 0; i < files_in.Count; i++)
-            {
-                files_in[i] = Replace(files_in[i], what, forWhat);
-            }
-            //CAChangeContent.ChangeContent2(null, files_in, Replace, what, forWhat);
+            files_in[i] = Replace(files_in[i], what, forWhat);
         }
+        //CAChangeContent.ChangeContent2(null, files_in, Replace, what, forWhat);
     }
 }
