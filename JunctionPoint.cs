@@ -1,6 +1,7 @@
 
 namespace SunamoWinStd;
-using SunamoPS;
+
+using SunamoWinStd._public;
 using SunamoWinStd._sunamo;
 
 /// <summary>
@@ -35,7 +36,7 @@ public static class JunctionPoint
 #if ASYNC
     await
 #endif
- PowershellRunner.ci.InvokeSingle(command);
+ PowershellRunnerWinStd.ci.InvokeSingle(command);
         return output;
     }
 
@@ -85,7 +86,7 @@ public static class JunctionPoint
 #if ASYNC
     await
 #endif
- PowershellRunner.ci.InvokeSingle(command);
+ PowershellRunnerWinStd.ci.InvokeSingle(command);
 
         return output;
     }
@@ -113,7 +114,7 @@ public static class JunctionPoint
 #if ASYNC
     await
 #endif
- PowershellRunner.ci.InvokeSingle(command);
+ PowershellRunnerWinStd.ci.InvokeSingle(command);
         return output;
     }
 

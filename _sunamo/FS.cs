@@ -1,15 +1,68 @@
-
-
-using SunamoDictionary;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace SunamoWinStd._sunamo;
 
 internal class FS
 {
+    internal static bool TryDeleteFile(string item)
+    {
+        // TODO: To all code message logging as here
+
+        try
+        {
+            // If file won't exists, wont throw any exception
+            File.Delete(item);
+            return true;
+        }
+        catch
+        {
+            //ThisApp.Error(sess.i18n(XlfKeys.FileCanTBeDeleted) + ": " + item);
+            return false;
+        }
+    }
+    internal static void CreateUpfoldersPsysicallyUnlessThere(string nad)
+    {
+        CreateFoldersPsysicallyUnlessThere(Path.GetDirectoryName(nad));
+    }
+
+    internal static void CreateFoldersPsysicallyUnlessThere(string nad)
+    {
+        ThrowEx.IsNullOrEmpty("nad", nad);
+        ThrowEx.IsNotWindowsPathFormat("nad", nad);
+
+
+        if (Directory.Exists(nad))
+        {
+            return;
+        }
+
+        List<string> slozkyKVytvoreni = new List<string>
+{
+nad
+};
+
+        while (true)
+        {
+            nad = Path.GetDirectoryName(nad);
+
+            // TODO: Tady to nefunguje pro UWP/UAP apps protoze nemaji pristup k celemu disku. Zjistit co to je UWP/UAP/... a jak v nem ziskat/overit jakoukoliv slozku na disku
+            if (Directory.Exists(nad))
+            {
+                break;
+            }
+
+            string kopia = nad;
+            slozkyKVytvoreni.Add(kopia);
+        }
+
+        slozkyKVytvoreni.Reverse();
+        foreach (string item in slozkyKVytvoreni)
+        {
+            string folder = item;
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+        }
+    }
     internal static void FirstCharUpper(ref string nazevPP)
     {
         nazevPP = FirstCharUpper(nazevPP);

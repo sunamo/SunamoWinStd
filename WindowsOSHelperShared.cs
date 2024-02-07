@@ -1,8 +1,5 @@
 
 namespace SunamoWinStd;
-using SunamoWinStd._sunamo;
-
-
 public partial class WindowsOSHelper
 {
     public static string FileIn(UserFoldersWin local, string appName, string exe)

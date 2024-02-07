@@ -1,8 +1,7 @@
 
-namespace SunamoWinStd;
 using System.Management;
 
-
+namespace SunamoWinStd;
 /// <summary>
 /// Not include in standard
 /// </summary>

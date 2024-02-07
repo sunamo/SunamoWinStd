@@ -1,6 +1,7 @@
 
 namespace SunamoWinStd;
-using SunamoStringReplace;
+
+using SunamoWinStd._sunamo;
 using System.Net;
 using System.Text.RegularExpressions;
 

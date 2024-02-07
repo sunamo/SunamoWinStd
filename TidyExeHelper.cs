@@ -1,6 +1,7 @@
 
 namespace SunamoWinStd;
-using SunamoPS;
+
+using SunamoWinStd._public;
 using SunamoWinStd._sunamo;
 
 public class TidyExeHelper
@@ -74,7 +75,7 @@ public class TidyExeHelper
 #if ASYNC
     await
 #endif
- PowershellRunner.ci.Invoke(new List<string>([comment]));
+ PowershellRunnerWinStd.ci.Invoke(new List<string>([comment]));
 
         if (result[0].Count > 0)
         {

@@ -1,7 +1,7 @@
 
 namespace SunamoWinStd.Helpers;
 using SunamoInterfaces.Interfaces;
-using SunamoStringGetLines;
+using SunamoWinStd._sunamo;
 
 public class ClipboardHelperWinStd : IClipboardHelper
 {

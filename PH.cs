@@ -1,11 +1,5 @@
 
 namespace SunamoWinStd;
-using SunamoClipboard;
-using SunamoCollectionsChangeContent;
-
-using SunamoStringSplit;
-using SunamoThisApp;
-using SunamoWinStd;
 using SunamoWinStd._sunamo;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
@@ -207,9 +201,9 @@ public partial class PH
     /// <summary>
     /// Start all uri in clipboard, splitted by whitespace
     /// </summary>
-    public static void StartAllUri()
+    public static void StartAllUri(string text)
     {
-        var text = ClipboardHelper.GetText();
+        //var text = ClipboardHelper.GetText();
         var uris = SHSplit.SplitByWhiteSpaces(text);
         StartAllUri(uris);
     }
