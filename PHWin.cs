@@ -51,7 +51,7 @@ public partial class PHWin
                 await PHWin.Code(f);
                 break;
             case Editor.Codium:
-                PHWin.Codium(f);
+                await PHWin.Codium(f);
                 break;
             case Editor.CodeInsider:
                 await PHWin.CodeInsider(f);
