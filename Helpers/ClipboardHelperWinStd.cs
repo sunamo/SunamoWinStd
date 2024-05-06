@@ -1,11 +1,11 @@
 
 namespace SunamoWinStd.Helpers;
-using SunamoInterfaces.Interfaces;
 using SunamoWinStd._sunamo;
+using TextCopy;
 
 public class ClipboardHelperWinStd : IClipboardHelper
 {
-    static TextCopy.Clipboard textCopy = new TextCopy.Clipboard();
+    //static TextCopyClipboard textCopy = new TextCopyClipboard();
     /// <summary>
     /// Schválně jsem to dal malým - místo Instance musím používat CreateInstance
     /// </summary>
@@ -32,7 +32,7 @@ public class ClipboardHelperWinStd : IClipboardHelper
 
     public void CutFiles(params string[] selected)
     {
-        ThrowEx.NotImplementedMethod();
+        throw new NotImplementedException();
     }
 
     public List<string> GetLines()
@@ -42,7 +42,7 @@ public class ClipboardHelperWinStd : IClipboardHelper
 
     public string GetText()
     {
-        return textCopy.GetText();
+        return TextCopyClipboardService.GetText();
     }
 
     public void SetLines(List<string> d)
@@ -57,7 +57,7 @@ public class ClipboardHelperWinStd : IClipboardHelper
 
     public void SetText(string s)
     {
-        textCopy.SetText(s);
+        TextCopyClipboardService.SetText(s);
     }
 
     public void SetText(StringBuilder stringBuilder)

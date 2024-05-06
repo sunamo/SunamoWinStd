@@ -1,6 +1,4 @@
-﻿using SunamoTypeOfMessage;
-
-namespace SunamoWinStd._sunamo;
+﻿namespace SunamoWinStd._sunamo;
 internal class ThisApp
 {
     internal static void Success(string v, params string[] o)

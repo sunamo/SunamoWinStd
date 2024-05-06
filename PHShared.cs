@@ -166,7 +166,7 @@ public partial class PH
     {
         try
         {
-            var arg = "/c " + exe + AllStringsSE.space + args;
+            var arg = "/c " + exe + AllStrings.space + args;
             Process.Start("cmd.exe", arg);
         }
         catch (Exception ex)
@@ -219,7 +219,7 @@ public partial class PH
     public static string NormalizeUri(string v)
     {
         // Without this cant search for google apps
-        v = SHReplace.ReplaceAll(v, "%22", AllStringsSE.qm);
+        v = SHReplace.ReplaceAll(v, "%22", AllStrings.qm);
         return v;
     }
 
