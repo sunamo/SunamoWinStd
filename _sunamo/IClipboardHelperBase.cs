@@ -1,3 +1,5 @@
+
+namespace SunamoWinStd._sunamo;
 public interface IClipboardHelperBase<String, ListString, Bool>
 {
     String GetText();
