@@ -7,7 +7,23 @@
     <Description>Windows-specific code on net8.0 moniker</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Management" Version="8.0.0" /> 
+    <PackageReference Include="System.Management" Version="8.0.0" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\ThrowEx.cs" Link="_linked\SunamoExceptions\OnlyInSE\ThrowEx.cs" />
+    <Compile Include="..\SunamoValues\AllStrings.cs" Link="_linked\SunamoValues\AllStrings.cs" />
+    <Compile Include="..\SunamoValues\Consts.cs" Link="_linked\SunamoValues\Consts.cs" />
+    <Compile Include="..\SunamoEnums\Enums\Device.cs" Link="_linked\SunamoEnums\Enums\Device.cs" />
+    <Compile Include="..\SunamoEnums\Enums\EnvironmentVariables.cs" Link="_linked\SunamoEnums\Enums\EnvironmentVariables.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\IPHWin.cs" Link="_linked\SunamoInterfaces\Interfaces\IPHWin.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\IClipboardHelper.cs" Link="_linked\SunamoInterfaces\Interfaces\IClipboardHelper.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\IFSWin.cs" Link="_linked\SunamoInterfaces\Interfaces\IFSWin.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\SunamoPS\IPowershellRunner.cs" Link="_linked\SunamoInterfaces\Interfaces\SunamoPS\IPowershellRunner.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\Exceptions.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exceptions.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\TranslateAble.cs" Link="_linked\SunamoExceptions\OnlyInSE\TranslateAble.cs" />
+    <Compile Include="..\SunamoExceptions\_AddedToAllCsproj\SHSunamoExceptions.cs" Link="_linked\SunamoExceptions\_AddedToAllCsproj\SHSunamoExceptions.cs" />
+    <Compile Include="..\SunamoExceptions\_AddedToAllCsproj\CASunamoExceptions.cs" Link="_linked\SunamoExceptions\_AddedToAllCsproj\CASunamoExceptions.cs" />
+    <Compile Include="..\SunamoValues\AllChars.cs" Link="_linked\SunamoValues\AllChars.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\Exc.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exc.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\Types.cs" Link="_linked\SunamoExceptions\OnlyInSE\Types.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoWinStd</DefineConstants>
