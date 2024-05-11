@@ -1,4 +1,4 @@
-﻿namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 internal class ThisApp
 {
     internal static void Success(string v, params string[] o)

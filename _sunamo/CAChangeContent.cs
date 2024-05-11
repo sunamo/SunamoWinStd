@@ -1,5 +1,5 @@
 
-namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 
 using SunamoArgs;
 using System;

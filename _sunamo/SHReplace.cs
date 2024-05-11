@@ -1,4 +1,4 @@
-﻿namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 internal class SHReplace
 {
     internal static string ReplaceAll(string vstup, string zaCo, params string[] co)

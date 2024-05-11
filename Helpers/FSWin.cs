@@ -1,5 +1,5 @@
 
-namespace SunamoWinStd.Helpers;
+namespace SunamoWinStd;
 
 using SunamoWinStd._sunamo;
 

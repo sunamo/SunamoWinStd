@@ -1,4 +1,4 @@
-namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 
 internal class SHParts
 {

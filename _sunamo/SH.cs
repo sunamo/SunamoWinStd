@@ -1,5 +1,5 @@
 using System.Runtime.CompilerServices;
-namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 
 internal class SH
 {

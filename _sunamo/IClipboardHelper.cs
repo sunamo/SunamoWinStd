@@ -1,4 +1,4 @@
-namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 
 /// <summary>
 ///     Must be in sunamo, is used in win and apps

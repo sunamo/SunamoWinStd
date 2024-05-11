@@ -1,4 +1,4 @@
-﻿namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 
 /// <summary>
 ///     Error/Warning are in tbLastErrorOrWarning, other in tbLastOtherMessage

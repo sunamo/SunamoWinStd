@@ -1,4 +1,4 @@
-﻿namespace SunamoWinStd._sunamo;
+namespace SunamoWinStd;
 internal class SHSplit
 {
     internal static List<string> SplitByWhiteSpaces(string innerText)

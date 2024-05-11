@@ -1,4 +1,4 @@
-namespace SunamoWinStd.Enums;
+namespace SunamoWinStd;
 public enum UserFoldersWin
 {
     Local, Roaming, LocalLow
