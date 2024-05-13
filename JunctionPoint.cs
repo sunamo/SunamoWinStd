@@ -1,8 +1,8 @@
 
 namespace SunamoWinStd;
 
-using SunamoWinStd._public;
-using SunamoWinStd._sunamo;
+
+
 
 /// <summary>
 /// Provides access to NTFS junction points in .Net.

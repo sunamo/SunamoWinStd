@@ -1,6 +1,6 @@
 
 namespace SunamoWinStd;
-using SunamoWinStd._sunamo;
+
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 

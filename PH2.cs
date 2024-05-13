@@ -1,6 +1,6 @@
 
 namespace SunamoWinStd;
-using SunamoWinStd._sunamo;
+
 
 
 public partial class PH

@@ -1,8 +1,8 @@
 
 namespace SunamoWinStd;
 
-using SunamoWinStd._public;
-using SunamoWinStd._sunamo;
+
+
 
 public class TidyExeHelper
 {

@@ -10,7 +10,7 @@ global using System.Runtime.InteropServices;
 global using System.Threading;
 global using System.Data;
 global using Microsoft.Win32.SafeHandles;
-global using SunamoWinStd.Enums;
+
 global using System.IO.MemoryMappedFiles;
 global using System.Collections.Generic;
 global using System.Collections;

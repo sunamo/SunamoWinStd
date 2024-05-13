@@ -1,6 +1,6 @@
 
 namespace SunamoWinStd;
-using SunamoWinStd._sunamo;
+
 using TextCopy;
 
 public class ClipboardHelperWinStd : IClipboardHelper
