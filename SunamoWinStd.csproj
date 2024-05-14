@@ -25,6 +25,23 @@
     <Compile Include="..\SunamoExceptions\OnlyInSE\Exc.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exc.cs" />
     <Compile Include="..\SunamoExceptions\OnlyInSE\Types.cs" Link="_linked\SunamoExceptions\OnlyInSE\Types.cs" />
     <Compile Include="..\SunamoXlfKeys\XlfKeys.cs" Link="_linked\SunamoXlfKeys\XlfKeys.cs" />
+    <Compile Include="..\SunamoString\SH.cs" Link="_linked\SunamoString\SH.cs" />
+    <Compile Include="..\SunamoCollectionsGeneric\Collections\D.cs" Link="_linked\SunamoCollectionsGeneric\Collections\D.cs" />
+    <Compile Include="..\SunamoFubuCsProjFile\_NotMine\None.cs" Link="_linked\SunamoFubuCsProjFile\_NotMine\None.cs" />
+    <Compile Include="..\SunamoThisApp\ThisApp.cs" Link="_linked\SunamoThisApp\ThisApp.cs" />
+    <Compile Include="..\SunamoParsing\Parse.cs" Link="_linked\SunamoParsing\Parse.cs" />
+    <Compile Include="..\SunamoUri\UH.cs" Link="_linked\SunamoUri\UH.cs" />
+    <Compile Include="..\SunamoCollections\CA.cs" Link="_linked\SunamoCollections\CA.cs" />
+    <Compile Include="..\SunamoCollectionsChangeContent\CAChangeContent.cs" Link="_linked\SunamoCollectionsChangeContent\CAChangeContent.cs" />
+    <Compile Include="..\SunamoStringSplit\SHSplit.cs" Link="_linked\SunamoStringSplit\SHSplit.cs" />
+    <Compile Include="..\SunamoStringReplace\SHReplace.cs" Link="_linked\SunamoStringReplace\SHReplace.cs" />
+    <Compile Include="..\SunamoEnums\Enums\Editor.cs" Link="_linked\SunamoEnums\Enums\Editor.cs" />
+    <Compile Include="..\SunamoEnums\Enums\Browsers.cs" Link="_linked\SunamoEnums\Enums\Browsers.cs" />
+    <Compile Include="..\SunamoPInvoke\Enums\LUID.cs" Link="_linked\SunamoPInvoke\Enums\LUID.cs" />
+    <Compile Include="..\SunamoFubuCore\Attributes.cs" Link="_linked\SunamoFubuCore\Attributes.cs" />
+    <Compile Include="..\SunamoPlatformUwpInterop\AppData\AppData.cs" Link="_linked\SunamoPlatformUwpInterop\AppData\AppData.cs" />
+    <Compile Include="..\SunamoStringGetLines\SHGetLines.cs" Link="_linked\SunamoStringGetLines\SHGetLines.cs" />
+    <Compile Include="..\SunamoFileSystem\FS.cs" Link="_linked\SunamoFileSystem\FS.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoWinStd</DefineConstants>
