@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="TextCopy" Version="6.2.1" />
     <Compile Include="..\SunamoExceptions\OnlyInSE\Exc.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exc.cs" />
     <Compile Include="..\SunamoExceptions\OnlyInSE\Exceptions.cs" Link="_linked\SunamoExceptions\OnlyInSE\Exceptions.cs" />
     <Compile Include="..\SunamoExceptions\OnlyInSE\TranslateAble.cs" Link="_linked\SunamoExceptions\OnlyInSE\TranslateAble.cs" />
@@ -17,6 +18,14 @@
     <Compile Include="..\SunamoValues\AllChars.cs" Link="_linked\SunamoValues\AllChars.cs" />
     <Compile Include="..\SunamoValues\AllStrings.cs" Link="_linked\SunamoValues\AllStrings.cs" />
     <Compile Include="..\SunamoValues\Consts.cs" Link="_linked\SunamoValues\Consts.cs" />
+    <Compile Include="..\SunamoExceptions\OnlyInSE\ThrowEx.cs" Link="_linked\SunamoExceptions\OnlyInSE\ThrowEx.cs" />
+    <Compile Include="..\SunamoEnums\Enums\Browsers.cs" Link="_linked\SunamoEnums\Enums\Browsers.cs" />
+    <Compile Include="..\SunamoArgs\ChangeContentArgs.cs" Link="_linked\SunamoArgs\ChangeContentArgs.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\SunamoPS\IPowershellRunner.cs" Link="_linked\SunamoInterfaces\Interfaces\SunamoPS\IPowershellRunner.cs" />
+    <Compile Include="..\SunamoArgs\InvokeProcessArgs.cs" Link="_linked\SunamoArgs\InvokeProcessArgs.cs" />
+    <Compile Include="..\SunamoArgs\PsInvokeArgs.cs" Link="_linked\SunamoArgs\PsInvokeArgs.cs" />
+    <Compile Include="..\SunamoEnums\Enums\Editor.cs" Link="_linked\SunamoEnums\Enums\Editor.cs" />
+    <Compile Include="..\SunamoInterfaces\Interfaces\ProgressState.cs" Link="_linked\SunamoInterfaces\Interfaces\ProgressState.cs" />
   </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoWinStd</DefineConstants>
