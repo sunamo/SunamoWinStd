@@ -157,7 +157,7 @@ public partial class PHWin //: IPHWin
         opened++;
         if (opened % 10 == 0)
         {
-            //Debugger.Break();
+            //System.Diagnostics.Debugger.Break();
             if (waitIfTen != 0)
             {
                 Thread.Sleep(waitIfTen);
@@ -354,7 +354,8 @@ public partial class PHWin //: IPHWin
     /// <param name="what"></param>
     public static void SearchInAll(IList array, string what)
     {
-        throw new NotImplementedException();
+        
+        ThrowEx.NotImplementedMethod();
         ////var br = Browsers.Chrome;
         //PHWin.AddBrowser();
         //foreach (var item in array)
@@ -364,7 +365,7 @@ public partial class PHWin //: IPHWin
         //    PHWin.OpenInBrowser(uri, true, 50);
         //    if (opened % 10 == 0)
         //    {
-        //        Debugger.Break();
+        //        System.Diagnostics.Debugger.Break();
         //    }
         //}
     }

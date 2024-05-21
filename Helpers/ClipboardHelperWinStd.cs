@@ -32,7 +32,7 @@ public class ClipboardHelperWinStd : IClipboardHelper
 
     public void CutFiles(params string[] selected)
     {
-        throw new NotImplementedException();
+        ThrowEx.NotImplementedMethod();
     }
 
     public List<string> GetLines()
