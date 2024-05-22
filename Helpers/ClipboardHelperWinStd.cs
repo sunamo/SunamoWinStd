@@ -3,7 +3,7 @@ namespace SunamoWinStd;
 
 using TextCopy;
 
-public class ClipboardHelperWinStd : IClipboardHelper
+public class ClipboardHelperWinStd //: IClipboardHelper
 {
     //static TextCopyClipboard textCopy = new TextCopyClipboard();
     /// <summary>
@@ -15,7 +15,7 @@ public class ClipboardHelperWinStd : IClipboardHelper
     /// Už to nechat jako property, jako to bylo prvně, než jsem to změnil na metodu
     /// Aha musí to být metoda protože to předávám jako Func< IClipboardHelper></IClipboardHelper>
     /// </summary>
-    public static IClipboardHelper Instance()
+    public static ClipboardHelperWinStd Instance()
     {
         if (instance == null)
         {

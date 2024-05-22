@@ -1,7 +1,7 @@
 namespace SunamoWinStd;
 
 
-//public interface IPowershellRunner
+//internal interface IPowershellRunner
 //{
 //    ProgressState clpb { get; set; }
 //#if ASYNC
@@ -30,7 +30,7 @@ namespace SunamoWinStd;
 /// InvokeProcess - spustí proces ze kterého vrátí output
 /// InvokeSingle - just run InvokeWorker
 /// </summary>
-public interface IPowershellRunner
+internal interface IPowershellRunner
 {
     ProgressState clpb { get; set; }
     Task<List<string>> InvokeInFolder(string folder, string command);
