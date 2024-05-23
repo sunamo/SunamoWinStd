@@ -1,8 +1,8 @@
 namespace SunamoWinStd;
 
-internal class UH
+public class UH
 {
-    internal static string AppendHttpIfNotExists(string p)
+    public static string AppendHttpIfNotExists(string p)
     {
         string p2 = p;
         if (!p.StartsWith("http"))
@@ -13,7 +13,7 @@ internal class UH
         return p2;
     }
 
-    internal static string AppendHttpsIfNotExists(string p)
+    public static string AppendHttpsIfNotExists(string p)
     {
         string p2 = p;
         if (!p.StartsWith("https"))

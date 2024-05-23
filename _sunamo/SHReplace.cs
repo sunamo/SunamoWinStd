@@ -1,7 +1,7 @@
 namespace SunamoWinStd;
-internal class SHReplace
+public class SHReplace
 {
-    internal static string ReplaceAll(string vstup, string zaCo, params string[] co)
+    public static string ReplaceAll(string vstup, string zaCo, params string[] co)
     {
         //Stupid, zaCo can be null
 

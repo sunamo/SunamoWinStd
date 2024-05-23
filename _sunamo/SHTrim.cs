@@ -1,14 +1,14 @@
 namespace SunamoWinStd;
 
-internal class SHTrim
+public class SHTrim
 {
-    internal static string TrimEnd(string name, string ext)
+    public static string TrimEnd(string name, string ext)
     {
         while (name.EndsWith(ext)) return name.Substring(0, name.Length - ext.Length);
 
         return name;
     }
-    internal static string TrimStart(string v, string s)
+    public static string TrimStart(string v, string s)
     {
         while (v.StartsWith(s))
         {
@@ -18,7 +18,7 @@ internal class SHTrim
         return v;
     }
 
-    internal static bool TrimIfStartsWith(ref string s, string p)
+    public static bool TrimIfStartsWith(ref string s, string p)
     {
         if (s.StartsWith(p))
         {

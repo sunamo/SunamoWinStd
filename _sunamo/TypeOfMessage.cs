@@ -4,7 +4,7 @@ namespace SunamoWinStd;
 ///     Error/Warning are in tbLastErrorOrWarning, other in tbLastOtherMessage
 ///     Musí být zde kvůli cl které je withoutDep
 /// </summary>
-internal enum TypeOfMessage
+public enum TypeOfMessage
 {
     /// <summary>
     ///     tbLastErrorOrWarning

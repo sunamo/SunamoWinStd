@@ -1,7 +1,7 @@
 namespace SunamoWinStd;
-internal class DictionaryHelper
+public class DictionaryHelper
 {
-    internal static void AddOrCreateIfDontExists<Key, Value>(Dictionary<Key, List<Value>> sl, Key key, Value value)
+    public static void AddOrCreateIfDontExists<Key, Value>(Dictionary<Key, List<Value>> sl, Key key, Value value)
     {
         if (sl.ContainsKey(key))
         {

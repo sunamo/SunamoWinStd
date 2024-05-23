@@ -1,35 +1,35 @@
 namespace SunamoWinStd;
 
 
-internal class ProgressState
+public class ProgressState
 {
-    internal bool isRegistered { get; set; } = false;
-    internal void Init(Action<int> OverallSongs, Action<int> AnotherSong, Action WriteProgressBarEnd)
+    public bool isRegistered { get; set; } = false;
+    public void Init(Action<int> OverallSongs, Action<int> AnotherSong, Action WriteProgressBarEnd)
     {
         isRegistered = true;
         this.AnotherSong += AnotherSong;
         this.OverallSongs += OverallSongs;
         this.WriteProgressBarEnd += WriteProgressBarEnd;
     }
-    internal event Action<int> AnotherSong;
-    internal event Action<int> OverallSongs;
-    internal event Action WriteProgressBarEnd;
-    internal int n = 0;
-    internal void OnAnotherSong()
+    public event Action<int> AnotherSong;
+    public event Action<int> OverallSongs;
+    public event Action WriteProgressBarEnd;
+    public int n = 0;
+    public void OnAnotherSong()
     {
         n++;
         OnAnotherSong(n);
     }
-    internal void OnAnotherSong(int n)
+    public void OnAnotherSong(int n)
     {
         AnotherSong(n);
     }
-    internal void OnOverallSongs(int n2)
+    public void OnOverallSongs(int n2)
     {
         n = 0;
         OverallSongs(n2);
     }
-    internal void OnWriteProgressBarEnd()
+    public void OnWriteProgressBarEnd()
     {
         WriteProgressBarEnd();
     }

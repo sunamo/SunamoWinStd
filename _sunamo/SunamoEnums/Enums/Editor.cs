@@ -1,7 +1,7 @@
 namespace SunamoWinStd;
 
 
-internal enum Editor
+public enum Editor
 {
     Code,
     Codium,
