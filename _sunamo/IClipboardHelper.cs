@@ -1,3 +1,5 @@
+
+namespace SunamoWinStd;
 //namespace SunamoWinStd;
 
 ///// <summary>

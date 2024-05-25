@@ -1,3 +1,4 @@
+namespace SunamoWinStd;
 
 //namespace SunamoWinStd;
 //public interface IClipboardHelperBase<String, ListString, Bool>

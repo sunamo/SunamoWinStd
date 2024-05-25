@@ -34,6 +34,7 @@ public partial class PHWin //: IPHWin
 #endif
  BreakIfTenIde()
     {
+
         // Tady to není potřeba, otevřít textový soubor není tak náročné jako web stránku a
         //BreakIfTen();
         // ale často mám chybu "Another instance of Code is running but not responding".
