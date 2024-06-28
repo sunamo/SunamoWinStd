@@ -1,15 +1,15 @@
 namespace SunamoWinStd;
 
 
-public class PsInvokeArgs
+internal class PsInvokeArgs
 {
-    public static readonly PsInvokeArgs Def = new PsInvokeArgs();
-    public bool writePb = false;
+    internal static readonly PsInvokeArgs Def = new PsInvokeArgs();
+    internal bool writePb = false;
     /// <summary>
     /// earlier false
     /// </summary>
-    public bool immediatelyToStatus = false;
-    public List<string> addBeforeEveryCommand = null;
+    internal bool immediatelyToStatus = false;
+    internal List<string> addBeforeEveryCommand = null;
     // nemůžu to dát do #if DEBUG protože se mi to nepromítne do nuget package
     // nevím proč furt dělám takové hloupé chyby které mě stojí čas
     //#if DEBUG
@@ -20,14 +20,14 @@ public class PsInvokeArgs
     /// nepracuje nijak s datem poslední změny
     /// </summary>
     //
-    public string pathToSaveLoadPsOutput = null;
+    internal string pathToSaveLoadPsOutput = null;
     //[Conditional("DEBUG")]
-    //public string GetPathToSaveLoadPsOutput()
+    //internal string GetPathToSaveLoadPsOutput()
     //{
     //    return pathToSaveLoadPsOutput;
     //}
     //[Conditional("DEBUG")]
-    //public void SetPathToSaveLoadPsOutput(string value)
+    //internal void SetPathToSaveLoadPsOutput(string value)
     //{
     //    pathToSaveLoadPsOutput = value;
     //}

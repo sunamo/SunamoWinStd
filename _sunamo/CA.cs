@@ -1,8 +1,8 @@
 namespace SunamoWinStd;
 
-public class CA
+internal class CA
 {
-    public static List<string> ToLower(List<string> slova)
+    internal static List<string> ToLower(List<string> slova)
     {
         for (int i = 0; i < slova.Count; i++)
         {
@@ -10,7 +10,7 @@ public class CA
         }
         return slova;
     }
-    public static List<string> Trim(List<string> l)
+    internal static List<string> Trim(List<string> l)
     {
         for (var i = 0; i < l.Count; i++) l[i] = l[i].Trim();
 
@@ -22,7 +22,7 @@ public class CA
         return s.Replace(from, to);
     }
 
-    public static void Replace(List<string> files_in, string what, string forWhat)
+    internal static void Replace(List<string> files_in, string what, string forWhat)
     {
         for (int i = 0; i < files_in.Count; i++)
         {

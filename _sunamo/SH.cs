@@ -1,15 +1,15 @@
 using System.Runtime.CompilerServices;
 namespace SunamoWinStd;
 
-public class SH
+internal class SH
 {
-    public static void FirstCharUpper(ref string nazevPP)
+    internal static void FirstCharUpper(ref string nazevPP)
     {
         nazevPP = FirstCharUpper(nazevPP);
     }
 
 
-    public static string FirstCharUpper(string nazevPP)
+    internal static string FirstCharUpper(string nazevPP)
     {
         if (nazevPP.Length == 1)
         {
@@ -20,13 +20,13 @@ public class SH
         return nazevPP[0].ToString().ToUpper() + sb;
     }
 
-    public static string WrapWithQm(string commitMessage, bool alsoIfIsWhitespaceOrEmpty = true)
+    internal static string WrapWithQm(string commitMessage, bool alsoIfIsWhitespaceOrEmpty = true)
     {
         return WrapWithChar(commitMessage, AllChars.qm, alsoIfIsWhitespaceOrEmpty);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string WrapWithChar(string value, char v, bool _trimWrapping = false, bool alsoIfIsWhitespaceOrEmpty = true)
+    internal static string WrapWithChar(string value, char v, bool _trimWrapping = false, bool alsoIfIsWhitespaceOrEmpty = true)
     {
         if (string.IsNullOrWhiteSpace(value) && !alsoIfIsWhitespaceOrEmpty)
         {
@@ -38,19 +38,19 @@ public class SH
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string WrapWith(string value, string h)
+    internal static string WrapWith(string value, string h)
     {
         return h + value + h;
     }
 
-    public static string GetTextBetweenSimple(string p, string after, string before, bool throwExceptionIfNotContains = true)
+    internal static string GetTextBetweenSimple(string p, string after, string before, bool throwExceptionIfNotContains = true)
     {
         int dxOfFounded = int.MinValue;
         var t = GetTextBetween(p, after, before, out dxOfFounded, 0, throwExceptionIfNotContains);
         return t;
     }
 
-    public static string GetTextBetween(string p, string after, string before, out int dxOfFounded, int startSearchingAt, bool throwExceptionIfNotContains = true)
+    internal static string GetTextBetween(string p, string after, string before, out int dxOfFounded, int startSearchingAt, bool throwExceptionIfNotContains = true)
     {
         string vr = null;
         dxOfFounded = p.IndexOf(after, startSearchingAt);

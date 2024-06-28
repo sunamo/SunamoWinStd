@@ -1,7 +1,7 @@
 namespace SunamoWinStd;
-public class SHSplit
+internal class SHSplit
 {
-    public static List<string> SplitByWhiteSpaces(string innerText)
+    internal static List<string> SplitByWhiteSpaces(string innerText)
     {
         return innerText.Split(AllChars.whiteSpacesChars.ToArray(), StringSplitOptions.RemoveEmptyEntries).ToList();
     }

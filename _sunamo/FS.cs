@@ -1,8 +1,8 @@
 namespace SunamoWinStd;
 
-public class FS
+internal class FS
 {
-    public static bool TryDeleteFile(string item)
+    internal static bool TryDeleteFile(string item)
     {
         // TODO: To all code message logging as here
 
@@ -18,12 +18,12 @@ public class FS
             return false;
         }
     }
-    public static void CreateUpfoldersPsysicallyUnlessThere(string nad)
+    internal static void CreateUpfoldersPsysicallyUnlessThere(string nad)
     {
         CreateFoldersPsysicallyUnlessThere(Path.GetDirectoryName(nad));
     }
 
-    public static void CreateFoldersPsysicallyUnlessThere(string nad)
+    internal static void CreateFoldersPsysicallyUnlessThere(string nad)
     {
         ThrowEx.IsNullOrEmpty("nad", nad);
         ThrowEx.IsNotWindowsPathFormat("nad", nad);
@@ -63,12 +63,12 @@ nad
             }
         }
     }
-    public static void FirstCharUpper(ref string nazevPP)
+    internal static void FirstCharUpper(ref string nazevPP)
     {
         nazevPP = FirstCharUpper(nazevPP);
     }
 
-    public static string FirstCharUpper(string nazevPP)
+    internal static string FirstCharUpper(string nazevPP)
     {
         if (nazevPP.Length == 1)
         {
@@ -79,7 +79,7 @@ nad
         return nazevPP[0].ToString().ToUpper() + sb;
     }
 
-    public static Dictionary<string, List<string>> GetDictionaryByFileNameWithExtension(List<string> files)
+    internal static Dictionary<string, List<string>> GetDictionaryByFileNameWithExtension(List<string> files)
     {
         Dictionary<string, List<string>> result = new Dictionary<string, List<string>>();
         foreach (var item in files)
@@ -91,7 +91,7 @@ nad
         return result;
     }
 
-    public static List<string> OnlyNamesNoDirectEdit(List<string> files2)
+    internal static List<string> OnlyNamesNoDirectEdit(List<string> files2)
     {
         List<string> files = new List<string>(files2.Count);
         for (int i = 0; i < files2.Count; i++)
@@ -101,7 +101,7 @@ nad
         return files;
     }
 
-    public static string AddExtensionIfDontHave(string file, string ext)
+    internal static string AddExtensionIfDontHave(string file, string ext)
     {
         // For *.* and git paths {dir}/*
         if (file[file.Length - 1] == AllChars.asterisk)
@@ -124,7 +124,7 @@ nad
     /// <param name="v"></param>
     /// <returns></returns>
     #region WithEndSlash
-    public static string WithEndSlash(ref string v)
+    internal static string WithEndSlash(ref string v)
     {
         if (v != string.Empty)
         {
@@ -135,13 +135,13 @@ nad
         return v;
     }
 
-    public static string WithEndSlash(string v)
+    internal static string WithEndSlash(string v)
     {
         return WithEndSlash(ref v);
     }
     #endregion
 
-    public static string Slash(string path, bool slash)
+    internal static string Slash(string path, bool slash)
     {
         string result = null;
         if (slash)
