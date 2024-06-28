@@ -1,3 +1,5 @@
+
+namespace SunamoWinStd;
 public class TranslateAble
 {
     
