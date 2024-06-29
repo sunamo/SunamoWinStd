@@ -43,7 +43,7 @@ public class TidyExeHelper
 #else
     string  
 #endif
- FormatHtml(string input, string tidy_config)
+ FormatHtml(string input, string tidy_config, Func<List<string>, Task<List<List<string>>>> powershellRunnerInvoke)
     {
         var mapInfo = GenerateMapInfo(Path.GetTempPath(), ".txt");
         //WriteToFile(mapInfo, "abc");
@@ -75,7 +75,7 @@ public class TidyExeHelper
 #if ASYNC
     await
 #endif
- PowershellRunnerWinStd.ci.Invoke(new List<string>([comment]));
+ powershellRunnerInvoke(new List<string>([comment]));
 
         if (result[0].Count > 0)
         {

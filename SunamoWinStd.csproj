@@ -10,6 +10,9 @@
     <PackageReference Include="System.Management" Version="8.0.0" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="_sunamo\SunamoInterfaces\Interfaces\SunamoPS\" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC;SunamoWinStd</DefineConstants>
   </PropertyGroup>

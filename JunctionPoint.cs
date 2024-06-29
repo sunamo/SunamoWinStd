@@ -20,7 +20,7 @@ public static class JunctionPoint
     /// <param name="target"></param>
     public static
 #if ASYNC
-    async Task<List<string>>
+    string
 #else
     List<string>
 #endif
@@ -32,12 +32,8 @@ public static class JunctionPoint
         }
 
         string command = "cmd /c mklink /H " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
-        List<string> output =
-#if ASYNC
-    await
-#endif
- PowershellRunnerWinStd.ci.InvokeSingle(command);
-        return output;
+
+        return command;
     }
 
     public static Dictionary<string, string> PathsAndTargetsOfAll(string folderFrom)
@@ -68,7 +64,7 @@ public static class JunctionPoint
     /// <param name="target"></param>
     public static
 #if ASYNC
-    async Task<List<string>>
+    string
 #else
     List<string>  
 #endif
@@ -82,13 +78,9 @@ public static class JunctionPoint
         }
 
         string command = "cmd /c mklink /J " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
-        List<string> output =
-#if ASYNC
-    await
-#endif
- PowershellRunnerWinStd.ci.InvokeSingle(command);
 
-        return output;
+
+        return command;
     }
 
     /// <summary>
@@ -98,7 +90,7 @@ public static class JunctionPoint
     /// <param name="target"></param>
     public static
 #if ASYNC
-    async Task<List<string>>
+     string
 #else
     List<string>  
 #endif
@@ -110,12 +102,8 @@ public static class JunctionPoint
         }
 
         string command = "cmd /c mklink /D " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
-        List<string> output =
-#if ASYNC
-    await
-#endif
- PowershellRunnerWinStd.ci.InvokeSingle(command);
-        return output;
+
+        return command;
     }
 
     /// <summary>

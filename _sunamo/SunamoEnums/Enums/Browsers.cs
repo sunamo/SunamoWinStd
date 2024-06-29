@@ -4,7 +4,7 @@ namespace SunamoWinStd;
 /// <summary>
 /// Jsou dělané přesně podle Request.Browser.Browser
 /// </summary>
-internal enum Browsers : byte
+public enum Browsers : byte
 {
     // Nic zde nikdy nesmíš měnit, můžeš maximálně přidávat nové prohlížeče
     //Other = 0,
