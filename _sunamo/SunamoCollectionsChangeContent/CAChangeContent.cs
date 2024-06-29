@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 internal class CAChangeContent
 {
-    internal static List<string> ChangeContent0(ChangeContentArgs a, List<string> files_in, Func<string, string> func)
+    internal static List<string> ChangeContent0(ChangeContentArgsWinStd a, List<string> files_in, Func<string, string> func)
     {
         for (int i = 0; i < files_in.Count; i++)
         {
@@ -20,7 +20,7 @@ internal class CAChangeContent
         return files_in;
     }
 
-    internal static List<string> ChangeContent1(ChangeContentArgs a, List<string> files_in, Func<string, string, string> func, string a1)
+    internal static List<string> ChangeContent1(ChangeContentArgsWinStd a, List<string> files_in, Func<string, string, string> func, string a1)
     {
         var result = ChangeContent<string>(a, files_in, func, a1);
         return result;
@@ -35,11 +35,11 @@ internal class CAChangeContent
     /// <param name="files_in"></param>
     /// <param name="func"></param>
     /// <param name="arg"></param>
-    internal static List<string> ChangeContent<Arg1>(ChangeContentArgs a, List<string> files_in, Func<string, Arg1, string> func, Arg1 arg, Func<Arg1, string, string> funcSwitch12 = null)
+    internal static List<string> ChangeContent<Arg1>(ChangeContentArgsWinStd a, List<string> files_in, Func<string, Arg1, string> func, Arg1 arg, Func<Arg1, string, string> funcSwitch12 = null)
     {
         if (a == null)
         {
-            a = new ChangeContentArgs();
+            a = new ChangeContentArgsWinStd();
         }
 
         if (a.switchFirstAndSecondArg)
@@ -60,7 +60,7 @@ internal class CAChangeContent
         return files_in;
     }
 
-    private static void RemoveNullOrEmpty(ChangeContentArgs a, List<string> files_in)
+    private static void RemoveNullOrEmpty(ChangeContentArgsWinStd a, List<string> files_in)
     {
         if (a != null)
         {
