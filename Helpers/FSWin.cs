@@ -8,7 +8,7 @@ namespace SunamoWinStd;
 //using cl;
 
 
-public partial class FSWin //: IFSWin
+public class FSWin //: IFSWin
 {
     public static FSWin ci = new FSWin();
 
