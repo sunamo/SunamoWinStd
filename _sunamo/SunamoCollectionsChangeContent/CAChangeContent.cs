@@ -1,9 +1,6 @@
-
 namespace SunamoWinStd._sunamo.SunamoCollectionsChangeContent;
 
 
-using System;
-using System.Collections.Generic;
 
 
 internal class CAChangeContent
@@ -91,4 +88,3 @@ internal class CAChangeContent
         return files_in;
     }
 }
-

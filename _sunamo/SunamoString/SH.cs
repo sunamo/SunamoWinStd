@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 namespace SunamoWinStd._sunamo.SunamoString;
 
 internal class SH
