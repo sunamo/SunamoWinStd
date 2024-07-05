@@ -1,5 +1,5 @@
 
-namespace SunamoWinStd;
+namespace SunamoWinStd._sunamo.SunamoExceptions._AddedToAllCsproj;
 internal class SHSunamoExceptions
 {
     internal static string JoinNL(List<string> l)

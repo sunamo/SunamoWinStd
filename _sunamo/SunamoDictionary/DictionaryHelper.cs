@@ -1,4 +1,4 @@
-namespace SunamoWinStd;
+namespace SunamoWinStd._sunamo.SunamoDictionary;
 internal class DictionaryHelper
 {
     internal static void AddOrCreateIfDontExists<Key, Value>(Dictionary<Key, List<Value>> sl, Key key, Value value)

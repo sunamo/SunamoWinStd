@@ -1,4 +1,4 @@
-﻿
+
 namespace SunamoWinStd;
 
 public class PHWin

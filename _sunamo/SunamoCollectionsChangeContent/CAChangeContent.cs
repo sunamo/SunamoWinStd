@@ -1,5 +1,5 @@
 
-namespace SunamoWinStd;
+namespace SunamoWinStd._sunamo.SunamoCollectionsChangeContent;
 
 
 using System;

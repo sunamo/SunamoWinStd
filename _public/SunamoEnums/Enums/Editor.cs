@@ -1,4 +1,4 @@
-namespace SunamoWinStd;
+namespace SunamoWinStd._public.SunamoEnums.Enums;
 
 
 public enum Editor

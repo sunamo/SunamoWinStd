@@ -1,4 +1,4 @@
-namespace SunamoWinStd;
+namespace SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
 
 
 internal class ProgressState
