@@ -1,7 +1,5 @@
 namespace SunamoWinStd;
 
-
-
 public partial class PH
 {
     static Type type = typeof(PH);
@@ -18,7 +16,7 @@ public partial class PH
     {
         var enviromentPath = Environment.GetEnvironmentVariable("PATH");
 
-        var paths = enviromentPath.Split(';'); // SHSplit.SplitChar(enviromentPath, ';');
+        var paths = enviromentPath.Split(';'); // SHSplit.SplitCharMore(enviromentPath, ';');
 
 #if DEBUG
         var wc = paths.Where(d => d.Contains("Code"));
