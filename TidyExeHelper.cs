@@ -1,8 +1,5 @@
 namespace SunamoWinStd;
 
-
-
-
 public class TidyExeHelper
 {
     //public static object FS { get; private set; }

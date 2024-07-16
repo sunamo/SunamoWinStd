@@ -1,7 +1,5 @@
 namespace SunamoWinStd;
 
-//using IWshRuntimeLibrary;
-
 public class WindowsOSHelper
 {
     public static string FileIn(UserFoldersWin local, string appName, string exe)

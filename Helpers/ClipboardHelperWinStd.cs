@@ -1,6 +1,5 @@
 namespace SunamoWinStd.Helpers;
 
-
 public class ClipboardHelperWinStd //: IClipboardHelper
 {
     //static TextCopyClipboard textCopy = new TextCopyClipboard();
