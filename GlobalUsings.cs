@@ -31,3 +31,6 @@ global using System.Management;
 global using System.Net;
 global using System.Runtime.CompilerServices;
 global using System.Text.RegularExpressions;
+global using SunamoWinStd._sunamo.SunamoCollections;
+global using SunamoWinStd._sunamo.SunamoFileSystem;
+global using SunamoWinStd._sunamo.SunamoString;
