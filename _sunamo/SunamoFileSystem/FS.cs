@@ -1,4 +1,4 @@
-namespace SunamoWinStd._sunamo.SunamoFileSystem;
+//namespace SunamoWinStd._sunamo.SunamoFileSystem;
 
 internal class FS
 {
@@ -35,9 +35,9 @@ internal class FS
         }
 
         List<string> slozkyKVytvoreni = new List<string>
-{
-nad
-};
+        {
+            nad
+        };
 
         while (true)
         {
@@ -156,4 +156,6 @@ nad
         SH.FirstCharUpper(ref result);
         return result;
     }
+
+
 }
