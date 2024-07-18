@@ -1,5 +1,7 @@
 
 namespace SunamoWinStd.Helpers;
+using TextCopy;
+
 public class ClipboardHelperWinStd //: IClipboardHelper
 {
     //static TextCopyClipboard textCopy = new TextCopyClipboard();
@@ -39,7 +41,7 @@ public class ClipboardHelperWinStd //: IClipboardHelper
 
     public string GetText()
     {
-        return TextCopyClipboardHelper.GetText();
+        return ClipboardService.GetText();
     }
 
     public void SetLines(List<string> d)
@@ -54,7 +56,7 @@ public class ClipboardHelperWinStd //: IClipboardHelper
 
     public void SetText(string s)
     {
-        TextCopyClipboardHelper.SetText(s);
+        ClipboardService.SetText(s);
     }
 
     public void SetText(StringBuilder stringBuilder)
