@@ -1,5 +1,5 @@
-namespace SunamoWinStd;
 
+namespace SunamoWinStd;
 public partial class PH
 {
     static Type type = typeof(PH);
