@@ -6,26 +6,26 @@ namespace SunamoWinStd._public.SunamoEnums.Enums;
 
 public enum Browsers : byte
 {
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
     Chrome = 1,
     Firefox = 2,
     EdgeBeta = 3,
     Opera = 4,
     Vivaldi = 5,
-    
-    Iridium = 6, 
-    Falkon = 7, 
-    OperaGX = 8, 
+
+    Slimjet = 6,
+    WaterFox = 7,
+    OperaGX = 8,
     ChromeCanary = 9,
     Tor = 10,
     Bravebrowser = 11,
@@ -33,6 +33,11 @@ public enum Browsers : byte
     EdgeDev = 13,
     EdgeCanary = 14,
     ChromeDev = 15,
+
+    Basilisk = 18,
+    NawerWhale = 19,
+
+
     EdgeStable = 254,
     None = 255
 }

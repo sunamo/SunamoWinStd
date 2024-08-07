@@ -2,34 +2,54 @@ namespace SunamoWinStd;
 
 public class PHWin
 {
+    private const string CodiumExe = "VSCodium.exe";
+    private const string CodeExe = "Code.exe";
+    private const string WebStorm64Exe = "WebStorm64.exe";
+    private const string CodeInsiderExe = "Code - Insiders.exe";
     public static Type type = typeof(PHWin);
 
-    const string CodiumExe = "VSCodium.exe";
-    const string CodeExe = "Code.exe";
-    const string WebStorm64Exe = "WebStorm64.exe";
-    const string CodeInsiderExe = "Code - Insiders.exe";
+
+    private static readonly Browsers defBr = Browsers.EdgeStable;
+    public static int opened;
+
+    /// <summary>
+    ///     Not contains Other
+    /// </summary>
+    public static Dictionary<Browsers, string> path = new();
+
+    public static Dictionary<string, string> pathExe = new();
+
+    public static int waitIfTen = 0;
+
+    private static readonly int countOfBrowsers;
+
+    public static Editor preferredEditor = Editor.Code;
+
+    static PHWin()
+    {
+        var brs = Enum.GetValues<Browsers>().ToList();
+        countOfBrowsers = brs.Count;
+        // None is deleting automatically
+        //countOfBrowsers--;
+    }
 
     public static async Task Codium(string defFile)
     {
         await BreakIfTenIde();
 
-        if (string.IsNullOrWhiteSpace(defFile))
-        {
-            ThrowEx.InvalidParameter(defFile, "defFile");
-        }
+        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
 
         PH.RunFromPath(CodiumExe, defFile, false);
     }
 
-    static
+    private static
 #if ASYNC
         async Task
 #else
-    void  
+    void
 #endif
         BreakIfTenIde()
     {
-
         // Tady to není potřeba, otevřít textový soubor není tak náročné jako web stránku a
         //BreakIfTen();
         // ale často mám chybu "Another instance of Code is running but not responding".
@@ -47,10 +67,7 @@ public class PHWin
     {
         await BreakIfTenIde();
 
-        if (string.IsNullOrWhiteSpace(defFile))
-        {
-            ThrowEx.InvalidParameter(defFile, "defFile");
-        }
+        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
         //ThrowEx.FileDoesntExists(defFile);
 
         //var v = AddPathIfNotContains( UserFoldersWin.Local, @"Programs\Microsoft VS Code", CodeExe);
@@ -69,66 +86,45 @@ public class PHWin
         PH.RunFromPath(CodeInsiderExe, defFile, false);
     }
 
-
-    static Browsers defBr = Browsers.EdgeStable;
-    public static int opened = 0;
-    /// <summary>
-    /// Not contains Other
-    /// </summary>
-    public static Dictionary<Browsers, string> path = new Dictionary<Browsers, string>();
-    public static Dictionary<string, string> pathExe = new Dictionary<string, string>();
-
     public static void AddBrowsers()
     {
         if (path.Count == 0)
         {
             var all = Enum.GetValues<Browsers>();
             foreach (var item in all)
-            {
                 if (item != Browsers.None)
-                {
                     AddBrowser(item);
-                }
-            }
         }
     }
 
-    public static int waitIfTen = 0;
-
     /// <summary>
-    /// forceAttemptHttps by dávalo větší smysl true
-    /// ale protože jsem si nepoznačil proč mi to radši dá do uvozovek, budu se držet původní definice metody
-    /// 
+    ///     forceAttemptHttps by dávalo větší smysl true
+    ///     ale protože jsem si nepoznačil proč mi to radši dá do uvozovek, budu se držet původní definice metody
     /// </summary>
     /// <param name="prohlizec"></param>
     /// <param name="s"></param>
     /// <param name="waitMs"></param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = Consts.waitMsOpenInBrowser, bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
+    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = Consts.waitMsOpenInBrowser,
+        bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
-        if (forceAttemptHttps)
-        {
-            s = UH.AppendHttpsIfNotExists(s);
-        }
+        if (forceAttemptHttps) s = UH.AppendHttpsIfNotExists(s);
 
-        string b = path[prohlizec];
+        var b = path[prohlizec];
         BreakIfTen();
         s = PH.NormalizeUri(s);
 
-        if (!s.StartsWith("http"))
-        {
-            s = "https://" + s;
-        }
+        if (!s.StartsWith("http")) s = "https://" + s;
 
-        if (!Uri.TryCreate(s, new UriCreationOptions { }, out Uri _))
+        if (!Uri.TryCreate(s, new UriCreationOptions(), out var _))
         {
             if (throwExIsNotValidUrl)
             {
                 //ThrowEx.UriFormat(s, UH.IsUri);
             }
+
             return;
         }
-
 
 
         //if (prohlizec == Browsers.Chrome)
@@ -137,37 +133,29 @@ public class PHWin
         //}
 
 
-
         Process.Start(new ProcessStartInfo(b, s));
         Thread.Sleep(100);
 
-        if (waitMs > 0)
-        {
-            Thread.Sleep(waitMs);
-
-        }
+        if (waitMs > 0) Thread.Sleep(waitMs);
     }
 
     private static void BreakIfTen()
     {
         opened++;
         if (opened % 10 == 0)
-        {
             //System.Diagnostics.Debugger.Break();
             if (waitIfTen != 0)
-            {
-                Thread.Sleep((int)waitIfTen);
-            }
-        }
+                Thread.Sleep(waitIfTen);
     }
 
     /// <summary>
-    /// 12-1-24 nevím proč bych neměl mít default values takže je vracím
+    ///     12-1-24 nevím proč bych neměl mít default values takže je vracím
     /// </summary>
     /// <param name="uri"></param>
     /// <param name="throwExIsNotValidUrl"></param>
     /// <param name="waitMs"></param>
-    public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl = false, int waitMs = Consts.waitMsOpenInBrowser)
+    public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl = false,
+        int waitMs = Consts.waitMsOpenInBrowser)
     {
         OpenInBrowser(defBr, uri, waitMs);
     }
@@ -177,25 +165,13 @@ public class PHWin
         AddBrowser(defBr);
     }
 
-    static int countOfBrowsers = 0;
-    static PHWin()
-    {
-        var brs = Enum.GetValues<Browsers>().ToList();
-        countOfBrowsers = brs.Count;
-        // None is deleting automatically
-        //countOfBrowsers--;
-    }
-
     public static string AddBrowser(Browsers prohlizec)
     {
         if (path.Count != countOfBrowsers)
         {
-            if (path.ContainsKey(prohlizec))
-            {
-                return path[prohlizec];
-            }
+            if (path.ContainsKey(prohlizec)) return path[prohlizec];
 
-            string b = string.Empty;
+            var b = string.Empty;
 
             switch (prohlizec)
             {
@@ -205,35 +181,27 @@ public class PHWin
                     break;
                 case Browsers.Firefox: //2
                     b = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
-                    if (!File.Exists(b))
-                    {
-                        b = @"C:\Program Files\Mozilla Firefox\firefox.exe";
-                    }
+                    if (!File.Exists(b)) b = @"C:\Program Files\Mozilla Firefox\firefox.exe";
                     NullIfNotExists(ref b);
                     break;
                 case Browsers.EdgeBeta: //3
 
                     //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
-                    b = @"C:\Program Files (x86)\Microsoft\Edge Beta\Application\msedge.exe";//WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge beta\application", "msedge.exe");
+                    b = @"C:\Program Files (x86)\Microsoft\Edge Beta\Application\msedge.exe"; //WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge beta\application", "msedge.exe");
 
 
                     break;
-                case Browsers.Opera://4
+                case Browsers.Opera: //4
                     // Opera has version also when is installing to PF, it cant be changed
                     //b = @"C:\Program Files\Opera\65.0.3467.78\opera.exe";
                     b = WindowsOSHelper.FileIn(@"C:\Program Files\Opera\", "opera.exe");
                     if (!File.Exists(b))
-                    {
                         b = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera", "opera.exe");
-                    }
                     NullIfNotExists(ref b);
                     break;
-                case Browsers.Vivaldi://5
+                case Browsers.Vivaldi: //5
                     b = @"C:\Program Files\Vivaldi\Application\vivaldi.exe";
-                    if (!File.Exists(b))
-                    {
-                        b = WindowsOSHelper.FileIn(UserFoldersWin.Local, "Vivaldi", "vivaldi.exe");
-                    }
+                    if (!File.Exists(b)) b = WindowsOSHelper.FileIn(UserFoldersWin.Local, "Vivaldi", "vivaldi.exe");
                     NullIfNotExists(ref b);
                     break;
                 //case Browsers.InternetExplorer:
@@ -247,12 +215,14 @@ public class PHWin
                 //    }
                 //    NullIfNotExists(ref b);
                 //    break;
-                case Browsers.Iridium: //6
-                    b = @"C:\Program Files\Iridium\iridium.exe";
+                case Browsers.Slimjet: //6
+                    //b = @"C:\Program Files\Iridium\iridium.exe";
+                    b = @"C:\Program Files\Slimjet\slimjet.exe";
                     NullIfNotExists(ref b);
                     break;
-                case Browsers.Falkon: //7
-                    b = @"C:\Program Files\Falkon\falkon.exe";
+                case Browsers.WaterFox: //7
+                    //b = @"C:\Program Files\Falkon\falkon.exe";
+                    b = @"C:\Program Files\Waterfox\waterfox.exe";
                     NullIfNotExists(ref b);
                     break;
                 case Browsers.OperaGX: //8
@@ -304,16 +274,22 @@ public class PHWin
                     NullIfNotExists(ref b);
                     break;
 
-                case Browsers.EdgeStable://254
+                case Browsers.EdgeStable: //254
                     // tady se to skutečně jmenuje MicrosoftEdge.exe
                     b = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
 
                     if (!File.Exists(b))
-                    {
                         //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
                         b = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+                    NullIfNotExists(ref b);
+                    break;
 
-                    }
+                case Browsers.Basilisk:
+                    b = @"C:\Program Files\Basilisk\basilisk.exe";
+                    NullIfNotExists(ref b);
+                    break;
+                case Browsers.NawerWhale:
+                    b = @"C:\Program Files\Naver\Naver Whale\Application\whale.exe";
                     NullIfNotExists(ref b);
                     break;
                 default:
@@ -321,36 +297,29 @@ public class PHWin
                     break;
             }
 
-            if (b == null)
-            {
-                b = string.Empty;
-            }
+            if (b == null) b = string.Empty;
 
             path.Add(prohlizec, b);
 
             return b;
         }
+
         return path[prohlizec];
     }
 
 
-
     private static void NullIfNotExists(ref string b)
     {
-        if (!File.Exists(b))
-        {
-            b = null;
-        }
+        if (!File.Exists(b)) b = null;
     }
 
     /// <summary>
-    /// A1 is chrome replacement
+    ///     A1 is chrome replacement
     /// </summary>
     /// <param name="array"></param>
     /// <param name="what"></param>
     public static void SearchInAll(IList array, string what)
     {
-
         ThrowEx.NotImplementedMethod();
         ////var br = Browsers.Chrome;
         //PHWin.AddBrowser();
@@ -372,27 +341,6 @@ public class PHWin
         //UriWebServices.AssignSearchInAll(PHWin.SearchInAll);
     }
 
-    #region Interop
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #endregion
-
     private static string AddPathIfNotContains(UserFoldersWin local, string v, string codeExe)
     {
         if (!pathExe.ContainsKey(codeExe))
@@ -403,23 +351,22 @@ public class PHWin
 
             return fi;
         }
+
         return pathExe[codeExe];
     }
-
-    public static Editor preferredEditor = Editor.Code;
 
     public static async Task PreferredEditor(string f)
     {
         switch (preferredEditor)
         {
             case Editor.Code:
-                await PHWin.Code(f);
+                await Code(f);
                 break;
             case Editor.Codium:
-                await PHWin.Codium(f);
+                await Codium(f);
                 break;
             case Editor.CodeInsider:
-                await PHWin.CodeInsider(f);
+                await CodeInsider(f);
                 break;
             default:
                 ThrowEx.NotImplementedCase(preferredEditor);
@@ -435,23 +382,25 @@ public class PHWin
     /// <returns></returns>
     public static List<string> BrowsersWhichDontHaveExeInDefinedPath()
     {
-        List<string> doesntExists = new List<string>();
+        var doesntExists = new List<string>();
 
         AddBrowsers();
         foreach (var item in path)
-        {
             if (!File.Exists(item.Value))
-            {
                 doesntExists.Add(item.Value);
-            }
-        }
 
         return doesntExists;
     }
 
-
-
-
+    public static void ExecutableOfAllBrowsers()
+    {
+        PHWin.AddBrowsers();
+        Console.WriteLine("Pokud je empty, exe neexistuje na disku! A vice versa!");
+        foreach (var item in PHWin.path)
+        {
+            Console.WriteLine(item.Key + ": " + SH.NullToStringOrDefault(item.Value));
+        }
+    }
 
     public static void OpenInAllBrowsers(string uri)
     {
@@ -462,16 +411,11 @@ public class PHWin
     {
         AddBrowsers();
         foreach (var uri in uris)
-        {
             foreach (var item in path)
             {
-                if (item.Key == Browsers.Tor)
-                {
-                    continue;
-                }
+                if (item.Key == Browsers.Tor) continue;
                 OpenInBrowser(item.Key, uri, 50);
             }
-        }
     }
 
     public static void OpenFolder(string folder)
@@ -480,10 +424,9 @@ public class PHWin
     }
 
 
-
     public static void SaveAndOpenInBrowser(Browsers prohlizec, string htmlKod)
     {
-        string s = Path.GetTempFileName() + ".html";
+        var s = Path.GetTempFileName() + ".html";
         File.WriteAllText(s, htmlKod);
         OpenInBrowser(prohlizec, s, 50);
     }
@@ -492,4 +435,8 @@ public class PHWin
     {
         return FileUtil.WhoIsLocking(fullPath).Count > 0;
     }
+
+    #region Interop
+
+    #endregion
 }

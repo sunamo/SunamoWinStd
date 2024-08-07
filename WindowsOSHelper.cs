@@ -1,7 +1,11 @@
+
 namespace SunamoWinStd;
+using System.Security.Principal;
 
 public class WindowsOSHelper
 {
+    private static Type type = typeof(WindowsOSHelper);
+
     public static string FileIn(UserFoldersWin local, string appName, string exe)
     {
         var folder = Path.Combine(PathOfAppDataFolder(local), appName);
@@ -17,13 +21,14 @@ public class WindowsOSHelper
 
             return Directory.GetFiles(folder, masc, SearchOption.AllDirectories).FirstOrDefault();
         }
+
         return string.Empty;
     }
 
     /// <summary>
-    /// All
+    ///     All
     /// </summary>
-    /// <param name = "af"></param>
+    /// <param name="af"></param>
     public static string PathOfAppDataFolder(UserFoldersWin af)
     {
         var user = ActualWindowsUserName();
@@ -34,9 +39,7 @@ public class WindowsOSHelper
     public static string ActualWindowsUserName()
     {
         // return ed\w
-        var un = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        var un = WindowsIdentity.GetCurrent().Name;
         return un.Substring(un.IndexOf(@"\"));
     }
-
-    static Type type = typeof(WindowsOSHelper);
 }

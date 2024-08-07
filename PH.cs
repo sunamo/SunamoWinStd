@@ -1,14 +1,13 @@
-
 namespace SunamoWinStd;
+
 public partial class PH
 {
-    static Type type = typeof(PH);
-
+    private static Type type = typeof(PH);
 
 
     /// <summary>
-    /// https://stackoverflow.com/a/12393522
-    /// Return SE or output if everything gone good
+    ///     https://stackoverflow.com/a/12393522
+    ///     Return SE or output if everything gone good
     /// </summary>
     /// <param name="exe"></param>
     /// <param name="arguments"></param>
@@ -30,13 +29,11 @@ public partial class PH
 
         if (!string.IsNullOrWhiteSpace(exePath))
         {
-            if (withOutput)
-            {
-                return RunWithOutput(exe, arguments);
-            }
+            if (withOutput) return RunWithOutput(exe, arguments);
             Process.Start(exe, arguments);
             return string.Empty;
         }
+
         throw new Exception(exe + "is not in the path!");
         return null;
     }
@@ -49,7 +46,7 @@ public partial class PH
     }
 
     /// <summary>
-    /// Executes command
+    ///     Executes command
     /// </summary>
     /// <param name="cmd">command to be executed</param>
     /// <param name="output">output which application produced</param>
@@ -92,9 +89,9 @@ public partial class PH
 
         // Executing long lasting operation in batch file will hang the process, as it will wait standard output / error pipes to be processed.
         // We process these pipes here asynchronously.
-        StringBuilder so = new StringBuilder();
+        var so = new StringBuilder();
         process.OutputDataReceived += (sender, args) => { so.AppendLine(args.Data); };
-        StringBuilder se = new StringBuilder();
+        var se = new StringBuilder();
         process.ErrorDataReceived += (sender, args) => { se.AppendLine(args.Data); };
 
         process.StartInfo = processInfo;
@@ -104,24 +101,24 @@ public partial class PH
         process.BeginErrorReadLine();
 
 
-
         process.WaitForExit();
 
         output = so.ToString();
-        string error = se.ToString();
+        var error = se.ToString();
 
         if (transferEnvVars)
         {
-            Regex r = new Regex("--VARS--(.*)", RegexOptions.Singleline);
+            var r = new Regex("--VARS--(.*)", RegexOptions.Singleline);
             var m = r.Match(output);
             if (m.Success)
             {
                 output = r.Replace(output, "");
 
-                foreach (Match m2 in new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(m.Groups[1].ToString()))
+                foreach (Match m2 in
+                         new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(m.Groups[1].ToString()))
                 {
-                    string key = m2.Groups[1].Value;
-                    string value = m2.Groups[2].Value;
+                    var key = m2.Groups[1].Value;
+                    var value = m2.Groups[2].Value;
                     Environment.SetEnvironmentVariable(key, value);
                 }
             }
@@ -129,7 +126,7 @@ public partial class PH
 
         if (error.Length != 0)
             output += error;
-        int exitCode = process.ExitCode;
+        var exitCode = process.ExitCode;
 
         if (exitCode != 0)
             Console.WriteLine("Error: " + output + Consts.rn + error);
@@ -141,7 +138,7 @@ public partial class PH
     }
 
     /// <summary>
-    /// Exe must be in path
+    ///     Exe must be in path
     /// </summary>
     /// <param name="p"></param>
     public static void Start(string p)
@@ -170,14 +167,12 @@ public partial class PH
     }
 
 
-
-
     public static void StartHidden(string p, string k)
     {
         try
         {
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo();
+            var process = new Process();
+            var startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.WorkingDirectory = k;
             startInfo.FileName = "cmd.exe";
@@ -192,7 +187,6 @@ public partial class PH
     }
 
 
-
     public static void Uri(string v)
     {
         v = NormalizeUri(v);
@@ -200,14 +194,8 @@ public partial class PH
         //Must UrlDecode for https://mapy.cz/?q=Antala+Sta%c5%a1ka+1087%2f3%2c+Hav%c3%ad%c5%99ov&sourceid=Searchmodule_1
         // to fulfillment RFC 3986 and RFC 3987 https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring?view=netframework-4.8
         v = WebUtility.UrlDecode(v);
-        if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute))
-        {
-            Process.Start(v);
-        }
-        else
-        {
-            //////////DebugLogger.Instance.WriteLine("Wasnt in right format: " + v);
-        }
+        if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute)) Process.Start(v);
+        //////////DebugLogger.Instance.WriteLine("Wasnt in right format: " + v);
     }
 
     public static string NormalizeUri(string v)
@@ -225,16 +213,13 @@ public partial class PH
         }
         catch (Exception ex)
         {
-            if (!ex.Message.Contains("Access is denied"))
-            {
-                ThrowEx.CustomWithStackTrace(ex);
-            }
+            if (!ex.Message.Contains("Access is denied")) ThrowEx.CustomWithStackTrace(ex);
         }
     }
 
     public static int Terminate(string name)
     {
-        int deleted = 0;
+        var deleted = 0;
 
         foreach (var process in Process.GetProcessesByName(name))
         {
@@ -262,14 +247,13 @@ public partial class PH
     }
 
     /// <summary>
-    /// Exe must be in path
-    /// 
+    ///     Exe must be in path
     /// </summary>
     /// <param name="exe"></param>
     /// <param name="fileWithoutQm"></param>
     public static void RunFromPath3(string exe, string fileWithoutQm)
     {
-        ProcessStartInfo pi = new ProcessStartInfo();
+        var pi = new ProcessStartInfo();
         pi.FileName = exe;
         pi.Arguments = SH.WrapWithQm(fileWithoutQm);
         // To use env variables
@@ -286,17 +270,21 @@ public partial class PH
     /// <returns></returns>
     public static string RunFromPathBetter(string exe, string arguments)
     {
-        string enviromentPath = Environment.GetEnvironmentVariable("PATH");
-        string[] paths = enviromentPath.Split(';');
+        var enviromentPath = Environment.GetEnvironmentVariable("PATH");
+        var paths = enviromentPath.Split(';');
 
-        foreach (string thisPath in paths)
+        foreach (var thisPath in paths)
         {
-            string thisFile = Path.Combine(thisPath, exe);
-            string[] executableExtensions = new string[] { ".exe" }; // , ".com", ".bat", ".sh", ".vbs", ".vbscript", ".vbe", ".js", ".rb", ".cmd", ".cpl", ".ws", ".wsf", ".msc", ".gadget"
+            var thisFile = Path.Combine(thisPath, exe);
+            string[]
+                executableExtensions =
+                {
+                    ".exe"
+                }; // , ".com", ".bat", ".sh", ".vbs", ".vbscript", ".vbe", ".js", ".rb", ".cmd", ".cpl", ".ws", ".wsf", ".msc", ".gadget"
 
-            foreach (string extension in executableExtensions)
+            foreach (var extension in executableExtensions)
             {
-                string fullFile = thisFile + extension;
+                var fullFile = thisFile + extension;
 
                 try
                 {
@@ -313,9 +301,9 @@ public partial class PH
             }
         }
 
-        foreach (string thisPath in paths)
+        foreach (var thisPath in paths)
         {
-            string thisFile = Path.Combine(thisPath, exe);
+            var thisFile = Path.Combine(thisPath, exe);
 
             try
             {
@@ -358,14 +346,16 @@ public partial class PH
             if (File.Exists(fullPath))
                 return fullPath;
         }
+
         return null;
     }
 
 
     public static List<string> ProcessesWithNameContains(string name)
     {
-        List<string> processes = PH.GetProcessesNames(true);
-        var s = processes.Where(d => d.Contains(name.ToLower())).ToList(); //CA.ReturnWhichContains(processes, name.ToLower());
+        var processes = GetProcessesNames(true);
+        var s = processes.Where(d => d.Contains(name.ToLower()))
+            .ToList(); //CA.ReturnWhichContains(processes, name.ToLower());
         return s;
     }
 
@@ -373,16 +363,13 @@ public partial class PH
     {
         var s = ProcessesWithNameContains(name);
 
-        int ended = 0;
-        foreach (var item in s)
-        {
-            ended += PH.Terminate(item);
-        }
+        var ended = 0;
+        foreach (var item in s) ended += Terminate(item);
         return ended;
     }
 
     /// <summary>
-    /// without extensions and all lower
+    ///     without extensions and all lower
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
@@ -390,45 +377,41 @@ public partial class PH
     {
         name = name.ToLower();
         name = Path.GetFileNameWithoutExtension(name);
-        List<string> processes = PH.GetProcessesNames(true);
+        var processes = GetProcessesNames(true);
 
-        int ended = 0;
+        var ended = 0;
 
-        if (processes.Contains(name))
-        {
-            ended += PH.Terminate(name);
-        }
+        if (processes.Contains(name)) ended += Terminate(name);
 
 
         return ended;
     }
 
     #region
+
     /// <summary>
-    /// Alternative is FileUtil.WhoIsLocking
+    ///     Alternative is FileUtil.WhoIsLocking
     /// </summary>
     /// <param name="fileName"></param>
     public static void ShutdownProcessWhichOccupyFileHandleExe(string fileName)
     {
         var pr2 = FindProcessesWhichOccupyFileHandleExe(fileName);
-        foreach (var pr in pr2)
-        {
-            KillProcess(pr);
-        }
+        foreach (var pr in pr2) KillProcess(pr);
     }
+
     #endregion
 
     /// <summary>
-    /// Alternative is FileUtil.WhoIsLocking
-    /// A2 must be even is not used
+    ///     Alternative is FileUtil.WhoIsLocking
+    ///     A2 must be even is not used
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
     public static List<Process> FindProcessesWhichOccupyFileHandleExe(string fileName, bool throwEx = true)
     {
-        List<Process> pr2 = new List<Process>();
+        var pr2 = new List<Process>();
 
-        Process tool = new Process();
+        var tool = new Process();
         tool.StartInfo.FileName = "handle64.exe";
         tool.StartInfo.Arguments = fileName + " /accepteula";
         tool.StartInfo.UseShellExecute = false;
@@ -441,7 +424,6 @@ public partial class PH
         }
         catch (Win32Exception ex)
         {
-
         }
 
         tool.WaitForExit();
@@ -453,7 +435,6 @@ public partial class PH
         }
         catch (Exception ex)
         {
-
             if (ex.Message.Contains("NoProcessIsAssociatedWithThisObject"))
             {
                 ThisApp.Warning("PleaseAddHandle64ExeToPATH");
@@ -461,7 +442,7 @@ public partial class PH
             }
         }
 
-        string matchPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";
+        var matchPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";
         var matches = Regex.Matches(outputTool, matchPattern);
         foreach (Match match in matches)
         {
@@ -473,43 +454,32 @@ public partial class PH
     }
 
 
-
-
     public static void StartAllUri(List<string> all)
     {
-        foreach (var item in all)
-        {
-            Uri(UH.AppendHttpIfNotExists(item));
-        }
+        foreach (var item in all) Uri(UH.AppendHttpIfNotExists(item));
     }
 
     public static List<string> GetProcessesNames(bool lower)
     {
         var p = Process.GetProcesses().Select(d => d.ProcessName).ToList();
-        if (lower)
-        {
-            CA.ToLower(p);
-        }
+        if (lower) CA.ToLower(p);
 
         return p;
     }
 
     /// <summary>
-    /// For search one term in all uris use UriWebServices.SearchInAll
+    ///     For search one term in all uris use UriWebServices.SearchInAll
     /// </summary>
-    /// <param name = "carModels"></param>
-    /// <param name = "v"></param>
+    /// <param name="carModels"></param>
+    /// <param name="v"></param>
     public static void StartAllUri(List<string> carModels, string v)
     {
-
-        for (int i = 0; i < carModels.Count; i++)
-        {
+        for (var i = 0; i < carModels.Count; i++)
             if (i % 10 == 0 && i != 0)
             {
                 //System.Diagnostics.Debugger.Break();
             }
-            //PHWin.OpenInBrowser(UH.AppendHttpIfNotExists(UriWebServices.FromChromeReplacement(v, carModels[i])));
-        }
+        //PHWin.OpenInBrowser(UH.AppendHttpIfNotExists(UriWebServices.FromChromeReplacement(v, carModels[i])));
     }
 
     public static void StartAllUri(List<string> carModels, Func<string, string> spritMonitor)
@@ -520,11 +490,8 @@ public partial class PH
     }
 
 
-
-
-
     /// <summary>
-    /// Start all uri in clipboard, splitted by whitespace
+    ///     Start all uri in clipboard, splitted by whitespace
     /// </summary>
     public static void StartAllUri(string text)
     {
