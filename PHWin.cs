@@ -292,6 +292,15 @@ public class PHWin
                     b = @"C:\Program Files\Naver\Naver Whale\Application\whale.exe";
                     NullIfNotExists(ref b);
                     break;
+                case Browsers.KMeleon:
+                    b = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
+                    NullIfNotExists(ref b);
+                    break;
+                case Browsers.PaleMoon:
+                    b = @"C:\Program Files\Pale Moon\palemoon.exe";
+                    NullIfNotExists(ref b);
+                    break;
+
                 default:
                     ThrowEx.NotImplementedCase(prohlizec);
                     break;

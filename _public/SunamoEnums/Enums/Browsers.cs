@@ -36,6 +36,8 @@ public enum Browsers : byte
 
     Basilisk = 18,
     NawerWhale = 19,
+    KMeleon = 20,
+    PaleMoon = 21,
 
 
     EdgeStable = 254,
