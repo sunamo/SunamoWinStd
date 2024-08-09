@@ -38,5 +38,5 @@ global using SunamoWinStd;
 global using SunamoWinStd.Helpers;
 global using SunamoWinStd._sunamo.SunamoStringParts;
 global using SunamoWinStd._sunamo.SunamoStringTrim;
-global using SunamoWinStd._sunamo.SunamoXlfKeys;
+
 global using SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
