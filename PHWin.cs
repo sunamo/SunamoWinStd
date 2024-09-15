@@ -324,28 +324,9 @@ public class PHWin
         if (!File.Exists(b)) b = null;
     }
 
-    /// <summary>
-    ///     A1 is chrome replacement
-    /// </summary>
-    /// <param name="array"></param>
-    /// <param name="what"></param>
-    public static void SearchInAll(IList array, string what)
-    {
-        ThrowEx.NotImplementedMethod();
-        ////var br = Browsers.Chrome;
-        //PHWin.AddBrowser();
-        //foreach (var item in array)
-        //{
-        //    opened++;
-        //    string uri = UriWebServices.FromChromeReplacement(item.ToString(), what);
-        //    PHWin.OpenInBrowser(uri, true, 50);
-        //    if (opened % 10 == 0)
-        //    {
-        //        System.Diagnostics.Debugger.Break();
-        //    }
-        //}
-    }
 
+
+    [Obsolete("Toto již není třeba, vše musí být jen v jednom nugetu")]
     public static void AssignSearchInAll()
     {
         //AddBrowsers();
