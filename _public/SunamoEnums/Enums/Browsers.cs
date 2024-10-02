@@ -33,11 +33,14 @@ public enum Browsers : byte
     EdgeDev = 13,
     EdgeCanary = 14,
     ChromeDev = 15,
+    // 16 je chrome stable
 
+    Min = 17,
     Basilisk = 18,
     NawerWhale = 19,
     KMeleon = 20,
     PaleMoon = 21,
+    LibreWolf = 22,
 
 
     EdgeStable = 254,

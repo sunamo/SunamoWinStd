@@ -271,20 +271,18 @@ public class PHWin
                     NullIfNotExists(ref b);
 
                     break;
+                //15
                 case Browsers.ChromeDev:
                     b = @"C:\Program Files\Google\Chrome Dev\Application\chrome.exe";
                     NullIfNotExists(ref b);
                     break;
 
-                case Browsers.EdgeStable: //254
-                    // tady se to skutečně jmenuje MicrosoftEdge.exe
-                    b = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
-
-                    if (!File.Exists(b))
-                        //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
-                        b = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+                case Browsers.Min:
+                    b = @"C:\Users\r\AppData\Local\min\min.exe";
                     NullIfNotExists(ref b);
                     break;
+
+
 
                 case Browsers.Basilisk:
                     b = @"C:\Program Files\Basilisk\basilisk.exe";
@@ -300,6 +298,22 @@ public class PHWin
                     break;
                 case Browsers.PaleMoon:
                     b = @"C:\Program Files\Pale Moon\palemoon.exe";
+                    NullIfNotExists(ref b);
+                    break;
+
+                case Browsers.LibreWolf:
+                    b = @"C:\Program Files\LibreWolf\librewolf.exe";
+                    NullIfNotExists(ref b);
+                    break;
+
+
+                case Browsers.EdgeStable: //254
+                    // tady se to skutečně jmenuje MicrosoftEdge.exe
+                    b = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
+
+                    if (!File.Exists(b))
+                        //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
+                        b = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
                     NullIfNotExists(ref b);
                     break;
 
