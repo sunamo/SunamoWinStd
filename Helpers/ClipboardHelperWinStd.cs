@@ -1,4 +1,3 @@
-
 namespace SunamoWinStd.Helpers;
 using TextCopy;
 

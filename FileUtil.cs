@@ -1,4 +1,3 @@
-
 namespace SunamoWinStd;
 using System.Runtime.InteropServices.ComTypes;
 

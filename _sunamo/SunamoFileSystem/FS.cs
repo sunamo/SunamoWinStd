@@ -26,7 +26,7 @@ internal class FS
     internal static void CreateFoldersPsysicallyUnlessThere(string nad)
     {
         ThrowEx.IsNullOrEmpty("nad", nad);
-        ThrowEx.IsNotWindowsPathFormat("nad", nad);
+        //ThrowEx.IsNotWindowsPathFormat("nad", nad);
 
 
         if (Directory.Exists(nad))
