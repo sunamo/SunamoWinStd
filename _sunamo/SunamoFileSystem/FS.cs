@@ -104,7 +104,7 @@ internal class FS
     internal static string AddExtensionIfDontHave(string file, string ext)
     {
         // For *.* and git paths {dir}/*
-        if (file[file.Length - 1] == AllChars.asterisk)
+        if (file[file.Length - 1] == '*')
         {
             return file;
         }
@@ -128,7 +128,7 @@ internal class FS
     {
         if (v != string.Empty)
         {
-            v = v.TrimEnd(AllChars.bs) + AllChars.bs;
+            v = v.TrimEnd('\\') + '\\';
         }
 
         SH.FirstCharUpper(ref v);
@@ -146,11 +146,11 @@ internal class FS
         string result = null;
         if (slash)
         {
-            result = path.Replace(AllStrings.bs, AllStrings.slash); //SHReplace.ReplaceAll2(path, AllStrings.slash, AllStrings.bs);
+            result = path.Replace("\"", "/"); //SHReplace.ReplaceAll2(path, "/", "\"");
         }
         else
         {
-            result = path.Replace(AllStrings.slash, AllStrings.bs); //SHReplace.ReplaceAll2(path, AllStrings.bs, AllStrings.slash);
+            result = path.Replace("/", "\""); //SHReplace.ReplaceAll2(path, "\"", "/");
         }
 
         SH.FirstCharUpper(ref result);

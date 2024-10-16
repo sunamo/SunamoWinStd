@@ -77,7 +77,7 @@ public static class JunctionPoint
     {
         if (!File.Exists(target)) ThrowEx.DirectoryExists(target);
 
-        var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
 
         return command;
     }
@@ -86,12 +86,12 @@ public static class JunctionPoint
     {
         var dict = new Dictionary<string, string>();
 
-        var folders = Directory.GetDirectories(folderFrom, AllStrings.asterisk);
+        var folders = Directory.GetDirectories(folderFrom, "*");
         foreach (var item in folders)
         {
             var target = GetTarget(item);
-            if (target == null) target = Consts.nulled;
-            if (target != Consts.nulled) dict.Add(item, target);
+            if (target == null) target = "(null)";
+            if (target != "(null)") dict.Add(item, target);
         }
 
         return dict;
@@ -116,7 +116,7 @@ public static class JunctionPoint
             ThrowEx.DirectoryExists(target);
         }
 
-        var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
 
 
         return command;
@@ -137,7 +137,7 @@ public static class JunctionPoint
     {
         if (!Directory.Exists(target)) ThrowEx.DirectoryExists(target);
 
-        var command = "cmd /c mklink /D " + SH.WrapWithQm(source) + AllStrings.space + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /D " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
 
         return command;
     }

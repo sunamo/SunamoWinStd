@@ -107,7 +107,7 @@ public class PHWin
     /// <param name="s"></param>
     /// <param name="waitMs"></param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = Consts.waitMsOpenInBrowser,
+    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = 0,
         bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
         if (forceAttemptHttps) s = UH.AppendHttpsIfNotExists(s);
@@ -157,7 +157,7 @@ public class PHWin
     /// <param name="throwExIsNotValidUrl"></param>
     /// <param name="waitMs"></param>
     public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl = false,
-        int waitMs = Consts.waitMsOpenInBrowser)
+        int waitMs = 0)
     {
         OpenInBrowser(defBr, uri, waitMs);
     }

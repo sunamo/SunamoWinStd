@@ -21,7 +21,7 @@ internal class SH
 
     internal static string WrapWithQm(string commitMessage, bool alsoIfIsWhitespaceOrEmpty = true)
     {
-        return WrapWithChar(commitMessage, AllChars.qm, alsoIfIsWhitespaceOrEmpty);
+        return WrapWithChar(commitMessage, '"', alsoIfIsWhitespaceOrEmpty);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -109,7 +109,7 @@ internal class SH
     internal static string NullToStringOrDefault(object n)
     {
         
-        return n == null ? " " + Consts.nulled : AllStrings.space + n;
+        return n == null ? " " + "(null)" : "" + n;
     }
     internal static string TrimEnd(string name, string ext)
     {

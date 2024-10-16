@@ -129,7 +129,7 @@ public partial class PH
         var exitCode = process.ExitCode;
 
         if (exitCode != 0)
-            Console.WriteLine("Error: " + output + Consts.rn + error);
+            Console.WriteLine("Error: " + output + "\r\n" + error);
 
         process.Close();
         //return exitCode == 0;
@@ -157,7 +157,7 @@ public partial class PH
     {
         try
         {
-            var arg = "/c " + exe + AllStrings.space + args;
+            var arg = "/c " + exe + "" + args;
             Process.Start("cmd.exe", arg);
         }
         catch (Exception ex)
@@ -201,7 +201,7 @@ public partial class PH
     public static string NormalizeUri(string v)
     {
         // Without this cant search for google apps
-        v = SHReplace.ReplaceAll(v, "%22", AllStrings.qm);
+        v = SHReplace.ReplaceAll(v, "%22", "\"");
         return v;
     }
 
@@ -260,7 +260,7 @@ public partial class PH
         pi.UseShellExecute = true;
         Process.Start(pi);
 
-        //var cmd = exe + AllStrings.space + SH.WrapWithQm(fileWithoutQm);
+        //var cmd = exe + "" + SH.WrapWithQm(fileWithoutQm);
         //Process.Start(@"C:\Windows\System32\cmd.exe", "/c " + cmd);
         //PH.ExecCmd(cmd);
     }
