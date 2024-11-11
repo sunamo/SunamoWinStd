@@ -157,7 +157,7 @@ public partial class PH
     {
         try
         {
-            var arg = "/c " + exe + "" + args;
+            var arg = "/c " + exe + " " + args;
             Process.Start("cmd.exe", arg);
         }
         catch (Exception ex)

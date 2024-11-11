@@ -77,7 +77,7 @@ public static class JunctionPoint
     {
         if (!File.Exists(target)) ThrowEx.DirectoryExists(target);
 
-        var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
 
         return command;
     }
@@ -116,7 +116,7 @@ public static class JunctionPoint
             ThrowEx.DirectoryExists(target);
         }
 
-        var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
 
 
         return command;
@@ -137,7 +137,7 @@ public static class JunctionPoint
     {
         if (!Directory.Exists(target)) ThrowEx.DirectoryExists(target);
 
-        var command = "cmd /c mklink /D " + SH.WrapWithQm(source) + "" + SH.WrapWithQm(target);
+        var command = "cmd /c mklink /D " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
 
         return command;
     }
