@@ -9,8 +9,6 @@ public partial class PH
     ///     https://stackoverflow.com/a/12393522
     ///     Return SE or output if everything gone good
     /// </summary>
-    /// <param name="exe"></param>
-    /// <param name="arguments"></param>
     public static string RunFromPath(string exe, string arguments, bool withOutput)
     {
         var enviromentPath = Environment.GetEnvironmentVariable("PATH");
@@ -34,7 +32,7 @@ public partial class PH
             return string.Empty;
         }
 
-        throw new Exception(exe + "is not in the path!");
+        throw new Exception(exe + " is not in the path!");
         return null;
     }
 
@@ -195,7 +193,6 @@ public partial class PH
         // to fulfillment RFC 3986 and RFC 3987 https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring?view=netframework-4.8
         v = WebUtility.UrlDecode(v);
         if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute)) Process.Start(v);
-        //////////DebugLogger.Instance.WriteLine("Wasnt in right format: " + v);
     }
 
     public static string NormalizeUri(string v)
@@ -230,21 +227,19 @@ public partial class PH
         return deleted;
     }
 
-    public static string RunFromPath2(string exe, string arguments)
-    {
-        // Commented due to 'StringDictionary' does not contain a definition for 'Replace'
+    //public static string RunFromPath2(string exe, string arguments)
+    //{
+    //    // Commented due to 'StringDictionary' does not contain a definition for 'Replace'
 
-        //ProcessStartInfo psi = new ProcessStartInfo(exe);
-        //psi.Arguments = arguments;
-        //StringDictionary dictionary = psi.EnvironmentVariables;
+    //    ProcessStartInfo psi = new ProcessStartInfo(exe);
+    //    psi.Arguments = arguments;
+    //    var dictionary = psi.EnvironmentVariables;
 
-        //// Manipulate dictionary...\
+    //    // Manipulate dictionary...\
 
-        //psi.EnvironmentVariables["PATH"] = dictionary.Replace(@"\\", @"\");
-        //return RunWithOutput(exe, arguments);
-
-        return null;
-    }
+    //    psi.EnvironmentVariables["PATH"] = dictionary.Replace(@"\\", @"\");
+    //    return RunWithOutput(exe, arguments);
+    //}
 
     /// <summary>
     ///     Exe must be in path

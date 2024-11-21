@@ -76,6 +76,10 @@ public class PHWin
     }
 
 
+    public static void OpenFolderInTotalcmd(string folder)
+    {
+        PH.RunFromPath("totalcmd.exe", "/O /T " + folder, false);
+    }
 
     public static async Task WebStorm64(string defFile)
     {
