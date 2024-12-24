@@ -14,7 +14,7 @@ internal class FS
         }
         catch
         {
-            //ThisApp.Error(sess.i18n(XlfKeys.FileCanTBeDeleted) + ": " + item);
+            //ThisApp.Error(Translate.FromKey(XlfKeys.FileCanTBeDeleted) + ": " + item);
             return false;
         }
     }

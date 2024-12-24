@@ -336,7 +336,7 @@ public static class JunctionPoint
         //{
         //    string target = InternalGetTarget(handle);
         //    if (target == null)
-        //        throw new Exception(sess.i18n(XlfKeys.PathIsNotAJunctionPoint)+".");
+        //        throw new Exception(Translate.FromKey(XlfKeys.PathIsNotAJunctionPoint)+".");
 
         //    return target;
         //}
