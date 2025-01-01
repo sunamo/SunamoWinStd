@@ -11,12 +11,14 @@ public partial class PH
     /// </summary>
     public static string RunFromPath(string exe, string arguments, bool withOutput)
     {
+        PHWin.BreakIfTen();
+
         var enviromentPath = Environment.GetEnvironmentVariable("PATH");
 
         var paths = enviromentPath.Split(';'); // SHSplit.SplitCharMore(enviromentPath, ';');
 
 #if DEBUG
-        var wc = paths.Where(d => d.Contains("Code"));
+        var wc = paths.Where(d => d.Contains("Microsoft VS Code Insiders"));
         paths.Reverse();
 #endif
         var paths2 = paths.Select(x => Path.Combine(x, exe));

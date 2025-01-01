@@ -33,10 +33,8 @@ public class PHWin
         //countOfBrowsers--;
     }
 
-    public static async Task Codium(string defFile)
+    public static void Codium(string defFile)
     {
-        await BreakIfTenIde();
-
         if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
 
         PH.RunFromPath(CodiumExe, defFile, false);
@@ -60,13 +58,11 @@ public class PHWin
         //        await
         //#endif
         //ThreadHelper.Sleep(1500);
-        await Task.Delay(1500);
+        //await Task.Delay(1500);
     }
 
-    public static async Task Code(string defFile)
+    public static void Code(string defFile)
     {
-        await BreakIfTenIde();
-
         if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
         //ThrowEx.FileDoesntExists(defFile);
 
@@ -81,14 +77,13 @@ public class PHWin
         PH.RunFromPath("totalcmd.exe", "/O /T " + folder, false);
     }
 
-    public static async Task WebStorm64(string defFile)
+    public static void WebStorm64(string defFile)
     {
         PH.RunFromPath(WebStorm64Exe, defFile, false);
     }
 
-    public static async Task CodeInsider(string defFile)
+    public static void CodeInsider(string defFile)
     {
-        await BreakIfTenIde();
         PH.RunFromPath(CodeInsiderExe, defFile, false);
     }
 
@@ -145,7 +140,7 @@ public class PHWin
         if (waitMs > 0) Thread.Sleep(waitMs);
     }
 
-    private static void BreakIfTen()
+    internal static void BreakIfTen()
     {
         opened++;
         if (opened % 10 == 0)
@@ -365,18 +360,18 @@ public class PHWin
         return pathExe[codeExe];
     }
 
-    public static async Task PreferredEditor(string f)
+    public static void PreferredEditor(string f)
     {
         switch (preferredEditor)
         {
             case Editor.Code:
-                await Code(f);
+                Code(f);
                 break;
             case Editor.Codium:
-                await Codium(f);
+                Codium(f);
                 break;
             case Editor.CodeInsider:
-                await CodeInsider(f);
+                CodeInsider(f);
                 break;
             default:
                 ThrowEx.NotImplementedCase(preferredEditor);
