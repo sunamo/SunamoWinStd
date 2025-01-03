@@ -1,5 +1,7 @@
 namespace SunamoWinStd;
 
+using Microsoft.Extensions.Logging;
+
 public partial class PH
 {
     private static Type type = typeof(PH);
@@ -9,7 +11,7 @@ public partial class PH
     ///     https://stackoverflow.com/a/12393522
     ///     Return SE or output if everything gone good
     /// </summary>
-    public static string RunFromPath(string exe, string arguments, bool withOutput)
+    public static string? RunFromPath(ILogger logger, string exe, string arguments, bool withOutput, bool throwExWhenError = false)
     {
         PHWin.BreakIfTen();
 
@@ -34,7 +36,12 @@ public partial class PH
             return string.Empty;
         }
 
-        throw new Exception(exe + " is not in the path!");
+        logger.LogError(exe + " is not in the path!");
+        if (throwExWhenError)
+        {
+            throw new Exception(exe + " is not in the path!");
+        }
+
         return null;
     }
 

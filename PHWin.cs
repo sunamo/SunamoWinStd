@@ -1,5 +1,7 @@
 namespace SunamoWinStd;
 
+using Microsoft.Extensions.Logging;
+
 public class PHWin
 {
     private const string CodiumExe = "VSCodium.exe";
@@ -33,11 +35,11 @@ public class PHWin
         //countOfBrowsers--;
     }
 
-    public static void Codium(string defFile)
+    public static void Codium(ILogger logger, string defFile, bool throwExWhenError = false)
     {
         if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
 
-        PH.RunFromPath(CodiumExe, defFile, false);
+        PH.RunFromPath(logger, CodiumExe, defFile, false, throwExWhenError);
     }
 
     private static
@@ -61,30 +63,30 @@ public class PHWin
         //await Task.Delay(1500);
     }
 
-    public static void Code(string defFile)
+    public static void Code(ILogger logger, string defFile, bool throwExWhenError = false)
     {
         if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
         //ThrowEx.FileDoesntExists(defFile);
 
         //var v = AddPathIfNotContains( UserFoldersWin.Local, @"Programs\Microsoft VS Code", CodeExe);
 
-        PH.RunFromPath(CodeExe, defFile, false);
+        PH.RunFromPath(logger, CodeExe, defFile, false, throwExWhenError);
     }
 
 
-    public static void OpenFolderInTotalcmd(string folder)
+    public static void OpenFolderInTotalcmd(ILogger logger, string folder, bool throwExWhenError = false)
     {
-        PH.RunFromPath("totalcmd.exe", "/O /T " + folder, false);
+        PH.RunFromPath(logger, "totalcmd.exe", "/O /T " + folder, false, throwExWhenError);
     }
 
-    public static void WebStorm64(string defFile)
+    public static void WebStorm64(ILogger logger, string defFile, bool throwExWhenError = false)
     {
-        PH.RunFromPath(WebStorm64Exe, defFile, false);
+        PH.RunFromPath(logger, WebStorm64Exe, defFile, false, throwExWhenError);
     }
 
-    public static void CodeInsider(string defFile)
+    public static void CodeInsider(ILogger logger, string defFile, bool throwExWhenError = false)
     {
-        PH.RunFromPath(CodeInsiderExe, defFile, false);
+        PH.RunFromPath(logger, CodeInsiderExe, defFile, false, throwExWhenError);
     }
 
     public static void AddBrowsers()
@@ -106,7 +108,7 @@ public class PHWin
     /// <param name="s"></param>
     /// <param name="waitMs"></param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(Browsers prohlizec, string s, int waitMs = 0,
+    public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string s, int waitMs = 0,
         bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
         if (forceAttemptHttps) s = UH.AppendHttpsIfNotExists(s);
@@ -119,9 +121,10 @@ public class PHWin
 
         if (!Uri.TryCreate(s, new UriCreationOptions(), out var _))
         {
+            logger.LogError($"Can't create uri from " + s);
             if (throwExIsNotValidUrl)
             {
-                //ThrowEx.UriFormat(s, UH.IsUri);
+                ThrowEx.Custom($"Can't create uri from " + s);
             }
 
             return;
@@ -155,10 +158,10 @@ public class PHWin
     /// <param name="uri"></param>
     /// <param name="throwExIsNotValidUrl"></param>
     /// <param name="waitMs"></param>
-    public static void OpenInBrowser(string uri, bool throwExIsNotValidUrl = false,
+    public static void OpenInBrowser(ILogger logger, string uri, bool throwExIsNotValidUrl = false,
         int waitMs = 0)
     {
-        OpenInBrowser(defBr, uri, waitMs);
+        OpenInBrowser(logger, defBr, uri, waitMs);
     }
 
     public static void AddBrowser()
@@ -360,18 +363,18 @@ public class PHWin
         return pathExe[codeExe];
     }
 
-    public static void PreferredEditor(string f)
+    public static void PreferredEditor(ILogger logger, string f, bool throwExWhenError = false)
     {
         switch (preferredEditor)
         {
             case Editor.Code:
-                Code(f);
+                Code(logger, f, throwExWhenError);
                 break;
             case Editor.Codium:
-                Codium(f);
+                Codium(logger, f, throwExWhenError);
                 break;
             case Editor.CodeInsider:
-                CodeInsider(f);
+                CodeInsider(logger, f, throwExWhenError);
                 break;
             default:
                 ThrowEx.NotImplementedCase(preferredEditor);
@@ -379,9 +382,9 @@ public class PHWin
         }
     }
 
-    public static void OpenInBrowserAutomaticallyCountOfOpened(Browsers prohlizec, string s, int waitMs = 0)
+    public static void OpenInBrowserAutomaticallyCountOfOpened(ILogger logger, Browsers prohlizec, string s, int waitMs = 0)
     {
-        OpenInBrowser(prohlizec, s, waitMs);
+        OpenInBrowser(logger, prohlizec, s, waitMs);
     }
 
     /// <returns></returns>
@@ -407,19 +410,19 @@ public class PHWin
         }
     }
 
-    public static void OpenInAllBrowsers(string uri)
+    public static void OpenInAllBrowsers(ILogger logger, string uri)
     {
-        OpenInAllBrowsers(new List<string>([uri]));
+        OpenInAllBrowsers(logger, new List<string>([uri]));
     }
 
-    public static void OpenInAllBrowsers(IList<string> uris)
+    public static void OpenInAllBrowsers(ILogger logger, IList<string> uris)
     {
         AddBrowsers();
         foreach (var uri in uris)
             foreach (var item in path)
             {
                 if (item.Key == Browsers.Tor) continue;
-                OpenInBrowser(item.Key, uri, 50);
+                OpenInBrowser(logger, item.Key, uri, 50);
             }
     }
 
@@ -429,11 +432,11 @@ public class PHWin
     }
 
 
-    public static void SaveAndOpenInBrowser(Browsers prohlizec, string htmlKod)
+    public static void SaveAndOpenInBrowser(ILogger logger, Browsers prohlizec, string htmlKod)
     {
         var s = Path.GetTempFileName() + ".html";
         File.WriteAllText(s, htmlKod);
-        OpenInBrowser(prohlizec, s, 50);
+        OpenInBrowser(logger, prohlizec, s, 50);
     }
 
     public static bool IsUsed(string fullPath)
