@@ -30,8 +30,9 @@ public class WindowsOSHelper
     /// <param name="af"></param>
     public static string PathOfAppDataFolder(UserFoldersWin af)
     {
+        
         var user = ActualWindowsUserName();
-        var result = Path.Combine(@"C:\Users\" + user, "AppData", af.ToString());
+        var result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", af.ToString());
         return result;
     }
 
