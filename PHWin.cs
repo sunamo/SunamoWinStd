@@ -2,7 +2,7 @@ namespace SunamoWinStd;
 
 using Microsoft.Extensions.Logging;
 
-public class PHWin
+public partial class PHWin
 {
     private const string CodiumExe = "VSCodium.exe";
     private const string CodeExe = "Code.exe";
@@ -35,12 +35,7 @@ public class PHWin
         //countOfBrowsers--;
     }
 
-    public static void Codium(ILogger logger, string defFile, bool throwExWhenError = false)
-    {
-        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
 
-        PH.RunFromPath(logger, CodiumExe, defFile, false, throwExWhenError);
-    }
 
     private static
 #if ASYNC
@@ -63,15 +58,7 @@ public class PHWin
         //await Task.Delay(1500);
     }
 
-    public static void Code(ILogger logger, string defFile, bool throwExWhenError = false)
-    {
-        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
-        //ThrowEx.FileDoesntExists(defFile);
 
-        //var v = AddPathIfNotContains( UserFoldersWin.Local, @"Programs\Microsoft VS Code", CodeExe);
-
-        PH.RunFromPath(logger, CodeExe, defFile, false, throwExWhenError);
-    }
 
 
     public static void OpenFolderInTotalcmd(ILogger logger, string folder, bool throwExWhenError = false)
@@ -84,10 +71,7 @@ public class PHWin
         PH.RunFromPath(logger, WebStorm64Exe, defFile, false, throwExWhenError);
     }
 
-    public static void CodeInsider(ILogger logger, string defFile, bool throwExWhenError = false)
-    {
-        PH.RunFromPath(logger, CodeInsiderExe, defFile, false, throwExWhenError);
-    }
+
 
     public static void AddBrowsers()
     {

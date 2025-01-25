@@ -503,4 +503,14 @@ public partial class PH
         var uris = SHSplit.SplitByWhiteSpaces(text);
         StartAllUri(uris);
     }
+
+    internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool throwExWhenError, int? openOnLine)
+    {
+        if (openOnLine != null)
+        {
+            arguments = $"-g {arguments}:{openOnLine}";
+        }
+
+        PH.RunFromPath(logger, codeExe, arguments, false, throwExWhenError);
+    }
 }
