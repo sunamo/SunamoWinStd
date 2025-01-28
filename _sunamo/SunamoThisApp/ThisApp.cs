@@ -6,10 +6,6 @@ internal class ThisApp
         SetStatus(TypeOfMessage.Success, v, o);
     }
 
-    internal static void Info(string v, params string[] o)
-    {
-        SetStatus(TypeOfMessage.Information, v, o);
-    }
 
     internal static void Error(string v, params string[] o)
     {
@@ -21,15 +17,7 @@ internal class ThisApp
         SetStatus(TypeOfMessage.Warning, v, o);
     }
 
-    internal static void Ordinal(string v, params string[] o)
-    {
-        SetStatus(TypeOfMessage.Ordinal, v, o);
-    }
 
-    internal static void Appeal(string v, params string[] o)
-    {
-        SetStatus(TypeOfMessage.Appeal, v, o);
-    }
 
     internal static void SetStatus(TypeOfMessage st, string status, params string[] args)
     {

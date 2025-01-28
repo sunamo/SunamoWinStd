@@ -17,11 +17,6 @@ internal class CAChangeContent
         return files_in;
     }
 
-    internal static List<string> ChangeContent1(ChangeContentArgsWinStd a, List<string> files_in, Func<string, string, string> func, string a1)
-    {
-        var result = ChangeContent<string>(a, files_in, func, a1);
-        return result;
-    }
 
     /// <summary>
     /// Direct edit input collection
