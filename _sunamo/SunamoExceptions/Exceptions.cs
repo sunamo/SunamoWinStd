@@ -147,14 +147,4 @@ bool fillAlsoFirstTwo = true)
         return CheckBefore(before) + "Not implemented case" + fr + " . internal program error. Please contact developer" +
         ".";
     }
-    internal static string? NotContains(string before, string originalText, params string[] shouldContains)
-    {
-        List<string> notContained = [];
-        foreach (var item in shouldContains)
-            if (!originalText.Contains(item))
-                notContained.Add(item);
-        return notContained.Count == 0
-        ? null
-        : CheckBefore(before) + originalText + " dont contains: " + string.Join(",", notContained);
-    }
 }
