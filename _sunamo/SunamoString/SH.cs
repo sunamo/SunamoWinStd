@@ -43,42 +43,6 @@ internal class SH
     }
 
 
-    internal static string GetTextBetween(string p, string after, string before, out int dxOfFounded, int startSearchingAt, bool throwExceptionIfNotContains = true)
-    {
-        string vr = null;
-        dxOfFounded = p.IndexOf(after, startSearchingAt);
-        int p3 = p.IndexOf(before, dxOfFounded + after.Length);
-        bool b2 = dxOfFounded != -1;
-        bool b3 = p3 != -1;
-        if (b2 && b3)
-        {
-            dxOfFounded += after.Length;
-            p3 -= 1;
-            // When I return between ( ), there must be +1
-            var length = p3 - dxOfFounded + 1;
-            if (length < 1)
-            {
-                // Takhle to tu bylo předtím ale logicky je to nesmysl.
-                //return p;
-            }
-            vr = p.Substring(dxOfFounded, length).Trim();
-        }
-        else
-        {
-            if (throwExceptionIfNotContains)
-            {
-                ThrowEx.NotContains(p, after, before);
-            }
-            else
-            {
-                // 24-1-21 return null instead of p
-                return null;
-                //vr = p;
-            }
-        }
-
-        return vr.Trim();
-    }
 
     internal static string NullToStringOrDefault(object n)
     {

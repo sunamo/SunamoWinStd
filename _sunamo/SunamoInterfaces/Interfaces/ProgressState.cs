@@ -8,8 +8,4 @@ internal class ProgressState
     internal event Action<int> OverallSongs;
     internal event Action WriteProgressBarEnd;
     internal int n = 0;
-    internal void OnAnotherSong(int n)
-    {
-        AnotherSong(n);
-    }
 }

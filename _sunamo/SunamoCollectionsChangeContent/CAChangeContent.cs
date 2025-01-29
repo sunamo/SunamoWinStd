@@ -18,40 +18,7 @@ internal class CAChangeContent
     }
 
 
-    /// <summary>
-    /// Direct edit input collection
-    ///
-    /// Dříve to bylo List<string> files_in, Func<string,
-    /// </summary>
-    /// <typeparam name="Arg1"></typeparam>
-    /// <param name="files_in"></param>
-    /// <param name="func"></param>
-    /// <param name="arg"></param>
-    internal static List<string> ChangeContent<Arg1>(ChangeContentArgsWinStd a, List<string> files_in, Func<string, Arg1, string> func, Arg1 arg, Func<Arg1, string, string> funcSwitch12 = null)
-    {
-        if (a == null)
-        {
-            a = new ChangeContentArgsWinStd();
-        }
-
-        if (a.switchFirstAndSecondArg)
-        {
-            files_in = ChangeContentSwitch12<Arg1>(files_in, funcSwitch12, arg);
-        }
-        else
-        {
-            for (int i = 0; i < files_in.Count; i++)
-            {
-                files_in[i] = func.Invoke(files_in[i], arg);
-            }
-        }
-
-
-        RemoveNullOrEmpty(a, files_in);
-
-        return files_in;
-    }
-
+    
     private static void RemoveNullOrEmpty(ChangeContentArgsWinStd a, List<string> files_in)
     {
         if (a != null)
