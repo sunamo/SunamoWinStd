@@ -41,12 +41,4 @@ internal class CAChangeContent
         }
     }
 
-    internal static List<string> ChangeContentSwitch12<Arg1>(List<string> files_in, Func<Arg1, string, string> func, Arg1 arg)
-    {
-        for (int i = 0; i < files_in.Count; i++)
-        {
-            files_in[i] = func.Invoke(arg, files_in[i]);
-        }
-        return files_in;
-    }
 }
