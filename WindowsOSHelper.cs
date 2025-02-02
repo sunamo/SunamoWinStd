@@ -5,13 +5,13 @@ public class WindowsOSHelper
 {
     private static Type type = typeof(WindowsOSHelper);
 
-    public static string FileIn(UserFoldersWin local, string appName, string exe)
+    public static string? FileIn(UserFoldersWin local, string appName, string exe)
     {
         var folder = Path.Combine(PathOfAppDataFolder(local), appName);
         return FileIn(folder, exe);
     }
 
-    public static string FileIn(string folder, string exe)
+    public static string? FileIn(string folder, string exe)
     {
         if (Directory.Exists(folder))
         {
@@ -21,7 +21,7 @@ public class WindowsOSHelper
             return Directory.GetFiles(folder, masc, SearchOption.AllDirectories).FirstOrDefault();
         }
 
-        return string.Empty;
+        return null;
     }
 
     /// <summary>
@@ -30,16 +30,7 @@ public class WindowsOSHelper
     /// <param name="af"></param>
     public static string PathOfAppDataFolder(UserFoldersWin af)
     {
-        
-        var user = ActualWindowsUserName();
         var result = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", af.ToString());
         return result;
-    }
-
-    public static string ActualWindowsUserName()
-    {
-        // return ed\w
-        var un = WindowsIdentity.GetCurrent().Name;
-        return un.Substring(un.IndexOf(@"\"));
     }
 }

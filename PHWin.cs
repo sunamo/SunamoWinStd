@@ -151,7 +151,7 @@ public partial class PHWin
 
 
 
-    private static void NullIfNotExists(ref string b)
+    private static void NullIfNotExists(ref string? b)
     {
         if (!File.Exists(b)) b = null;
     }
@@ -165,19 +165,7 @@ public partial class PHWin
         //UriWebServices.AssignSearchInAll(PHWin.SearchInAll);
     }
 
-    private static string AddPathIfNotContains(UserFoldersWin local, string v, string codeExe)
-    {
-        if (!pathExe.ContainsKey(codeExe))
-        {
-            var fi = WindowsOSHelper.FileIn(local, v, codeExe);
-            fi = Path.GetDirectoryName(fi);
-            pathExe.Add(codeExe, fi);
 
-            return fi;
-        }
-
-        return pathExe[codeExe];
-    }
 
     public static void PreferredEditor(ILogger logger, string f, bool throwExWhenError = false)
     {

@@ -163,7 +163,7 @@ public class ReparsePoint
     /// <summary>
     ///     Gets the actual target string, before normalising
     /// </summary>
-    public string Target { get; }
+    public string? Target { get; } = null;
 
     /// <summary>
     ///     Gets the tag
@@ -203,7 +203,7 @@ public class ReparsePoint
 
     [DllImport("advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool LookupPrivilegeValue(string lpSystemName, string lpName,
+    private static extern bool LookupPrivilegeValue(string? lpSystemName, string lpName,
         out LUID lpLuid);
 
     [DllImport("advapi32.dll", SetLastError = true)]

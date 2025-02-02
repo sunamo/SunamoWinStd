@@ -16,11 +16,11 @@ public static class FileUtil
 
     [DllImport("rstrtmgr.dll", CharSet = CharSet.Unicode)]
     private static extern int RmRegisterResources(uint pSessionHandle, uint nFiles, string[] rgsFilenames,
-        uint nApplications, [In] RM_UNIQUE_PROCESS[] rgApplications, uint nServices, string[] rgsServiceNames);
+        uint nApplications, [In] RM_UNIQUE_PROCESS[]? rgApplications, uint nServices, string[]? rgsServiceNames);
 
     [DllImport("rstrtmgr.dll")]
     private static extern int RmGetList(uint dwSessionHandle, out uint pnProcInfoNeeded, ref uint pnProcInfo,
-        [In] [Out] RM_PROCESS_INFO[] rgAffectedApps, ref uint lpdwRebootReasons);
+        [In][Out] RM_PROCESS_INFO[]? rgAffectedApps, ref uint lpdwRebootReasons);
 
     //static public List<Process> WhoIsLocking(string path)
     //{

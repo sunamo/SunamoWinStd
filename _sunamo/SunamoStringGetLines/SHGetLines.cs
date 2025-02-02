@@ -2,8 +2,13 @@ namespace SunamoWinStd._sunamo.SunamoStringGetLines;
 
 internal class SHGetLines
 {
-    internal static List<string> GetLines(string p)
+    internal static List<string> GetLines(string? p)
     {
+        if (p == null)
+        {
+            return new List<string>();
+        }
+
         var parts = p.Split(new string[] { "\r\n", "\n\r" }, StringSplitOptions.None).ToList();
         SplitByUnixNewline(parts);
         return parts;

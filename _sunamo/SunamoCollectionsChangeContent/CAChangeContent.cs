@@ -5,7 +5,7 @@ namespace SunamoWinStd._sunamo.SunamoCollectionsChangeContent;
 
 internal class CAChangeContent
 {
-    internal static List<string> ChangeContent0(ChangeContentArgsWinStd a, List<string> files_in, Func<string, string> func)
+    internal static List<string> ChangeContent0(ChangeContentArgsWinStd? a, List<string> files_in, Func<string, string> func)
     {
         for (int i = 0; i < files_in.Count; i++)
         {
@@ -18,8 +18,8 @@ internal class CAChangeContent
     }
 
 
-    
-    private static void RemoveNullOrEmpty(ChangeContentArgsWinStd a, List<string> files_in)
+
+    private static void RemoveNullOrEmpty(ChangeContentArgsWinStd? a, List<string> files_in)
     {
         if (a != null)
         {

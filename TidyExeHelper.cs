@@ -49,7 +49,7 @@ public class TidyExeHelper
 
         //var random = RandomHelper.RandomString(5, false, false, true, false);
         var temp = Path.GetTempFileName();
-        MemoryMappedFile m = null;
+
         int max, capacity;
         max = capacity = 1024 * 1024 * 2;
 
@@ -63,7 +63,7 @@ public class TidyExeHelper
         //m = MemoryMappedFile.CreateFromFile(new FileStream( temp, FileMode.OpenOrCreate), temp, , MemoryMappedFileAccess.ReadWrite, null, HandleInheritability.Inheritable, true); 
         //m =  MemoryMappedFile.CreateFromFile(temp, FileMode.OpenOrCreate, mapName , capacity, MemoryMappedFileAccess.ReadWrite);
         //m = MemoryMappedFile.CreateNew(mapName, capacity);
-        m = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
+        var m = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
 
         WriteToFile(input, max, newValue, m);
 
@@ -82,7 +82,7 @@ public class TidyExeHelper
         }
 
 
-        string output = null;
+        string? output = null;
 
         using (var accesor = m.CreateViewStream())
         {

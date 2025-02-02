@@ -17,6 +17,12 @@ public partial class PH
 
         var enviromentPath = Environment.GetEnvironmentVariable("PATH");
 
+        if (enviromentPath == null)
+        {
+            logger.LogWarning("PATH is null");
+            return null;
+        }
+
         var paths = enviromentPath.Split(';'); // SHSplit.SplitCharMore(enviromentPath, ';');
 
 #if DEBUG
@@ -86,7 +92,7 @@ public partial class PH
     {
         Process process;
         process = new Process();
-        string output = null;
+        string output = string.Empty;
 
         processInfo.RedirectStandardError = true;
         processInfo.RedirectStandardOutput = true;
@@ -274,7 +280,7 @@ public partial class PH
     /// <returns></returns>
     public static string RunFromPathBetter(string exe, string arguments)
     {
-        var enviromentPath = Environment.GetEnvironmentVariable("PATH");
+        var enviromentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
         var paths = enviromentPath.Split(';');
 
         foreach (var thisPath in paths)
@@ -338,12 +344,12 @@ public partial class PH
         return GetFullPath(fileName) != null;
     }
 
-    public static string GetFullPath(string fileName)
+    public static string? GetFullPath(string fileName)
     {
         if (File.Exists(fileName))
             return Path.GetFullPath(fileName);
 
-        var values = Environment.GetEnvironmentVariable("PATH");
+        var values = Environment.GetEnvironmentVariable("PATH") ?? "";
         foreach (var path in values.Split(Path.PathSeparator))
         {
             var fullPath = Path.Combine(path, fileName);
@@ -397,9 +403,9 @@ public partial class PH
     ///     Alternative is FileUtil.WhoIsLocking
     /// </summary>
     /// <param name="fileName"></param>
-    public static void ShutdownProcessWhichOccupyFileHandleExe(string fileName)
+    public static void ShutdownProcessWhichOccupyFileHandleExe(ILogger logger, string fileName)
     {
-        var pr2 = FindProcessesWhichOccupyFileHandleExe(fileName);
+        var pr2 = FindProcessesWhichOccupyFileHandleExe(logger, fileName);
         foreach (var pr in pr2) KillProcess(pr);
     }
 
@@ -411,7 +417,7 @@ public partial class PH
     /// </summary>
     /// <param name="fileName"></param>
     /// <returns></returns>
-    public static List<Process> FindProcessesWhichOccupyFileHandleExe(string fileName, bool throwEx = true)
+    public static List<Process> FindProcessesWhichOccupyFileHandleExe(ILogger logger, string fileName, bool throwEx = true)
     {
         var pr2 = new List<Process>();
 
@@ -428,10 +434,11 @@ public partial class PH
         }
         catch (Win32Exception ex)
         {
+            logger.LogError(Exceptions.TextOfExceptions(ex));
         }
 
         tool.WaitForExit();
-        string outputTool = null;
+        string? outputTool = null;
 
         try
         {
@@ -444,6 +451,11 @@ public partial class PH
                 ThisApp.Warning("PleaseAddHandle64ExeToPATH");
                 return pr2;
             }
+        }
+
+        if (outputTool == null)
+        {
+            return new List<Process>();
         }
 
         var matchPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";

@@ -7,7 +7,7 @@ public class ClipboardHelperWinStd //: IClipboardHelper
     /// <summary>
     /// Schválně jsem to dal malým - místo Instance musím používat CreateInstance
     /// </summary>
-    public static ClipboardHelperWinStd instance = null;
+    private static ClipboardHelperWinStd? instance = null;
 
     /// <summary>
     /// Už to nechat jako property, jako to bylo prvně, než jsem to změnil na metodu
@@ -38,7 +38,7 @@ public class ClipboardHelperWinStd //: IClipboardHelper
         return SHGetLines.GetLines(GetText());
     }
 
-    public string GetText()
+    public string? GetText()
     {
         return ClipboardService.GetText();
     }
