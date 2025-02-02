@@ -1,12 +1,15 @@
-namespace SunamoWinStd;
+﻿namespace SunamoWinStd;
 
+using Microsoft.Extensions.Logging;
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-public class JunctionPointExists
+public partial class JunctionPoint
 {
     /// <summary>
     ///     Command to get the reparse point data block.
@@ -29,14 +32,14 @@ public class JunctionPointExists
     ///     Thrown if the specified path is invalid
     ///     or some other error occurs
     /// </exception>
-    public static bool IsJunctionPoint(string path)
+    public static bool IsJunctionPoint(ILogger logger, string path)
     {
         if (!Directory.Exists(path))
             return false;
 
-        using (var handle = OpenReparsePoint(path, EFileAccess.GenericRead))
+        using (var handle = OpenReparsePoint(logger, path, EFileAccess.GenericRead))
         {
-            var target = InternalGetTarget(handle);
+            var target = InternalGetTarget(logger, handle);
             return target != null;
         }
     }
@@ -46,15 +49,19 @@ public class JunctionPointExists
     /// </summary>
     /// <param name="reparsePoint"></param>
     /// <param name="accessMode"></param>
-    protected static SafeFileHandle OpenReparsePoint(string reparsePoint, EFileAccess accessMode)
+    protected static SafeFileHandle? OpenReparsePoint(ILogger logger, string reparsePoint, EFileAccess accessMode)
     {
         var reparsePointHandle = new SafeFileHandle(CreateFile(reparsePoint, accessMode,
             EFileShare.Read | EFileShare.Write | EFileShare.Delete,
             nint.Zero, ECreationDisposition.OpenExisting,
             EFileAttributes.BackupSemantics | EFileAttributes.OpenReparsePoint, nint.Zero), true);
 
-        if (Marshal.GetLastWin32Error() != 0)
-            ThrowLastWin32Error("UnableToOpenReparsePoint");
+        var err = Marshal.GetLastWin32Error();
+        if (err != 0)
+            if (ThrowLastWin32Error(logger, err, "UnableToOpenReparsePoint"))
+            {
+                return null;
+            }
 
         return reparsePointHandle;
     }
@@ -79,8 +86,13 @@ public class JunctionPointExists
     ///     Reparse point tag used to identify mount points and junction points.
     /// </summary>
     protected const uint IO_REPARSE_TAG_MOUNT_POINT = 0xA0000003;
-    protected static string? InternalGetTarget(SafeFileHandle handle)
+    protected static string? InternalGetTarget(ILogger logger, SafeFileHandle? handle)
     {
+        if (handle == null)
+        {
+            return null;
+        }
+
         var outBufferSize = Marshal.SizeOf(typeof(REPARSE_DATA_BUFFER));
         var outBuffer = Marshal.AllocHGlobal(outBufferSize);
 
@@ -96,7 +108,10 @@ public class JunctionPointExists
                 if (error == ERROR_NOT_A_REPARSE_POINT)
                     return null;
 
-                ThrowLastWin32Error("UnableToGetInformationAboutJunctionPoint");
+                if (ThrowLastWin32Error(logger, error, "UnableToGetInformationAboutJunctionPoint"))
+                {
+                    return null;
+                }
             }
 
             var reparseDataBuffer = (REPARSE_DATA_BUFFER)
@@ -126,9 +141,21 @@ public class JunctionPointExists
     /// </summary>
     protected const string NonInterpretedPathPrefix = @"\??\";
 
-    protected static void ThrowLastWin32Error(string message)
+    protected static bool ThrowLastWin32Error(ILogger logger, int err, string message)
     {
-        throw new Exception(message + Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        if (err == 5)
+        {
+            /*
+Jedná se o tuto chybu:
+'UnableToOpenReparsePointSystem.UnauthorizedAccessException: Access is denied. (0x80070005 (E_ACCESSDENIED))'
+Nepomůže spustit ani VS jako admin
+
+             */
+            return true;
+        }
+
+        logger.LogError(message + Marshal.GetExceptionForHR(Marshal.GetHRForLastWin32Error()));
+        return false;
     }
 
     [Flags]

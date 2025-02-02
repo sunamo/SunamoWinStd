@@ -1,12 +1,12 @@
 namespace SunamoWinStd;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 ///     Provides access to NTFS junction points in .Net.
 /// </summary>
-public class JunctionPoint : JunctionPointExists
+public partial class JunctionPoint
 {
-
-
     /// <summary>
     ///     The reparse point attribute cannot be set because it conflicts with an existing attribute.
     /// </summary>
@@ -146,7 +146,7 @@ public class JunctionPoint : JunctionPointExists
     ///     Thrown when the junction point could not be created or when
     ///     an existing directory was found and <paramref name="overwrite" /> if false
     /// </exception>
-    public static void Create(string junctionPoint, string targetDir, bool overwrite)
+    public static void Create(ILogger logger, string junctionPoint, string targetDir, bool overwrite)
     {
         targetDir = Path.GetFullPath(targetDir);
 
@@ -163,8 +163,13 @@ public class JunctionPoint : JunctionPointExists
             Directory.CreateDirectory(junctionPoint);
         }
 
-        using (var handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericWrite))
+        using (var handle = OpenReparsePoint(logger, junctionPoint, EFileAccess.GenericWrite))
         {
+            if (handle == null)
+            {
+                return;
+            }
+
             var targetDirBytes = Encoding.Unicode.GetBytes(NonInterpretedPathPrefix + Path.GetFullPath(targetDir));
 
             var reparseDataBuffer = new REPARSE_DATA_BUFFER();
@@ -190,7 +195,10 @@ public class JunctionPoint : JunctionPointExists
                     inBuffer, targetDirBytes.Length + 20, nint.Zero, 0, out bytesReturned, nint.Zero);
 
                 if (!result)
-                    ThrowLastWin32Error("UnableToCreateJunctionPoint");
+                {
+                    var err = Marshal.GetLastWin32Error();
+                    ThrowLastWin32Error(logger, err, "UnableToCreateJunctionPoint");
+                }
             }
             finally
             {
@@ -199,7 +207,7 @@ public class JunctionPoint : JunctionPointExists
         }
     }
 
-    public static bool IsReparsePoint(string path)
+    public static bool IsReparsePoint(ILogger logger, string path)
     {
         var p = new ReparsePoint(path);
         return !string.IsNullOrEmpty(p.Target);
@@ -212,7 +220,7 @@ public class JunctionPoint : JunctionPointExists
     ///     Only works on NTFS.
     /// </remarks>
     /// <param name="junctionPoint">The junction point path</param>
-    public static void Delete(string junctionPoint)
+    public static void Delete(ILogger logger, string junctionPoint)
     {
         if (!Directory.Exists(junctionPoint))
         {
@@ -222,8 +230,13 @@ public class JunctionPoint : JunctionPointExists
             return;
         }
 
-        using (var handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericWrite))
+        using (var handle = OpenReparsePoint(logger, junctionPoint, EFileAccess.GenericWrite))
         {
+            if (handle == null)
+            {
+                return;
+            }
+
             var reparseDataBuffer = new REPARSE_DATA_BUFFER();
 
             reparseDataBuffer.ReparseTag = IO_REPARSE_TAG_MOUNT_POINT;
@@ -241,7 +254,11 @@ public class JunctionPoint : JunctionPointExists
                     inBuffer, 8, nint.Zero, 0, out bytesReturned, nint.Zero);
 
                 if (!result)
-                    ThrowLastWin32Error("UnableToDeleteJunctionPoint");
+                {
+                    var err = Marshal.GetLastWin32Error();
+
+                    ThrowLastWin32Error(logger, err, "UnableToDeleteJunctionPoint");
+                }
             }
             finally
             {
