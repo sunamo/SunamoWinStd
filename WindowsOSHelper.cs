@@ -1,29 +1,23 @@
 namespace SunamoWinStd;
-using System.Security.Principal;
 
 public class WindowsOSHelper
 {
     private static Type type = typeof(WindowsOSHelper);
-
     public static string? FileIn(UserFoldersWin local, string appName, string exe)
     {
         var folder = Path.Combine(PathOfAppDataFolder(local), appName);
         return FileIn(folder, exe);
     }
-
     public static string? FileIn(string folder, string exe)
     {
         if (Directory.Exists(folder))
         {
             var masc = string.Empty; //FS.MascFromExtension(exe);
             masc = exe;
-
             return Directory.GetFiles(folder, masc, SearchOption.AllDirectories).FirstOrDefault();
         }
-
         return null;
     }
-
     /// <summary>
     ///     All
     /// </summary>
