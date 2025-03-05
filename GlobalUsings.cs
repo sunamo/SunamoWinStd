@@ -39,3 +39,11 @@ global using SunamoWinStd._sunamo;
 global using SunamoWinStd._sunamo.SunamoStringParts;
 global using SunamoWinStd._sunamo.SunamoStringTrim;
 global using SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
+
+global using Microsoft.Extensions.Logging;
+global using System.Runtime.InteropServices.ComTypes;
+global using System.Security.Principal;
+global using TextCopy;
+global using ILogger = Microsoft.Extensions.Logging.ILogger;
+global using Microsoft.Extensions.Logging;
+global using NullLogger = Microsoft.Extensions.Logging.Abstractions.NullLogger;

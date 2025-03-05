@@ -1,12 +1,8 @@
 namespace SunamoWinStd;
 
-using Microsoft.Extensions.Logging;
-
 public partial class PH
 {
     private static Type type = typeof(PH);
-
-
     /// <summary>
     ///     https://stackoverflow.com/a/12393522
     ///     Return SE or output if everything gone good
@@ -14,17 +10,13 @@ public partial class PH
     public static string? RunFromPath(ILogger logger, string exe, string arguments, bool withOutput, bool throwExWhenError = false)
     {
         PHWin.BreakIfTen();
-
         var enviromentPath = Environment.GetEnvironmentVariable("PATH");
-
         if (enviromentPath == null)
         {
             logger.LogWarning("PATH is null");
             return null;
         }
-
         var paths = enviromentPath.Split(';'); // SHSplit.SplitCharMore(enviromentPath, ';');
-
 #if DEBUG
         var wc = paths.Where(d => d.Contains("Microsoft VS Code Insiders"));
         paths.Reverse();
@@ -32,32 +24,26 @@ public partial class PH
         var paths2 = paths.Select(x => Path.Combine(x, exe));
         var files = paths2.Where(x => File.Exists(x));
         var fi = files.FirstOrDefault();
-
         var exePath = fi;
-
         if (!string.IsNullOrWhiteSpace(exePath))
         {
             if (withOutput) return RunWithOutput(exe, arguments);
             Process.Start(exe, arguments);
             return string.Empty;
         }
-
         logger.LogError(exe + " is not in the path!");
         if (throwExWhenError)
         {
             throw new Exception(exe + " is not in the path!");
         }
-
         return null;
     }
-
     public static bool ExecCmd(string cmd)
     {
         string output;
         var b = ExecCmd(cmd, out output);
         return b;
     }
-
     /// <summary>
     ///     Executes command
     /// </summary>
@@ -68,57 +54,42 @@ public partial class PH
     public static bool ExecCmd(string cmd, out string output, bool transferEnvVars = false)
     {
         ProcessStartInfo processInfo;
-
         if (transferEnvVars)
             cmd = cmd + " && echo --VARS-- && set";
-
         processInfo = new ProcessStartInfo("cmd.exe", "/c " + cmd);
         processInfo.CreateNoWindow = true;
         processInfo.UseShellExecute = false;
         processInfo.RedirectStandardError = true;
         processInfo.RedirectStandardOutput = true;
-
-
         output = RunWithOutput(processInfo, transferEnvVars);
         return string.IsNullOrEmpty(output);
     }
-
     public static string RunWithOutput(string exe, string arguments)
     {
         return RunWithOutput(new ProcessStartInfo { FileName = exe, Arguments = arguments, UseShellExecute = false });
     }
-
     public static string RunWithOutput(ProcessStartInfo processInfo, bool transferEnvVars = false)
     {
         Process process;
         process = new Process();
         string output = string.Empty;
-
         processInfo.RedirectStandardError = true;
         processInfo.RedirectStandardOutput = true;
         processInfo.CreateNoWindow = true;
         processInfo.UseShellExecute = false;
-
-
         // Executing long lasting operation in batch file will hang the process, as it will wait standard output / error pipes to be processed.
         // We process these pipes here asynchronously.
         var so = new StringBuilder();
         process.OutputDataReceived += (sender, args) => { so.AppendLine(args.Data); };
         var se = new StringBuilder();
         process.ErrorDataReceived += (sender, args) => { se.AppendLine(args.Data); };
-
         process.StartInfo = processInfo;
         process.Start();
-
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
-
-
         process.WaitForExit();
-
         output = so.ToString();
         var error = se.ToString();
-
         if (transferEnvVars)
         {
             var r = new Regex("--VARS--(.*)", RegexOptions.Singleline);
@@ -126,7 +97,6 @@ public partial class PH
             if (m.Success)
             {
                 output = r.Replace(output, "");
-
                 foreach (Match m2 in
                          new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(m.Groups[1].ToString()))
                 {
@@ -136,20 +106,15 @@ public partial class PH
                 }
             }
         }
-
         if (error.Length != 0)
             output += error;
         var exitCode = process.ExitCode;
-
         if (exitCode != 0)
             Console.WriteLine("Error: " + output + "\r\n" + error);
-
         process.Close();
         //return exitCode == 0;
-
         return output;
     }
-
     /// <summary>
     ///     Exe must be in path
     /// </summary>
@@ -165,7 +130,6 @@ public partial class PH
             ThrowEx.CustomWithStackTrace(ex);
         }
     }
-
     public static void Start(string exe, string args)
     {
         try
@@ -178,8 +142,6 @@ public partial class PH
             ThrowEx.CustomWithStackTrace(ex);
         }
     }
-
-
     public static void StartHidden(string p, string k)
     {
         try
@@ -198,8 +160,6 @@ public partial class PH
             ThrowEx.CustomWithStackTrace(ex);
         }
     }
-
-
     public static void Uri(string v)
     {
         v = NormalizeUri(v);
@@ -209,14 +169,12 @@ public partial class PH
         v = WebUtility.UrlDecode(v);
         if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute)) Process.Start(v);
     }
-
     public static string NormalizeUri(string v)
     {
         // Without this cant search for google apps
         v = SHReplace.ReplaceAll(v, "%22", "\"");
         return v;
     }
-
     public static void KillProcess(Process pr)
     {
         try
@@ -228,34 +186,26 @@ public partial class PH
             if (!ex.Message.Contains("Access is denied")) ThrowEx.CustomWithStackTrace(ex);
         }
     }
-
     public static int Terminate(string name)
     {
         var deleted = 0;
-
         foreach (var process in Process.GetProcessesByName(name))
         {
             KillProcess(process);
             deleted++;
         }
-
         return deleted;
     }
-
     //public static string RunFromPath2(string exe, string arguments)
     //{
     //    // Commented due to 'StringDictionary' does not contain a definition for 'Replace'
-
     //    ProcessStartInfo psi = new ProcessStartInfo(exe);
     //    psi.Arguments = arguments;
     //    var dictionary = psi.EnvironmentVariables;
-
     //    // Manipulate dictionary...\
-
     //    psi.EnvironmentVariables["PATH"] = dictionary.Replace(@"\\", @"\");
     //    return RunWithOutput(exe, arguments);
     //}
-
     /// <summary>
     ///     Exe must be in path
     /// </summary>
@@ -269,12 +219,10 @@ public partial class PH
         // To use env variables
         pi.UseShellExecute = true;
         Process.Start(pi);
-
         //var cmd = exe + "" + SH.WrapWithQm(fileWithoutQm);
         //Process.Start(@"C:\Windows\System32\cmd.exe", "/c " + cmd);
         //PH.ExecCmd(cmd);
     }
-
     /// <param name="exe"></param>
     /// <param name="arguments"></param>
     /// <returns></returns>
@@ -282,7 +230,6 @@ public partial class PH
     {
         var enviromentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
         var paths = enviromentPath.Split(';');
-
         foreach (var thisPath in paths)
         {
             var thisFile = Path.Combine(thisPath, exe);
@@ -291,11 +238,9 @@ public partial class PH
                 {
                     ".exe"
                 }; // , ".com", ".bat", ".sh", ".vbs", ".vbscript", ".vbe", ".js", ".rb", ".cmd", ".cpl", ".ws", ".wsf", ".msc", ".gadget"
-
             foreach (var extension in executableExtensions)
             {
                 var fullFile = thisFile + extension;
-
                 try
                 {
                     if (File.Exists(fullFile))
@@ -310,11 +255,9 @@ public partial class PH
                 }
             }
         }
-
         foreach (var thisPath in paths)
         {
             var thisFile = Path.Combine(thisPath, exe);
-
             try
             {
                 if (File.Exists(thisFile))
@@ -328,27 +271,22 @@ public partial class PH
                 throw new Exception(Exceptions.TextOfExceptions(ex));
             }
         }
-
         return RunWithOutput(exe, arguments);
     }
-
     public static bool IsAlreadyRunning(string name)
     {
         IList<string> pr = Process.GetProcessesByName(name).Select(d => d.ProcessName).ToList();
         //var processes = Process.GetProcesses(name).Where(s => s.ProcessName.Contains(name)).Select(d => d.ProcessName);
         return pr.Count() > 1;
     }
-
     public static bool ExistsOnPath(string fileName)
     {
         return GetFullPath(fileName) != null;
     }
-
     public static string? GetFullPath(string fileName)
     {
         if (File.Exists(fileName))
             return Path.GetFullPath(fileName);
-
         var values = Environment.GetEnvironmentVariable("PATH") ?? "";
         foreach (var path in values.Split(Path.PathSeparator))
         {
@@ -356,11 +294,8 @@ public partial class PH
             if (File.Exists(fullPath))
                 return fullPath;
         }
-
         return null;
     }
-
-
     public static List<string> ProcessesWithNameContains(string name)
     {
         var processes = GetProcessesNames(true);
@@ -368,16 +303,13 @@ public partial class PH
             .ToList(); //CA.ReturnWhichContains(processes, name.ToLower());
         return s;
     }
-
     public static int TerminateProcessesWithNameContains(string name)
     {
         var s = ProcessesWithNameContains(name);
-
         var ended = 0;
         foreach (var item in s) ended += Terminate(item);
         return ended;
     }
-
     /// <summary>
     ///     without extensions and all lower
     /// </summary>
@@ -388,17 +320,11 @@ public partial class PH
         name = name.ToLower();
         name = Path.GetFileNameWithoutExtension(name);
         var processes = GetProcessesNames(true);
-
         var ended = 0;
-
         if (processes.Contains(name)) ended += Terminate(name);
-
-
         return ended;
     }
-
     #region
-
     /// <summary>
     ///     Alternative is FileUtil.WhoIsLocking
     /// </summary>
@@ -408,9 +334,7 @@ public partial class PH
         var pr2 = FindProcessesWhichOccupyFileHandleExe(logger, fileName);
         foreach (var pr in pr2) KillProcess(pr);
     }
-
     #endregion
-
     /// <summary>
     ///     Alternative is FileUtil.WhoIsLocking
     ///     A2 must be even is not used
@@ -420,14 +344,12 @@ public partial class PH
     public static List<Process> FindProcessesWhichOccupyFileHandleExe(ILogger logger, string fileName, bool throwEx = true)
     {
         var pr2 = new List<Process>();
-
         var tool = new Process();
         tool.StartInfo.FileName = "handle64.exe";
         tool.StartInfo.Arguments = fileName + " /accepteula";
         tool.StartInfo.UseShellExecute = false;
         tool.StartInfo.RedirectStandardOutput = true;
         tool.StartInfo.WorkingDirectory = @"";
-
         try
         {
             tool.Start();
@@ -436,10 +358,8 @@ public partial class PH
         {
             logger.LogError(Exceptions.TextOfExceptions(ex));
         }
-
         tool.WaitForExit();
         string? outputTool = null;
-
         try
         {
             outputTool = tool.StandardOutput.ReadToEnd();
@@ -452,12 +372,10 @@ public partial class PH
                 return pr2;
             }
         }
-
         if (outputTool == null)
         {
             return new List<Process>();
         }
-
         var matchPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";
         var matches = Regex.Matches(outputTool, matchPattern);
         foreach (Match match in matches)
@@ -465,24 +383,18 @@ public partial class PH
             var pr = Process.GetProcessById(int.Parse(match.Value));
             pr2.Add(pr);
         }
-
         return pr2;
     }
-
-
     public static void StartAllUri(List<string> all)
     {
         foreach (var item in all) Uri(UH.AppendHttpIfNotExists(item));
     }
-
     public static List<string> GetProcessesNames(bool lower)
     {
         var p = Process.GetProcesses().Select(d => d.ProcessName).ToList();
         if (lower) CA.ToLower(p);
-
         return p;
     }
-
     /// <summary>
     ///     For search one term in all uris use UriWebServices.SearchInAll
     /// </summary>
@@ -497,15 +409,12 @@ public partial class PH
             }
         //PHWin.OpenInBrowser(UH.AppendHttpIfNotExists(UriWebServices.FromChromeReplacement(v, carModels[i])));
     }
-
     public static void StartAllUri(List<string> carModels, Func<string, string> spritMonitor)
     {
         carModels = CAChangeContent.ChangeContent0(null, carModels, spritMonitor);
         carModels = CAChangeContent.ChangeContent0(null, carModels, NormalizeUri);
         StartAllUri(carModels);
     }
-
-
     /// <summary>
     ///     Start all uri in clipboard, splitted by whitespace
     /// </summary>
@@ -515,14 +424,12 @@ public partial class PH
         var uris = SHSplit.SplitByWhiteSpaces(text);
         StartAllUri(uris);
     }
-
     internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool throwExWhenError, int? openOnLine)
     {
         if (openOnLine != null)
         {
             arguments = $"-g {arguments}:{openOnLine}";
         }
-
         PH.RunFromPath(logger, codeExe, arguments, false, throwExWhenError);
     }
 }

@@ -1,26 +1,17 @@
 namespace SunamoWinStd;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 partial class PHWin
 {
     public static void AddBrowser()
     {
         AddBrowser(defBr);
     }
-
     public static string AddBrowser(Browsers prohlizec)
     {
         if (path.Count != countOfBrowsers)
         {
             if (path.ContainsKey(prohlizec)) return path[prohlizec];
-
             var b = string.Empty;
-
             switch (prohlizec)
             {
                 case Browsers.Chrome: //1
@@ -33,11 +24,8 @@ partial class PHWin
                     NullIfNotExists(ref b);
                     break;
                 case Browsers.EdgeBeta: //3
-
                     //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
                     b = @"C:\Program Files (x86)\Microsoft\Edge Beta\Application\msedge.exe"; //WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge beta\application", "msedge.exe");
-
-
                     break;
                 case Browsers.Opera: //4
                     // Opera has version also when is installing to PF, it cant be changed
@@ -106,30 +94,23 @@ partial class PHWin
                     NullIfNotExists(ref b);
                     break;
                 case Browsers.EdgeDev: //13
-
                     //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
                     b = @"C:\Program Files (x86)\Microsoft\Edge Dev\Application\msedge.exe";
                     NullIfNotExists(ref b);
                     break;
-
                 case Browsers.EdgeCanary: //14
                     b = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge sxs\application", "msedge.exe");
                     NullIfNotExists(ref b);
-
                     break;
                 //15
                 case Browsers.ChromeDev:
                     b = @"C:\Program Files\Google\Chrome Dev\Application\chrome.exe";
                     NullIfNotExists(ref b);
                     break;
-
                 case Browsers.Min:
                     b = @"C:\Users\r\AppData\Local\min\min.exe";
                     NullIfNotExists(ref b);
                     break;
-
-
-
                 case Browsers.Basilisk:
                     b = @"C:\Program Files\Basilisk\basilisk.exe";
                     NullIfNotExists(ref b);
@@ -146,35 +127,26 @@ partial class PHWin
                     b = @"C:\Program Files\Pale Moon\palemoon.exe";
                     NullIfNotExists(ref b);
                     break;
-
                 case Browsers.LibreWolf:
                     b = @"C:\Program Files\LibreWolf\librewolf.exe";
                     NullIfNotExists(ref b);
                     break;
-
-
                 case Browsers.EdgeStable: //254
                     // tady se to skutečně jmenuje MicrosoftEdge.exe
                     b = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
-
                     if (!File.Exists(b))
                         //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
                         b = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
                     NullIfNotExists(ref b);
                     break;
-
                 default:
                     ThrowEx.NotImplementedCase(prohlizec);
                     break;
             }
-
             if (b == null) b = string.Empty;
-
             path.Add(prohlizec, b);
-
             return b;
         }
-
         return path[prohlizec];
     }
 }
