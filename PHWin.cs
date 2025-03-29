@@ -72,20 +72,29 @@ public partial class PHWin
     public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string s, int waitMs = 0,
         bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
+        PathFormatDetectorService pathFormatDetector = new(logger);
+
+
         if (forceAttemptHttps) s = UH.AppendHttpsIfNotExists(s);
         var b = path[prohlizec];
         BreakIfTen();
-        s = PH.NormalizeUri(s);
-        if (!s.StartsWith("http")) s = "https://" + s;
-        if (!Uri.TryCreate(s, new UriCreationOptions(), out var _))
+
+        if (pathFormatDetector.DetectPathType(s) != null)
         {
-            logger.LogError($"Can't create uri from " + s);
-            if (throwExIsNotValidUrl)
+
+            s = PH.NormalizeUri(s);
+            if (!s.StartsWith("http")) s = "https://" + s;
+            if (!Uri.TryCreate(s, new UriCreationOptions(), out var _))
             {
-                ThrowEx.Custom($"Can't create uri from " + s);
+                logger.LogError($"Can't create uri from " + s);
+                if (throwExIsNotValidUrl)
+                {
+                    ThrowEx.Custom($"Can't create uri from " + s);
+                }
+                return;
             }
-            return;
         }
+
         //if (prohlizec == Browsers.Chrome)
         //{
         s = "/new-tab " + s;
