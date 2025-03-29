@@ -79,7 +79,7 @@ public partial class PHWin
         var b = path[prohlizec];
         BreakIfTen();
 
-        if (pathFormatDetector.DetectPathType(s) != null)
+        if (pathFormatDetector.DetectPathType(s) == null)
         {
 
             s = PH.NormalizeUri(s);
