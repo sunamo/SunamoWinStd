@@ -16,7 +16,7 @@ public partial class PH
             logger.LogWarning("PATH is null");
             return null;
         }
-        var paths = enviromentPath.Split(';'); // SHSplit.SplitCharMore(enviromentPath, ';');
+        var paths = enviromentPath.Split(';'); // SHSplit.SplitChar(enviromentPath, ';');
 #if DEBUG
         var wc = paths.Where(d => d.Contains("Microsoft VS Code Insiders"));
         paths.Reverse();
