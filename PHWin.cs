@@ -64,12 +64,14 @@ public partial class PHWin
     /// <summary>
     ///     forceAttemptHttps by dávalo větší smysl true
     ///     ale protože jsem si nepoznačil proč mi to radši dá do uvozovek, budu se držet původní definice metody
+    ///     
+    /// 
     /// </summary>
     /// <param name="prohlizec"></param>
     /// <param name="s"></param>
-    /// <param name="waitMs"></param>
+    /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string s, int waitMs = 0,
+    public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string s, int waitMs = 500,
         bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
         PathFormatDetectorService pathFormatDetector = new(logger);
@@ -116,9 +118,9 @@ public partial class PHWin
     /// </summary>
     /// <param name="uri"></param>
     /// <param name="throwExIsNotValidUrl"></param>
-    /// <param name="waitMs"></param>
+    /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
     public static void OpenInBrowser(ILogger logger, string uri, bool throwExIsNotValidUrl = false,
-        int waitMs = 0)
+        int waitMs = 500)
     {
         OpenInBrowser(logger, defBr, uri, waitMs);
     }
@@ -150,10 +152,19 @@ public partial class PHWin
                 break;
         }
     }
-    public static void OpenInBrowserAutomaticallyCountOfOpened(ILogger logger, Browsers prohlizec, string s, int waitMs = 0)
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="prohlizec"></param>
+    /// <param name="s"></param>
+    /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
+    public static void OpenInBrowserAutomaticallyCountOfOpened(ILogger logger, Browsers prohlizec, string s, int waitMs = 500)
     {
         OpenInBrowser(logger, prohlizec, s, waitMs);
     }
+
     /// <returns></returns>
     public static List<string> BrowsersWhichDontHaveExeInDefinedPath()
     {
