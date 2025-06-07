@@ -23,10 +23,7 @@ public class ClipboardHelperWinStd //: IClipboardHelper
     {
         return true;
     }
-    public void CutFiles(params string[] selected)
-    {
-        ThrowEx.NotImplementedMethod();
-    }
+
     public List<string> GetLines()
     {
         return SHGetLines.GetLines(GetText());

@@ -119,7 +119,7 @@ public partial class PHWin
     /// <param name="uri"></param>
     /// <param name="throwExIsNotValidUrl"></param>
     /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
-    public static void OpenInBrowser(ILogger logger, string uri, bool throwExIsNotValidUrl = false,
+    public static void OpenInBrowser(ILogger logger, string uri,
         int waitMs = 500)
     {
         OpenInBrowser(logger, defBr, uri, waitMs);

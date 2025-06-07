@@ -160,15 +160,16 @@ public partial class PH
             ThrowEx.CustomWithStackTrace(ex);
         }
     }
-    public static void Uri(string v)
-    {
-        v = NormalizeUri(v);
-        v = v.Trim();
-        //Must UrlDecode for https://mapy.cz/?q=Antala+Sta%c5%a1ka+1087%2f3%2c+Hav%c3%ad%c5%99ov&sourceid=Searchmodule_1
-        // to fulfillment RFC 3986 and RFC 3987 https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring?view=netframework-4.8
-        v = WebUtility.UrlDecode(v);
-        if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute)) Process.Start(v);
-    }
+    //public static void Uri(string v)
+    //{
+    //    v = NormalizeUri(v);
+    //    v = v.Trim();
+    //    //Must UrlDecode for https://mapy.cz/?q=Antala+Sta%c5%a1ka+1087%2f3%2c+Hav%c3%ad%c5%99ov&sourceid=Searchmodule_1
+    //    // to fulfillment RFC 3986 and RFC 3987 https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring?view=netframework-4.8
+    //    v = WebUtility.UrlDecode(v);
+    //    if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute))
+    //        PHWin.OpenInBrowser(v);
+    //}
     public static string NormalizeUri(string v)
     {
         // Without this cant search for google apps
@@ -357,6 +358,10 @@ public partial class PH
         catch (Win32Exception ex)
         {
             logger.LogError(Exceptions.TextOfExceptions(ex));
+            if (throwEx)
+            {
+                throw ex;
+            }
         }
         tool.WaitForExit();
         string? outputTool = null;
@@ -385,45 +390,44 @@ public partial class PH
         }
         return pr2;
     }
-    public static void StartAllUri(List<string> all)
-    {
-        foreach (var item in all) Uri(UH.AppendHttpIfNotExists(item));
-    }
+    //public static void StartAllUri(List<string> all)
+    //{
+    //    foreach (var item in all) Uri(UH.AppendHttpIfNotExists(item));
+    //}
     public static List<string> GetProcessesNames(bool lower)
     {
         var p = Process.GetProcesses().Select(d => d.ProcessName).ToList();
         if (lower) CA.ToLower(p);
         return p;
     }
-    /// <summary>
-    ///     For search one term in all uris use UriWebServices.SearchInAll
-    /// </summary>
-    /// <param name="carModels"></param>
-    /// <param name="v"></param>
-    public static void StartAllUri(List<string> carModels, string v)
-    {
-        for (var i = 0; i < carModels.Count; i++)
-            if (i % 10 == 0 && i != 0)
-            {
-                //System.Diagnostics.Debugger.Break();
-            }
-        //PHWin.OpenInBrowser(UH.AppendHttpIfNotExists(UriWebServices.FromChromeReplacement(v, carModels[i])));
-    }
-    public static void StartAllUri(List<string> carModels, Func<string, string> spritMonitor)
-    {
-        carModels = CAChangeContent.ChangeContent0(null, carModels, spritMonitor);
-        carModels = CAChangeContent.ChangeContent0(null, carModels, NormalizeUri);
-        StartAllUri(carModels);
-    }
+    ///// <summary>
+    /////     For search one term in all uris use UriWebServices.SearchInAll
+    ///// </summary>
+    ///// <param name="carModels"></param>
+    ///// <param name="v"></param>
+    //public static void StartAllUri(List<string> carModels)
+    //{
+    //    PHWin.AddBrowser();
+    //    foreach (var item in carModels)
+    //    {
+    //        PHWin.OpenInBrowser(item);
+    //    }
+    //}
+    //public static void StartAllUri(List<string> carModels, Func<string, string> spritMonitor)
+    //{
+    //    carModels = CAChangeContent.ChangeContent0(null, carModels, spritMonitor);
+    //    carModels = CAChangeContent.ChangeContent0(null, carModels, NormalizeUri);
+    //    StartAllUri(carModels);
+    //}
     /// <summary>
     ///     Start all uri in clipboard, splitted by whitespace
     /// </summary>
-    public static void StartAllUri(string text)
-    {
-        //var text = ClipboardHelper.GetText();
-        var uris = SHSplit.SplitByWhiteSpaces(text);
-        StartAllUri(uris);
-    }
+    //public static void StartAllUri(string text)
+    //{
+    //    //var text = ClipboardHelper.GetText();
+    //    var uris = SHSplit.SplitByWhiteSpaces(text);
+    //    StartAllUri(uris);
+    //}
     internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool throwExWhenError, int? openOnLine)
     {
         if (openOnLine != null)

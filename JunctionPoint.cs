@@ -164,7 +164,7 @@ public partial class JunctionPoint
             }
         }
     }
-    public static bool IsReparsePoint(ILogger logger, string path)
+    public static bool IsReparsePoint(string path)
     {
         var p = new ReparsePoint(path);
         return !string.IsNullOrEmpty(p.Target);
