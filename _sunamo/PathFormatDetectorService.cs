@@ -1,7 +1,8 @@
-﻿namespace SunamoWinStd._sunamo;
-public class PathFormatDetectorService(ILogger logger)
+namespace SunamoWinStd._sunamo;
+
+internal class PathFormatDetectorService(ILogger logger)
 {
-    public bool IsWindowsPathFormat(string argValue)
+    internal bool IsWindowsPathFormat(string argValue)
     {
         if (string.IsNullOrWhiteSpace(argValue)) return false;
         var badFormat = false;
@@ -20,7 +21,7 @@ public class PathFormatDetectorService(ILogger logger)
     /// <param name="path"></param>
     /// <param name="logIfIsNotUnixOrWindowsPath"></param>
     /// <returns></returns>
-    public bool? DetectPathType(string path, bool logIfIsNotUnixOrWindowsPath = false)
+    internal bool? DetectPathType(string path, bool logIfIsNotUnixOrWindowsPath = false)
     {
         if (IsWindowsPathFormat(path))
         {
