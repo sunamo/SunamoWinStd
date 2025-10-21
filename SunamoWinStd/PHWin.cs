@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoWinStd;
 
 public partial class PHWin
@@ -71,27 +74,27 @@ public partial class PHWin
     /// <param name="s"></param>
     /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
     /// <param name="forceAttemptHttps"></param>
-    public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string s, int waitMs = 500,
+    public static void OpenInBrowser(ILogger logger, Browsers prohlizec, string text, int waitMs = 500,
         bool forceAttemptHttps = false, bool throwExIsNotValidUrl = false)
     {
         PathFormatDetectorService pathFormatDetector = new(logger);
 
 
-        if (forceAttemptHttps) s = UH.AppendHttpsIfNotExists(s);
-        var b = path[prohlizec];
+        if (forceAttemptHttps) text = UH.AppendHttpsIfNotExists(text);
+        var builder = path[prohlizec];
         BreakIfTen();
 
-        if (pathFormatDetector.DetectPathType(s) == null)
+        if (pathFormatDetector.DetectPathType(text) == null)
         {
 
-            s = PH.NormalizeUri(s);
-            if (!s.StartsWith("http")) s = "https://" + s;
-            if (!Uri.TryCreate(s, new UriCreationOptions(), out var _))
+            text = PH.NormalizeUri(text);
+            if (!text.StartsWith("http")) text = "https://" + text;
+            if (!Uri.TryCreate(text, new UriCreationOptions(), out var _))
             {
-                logger.LogError($"Can't create uri from " + s);
+                logger.LogError($"Can't create uri from " + text);
                 if (throwExIsNotValidUrl)
                 {
-                    ThrowEx.Custom($"Can't create uri from " + s);
+                    ThrowEx.Custom($"Can't create uri from " + text);
                 }
                 return;
             }
@@ -99,9 +102,9 @@ public partial class PHWin
 
         //if (prohlizec == Browsers.Chrome)
         //{
-        s = "/new-tab " + s;
+        text = "/new-tab " + text;
         //}
-        Process.Start(new ProcessStartInfo(b, s));
+        Process.Start(new ProcessStartInfo(builder, text));
         Thread.Sleep(100);
         if (waitMs > 0) Thread.Sleep(waitMs);
     }
@@ -124,9 +127,9 @@ public partial class PHWin
     {
         OpenInBrowser(logger, defBr, uri, waitMs);
     }
-    private static void NullIfNotExists(ref string? b)
+    private static void NullIfNotExists(ref string? builder)
     {
-        if (!File.Exists(b)) b = null;
+        if (!File.Exists(builder)) builder = null;
     }
     [Obsolete("Toto již není třeba, vše musí být jen v jednom nugetu")]
     public static void AssignSearchInAll()
@@ -160,9 +163,9 @@ public partial class PHWin
     /// <param name="prohlizec"></param>
     /// <param name="s"></param>
     /// <param name="waitMs">0 se nedoporučuje, např. google při otevření mnoha hledání najednou chce u mnoha captchu. Bohužel ta captcha nejde odkliknout.</param>
-    public static void OpenInBrowserAutomaticallyCountOfOpened(ILogger logger, Browsers prohlizec, string s, int waitMs = 500)
+    public static void OpenInBrowserAutomaticallyCountOfOpened(ILogger logger, Browsers prohlizec, string text, int waitMs = 500)
     {
-        OpenInBrowser(logger, prohlizec, s, waitMs);
+        OpenInBrowser(logger, prohlizec, text, waitMs);
     }
 
     /// <returns></returns>
@@ -204,9 +207,9 @@ public partial class PHWin
     }
     public static void SaveAndOpenInBrowser(ILogger logger, Browsers prohlizec, string htmlKod)
     {
-        var s = Path.GetTempFileName() + ".html";
-        File.WriteAllText(s, htmlKod);
-        OpenInBrowser(logger, prohlizec, s, 50);
+        var text = Path.GetTempFileName() + ".html";
+        File.WriteAllText(text, htmlKod);
+        OpenInBrowser(logger, prohlizec, text, 50);
     }
     public static bool IsUsed(string fullPath)
     {

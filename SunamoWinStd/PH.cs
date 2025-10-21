@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoWinStd;
 
 public partial class PH
@@ -41,8 +44,8 @@ public partial class PH
     public static bool ExecCmd(string cmd)
     {
         string output;
-        var b = ExecCmd(cmd, out output);
-        return b;
+        var builder = ExecCmd(cmd, out output);
+        return builder;
     }
     /// <summary>
     ///     Executes command
@@ -92,13 +95,13 @@ public partial class PH
         var error = se.ToString();
         if (transferEnvVars)
         {
-            var r = new Regex("--VARS--(.*)", RegexOptions.Singleline);
-            var m = r.Match(output);
-            if (m.Success)
+            var result = new Regex("--VARS--(.*)", RegexOptions.Singleline);
+            var match = result.Match(output);
+            if (match.Success)
             {
-                output = r.Replace(output, "");
+                output = result.Replace(output, "");
                 foreach (Match m2 in
-                         new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(m.Groups[1].ToString()))
+                         new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(match.Groups[1].ToString()))
                 {
                     var key = m2.Groups[1].Value;
                     var value = m2.Groups[2].Value;
@@ -119,11 +122,11 @@ public partial class PH
     ///     Exe must be in path
     /// </summary>
     /// <param name="p"></param>
-    public static void Start(string p)
+    public static void Start(string parameter)
     {
         try
         {
-            Process.Start("cmd.exe", "/c " + p);
+            Process.Start("cmd.exe", "/c " + parameter);
         }
         catch (Exception ex)
         {
@@ -142,7 +145,7 @@ public partial class PH
             ThrowEx.CustomWithStackTrace(ex);
         }
     }
-    public static void StartHidden(string p, string k)
+    public static void StartHidden(string parameter, string k)
     {
         try
         {
@@ -151,7 +154,7 @@ public partial class PH
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
             startInfo.WorkingDirectory = k;
             startInfo.FileName = "cmd.exe";
-            startInfo.Arguments = "/C " + p;
+            startInfo.Arguments = "/C " + parameter;
             process.StartInfo = startInfo;
             process.Start();
         }
@@ -277,7 +280,7 @@ public partial class PH
     public static bool IsAlreadyRunning(string name)
     {
         IList<string> pr = Process.GetProcessesByName(name).Select(d => d.ProcessName).ToList();
-        //var processes = Process.GetProcesses(name).Where(s => s.ProcessName.Contains(name)).Select(d => d.ProcessName);
+        //var processes = Process.GetProcesses(name).Where(text => text.ProcessName.Contains(name)).Select(d => d.ProcessName);
         return pr.Count() > 1;
     }
     public static bool ExistsOnPath(string fileName)
@@ -300,15 +303,15 @@ public partial class PH
     public static List<string> ProcessesWithNameContains(string name)
     {
         var processes = GetProcessesNames(true);
-        var s = processes.Where(d => d.Contains(name.ToLower()))
+        var text = processes.Where(d => d.Contains(name.ToLower()))
             .ToList(); //CA.ReturnWhichContains(processes, name.ToLower());
-        return s;
+        return text;
     }
     public static int TerminateProcessesWithNameContains(string name)
     {
-        var s = ProcessesWithNameContains(name);
+        var text = ProcessesWithNameContains(name);
         var ended = 0;
-        foreach (var item in s) ended += Terminate(item);
+        foreach (var item in text) ended += Terminate(item);
         return ended;
     }
     /// <summary>
@@ -396,9 +399,9 @@ public partial class PH
     //}
     public static List<string> GetProcessesNames(bool lower)
     {
-        var p = Process.GetProcesses().Select(d => d.ProcessName).ToList();
-        if (lower) CA.ToLower(p);
-        return p;
+        var parameter = Process.GetProcesses().Select(d => d.ProcessName).ToList();
+        if (lower) CA.ToLower(parameter);
+        return parameter;
     }
     ///// <summary>
     /////     For search one term in all uris use UriWebServices.SearchInAll

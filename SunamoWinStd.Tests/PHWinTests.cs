@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 using Microsoft.Extensions.Logging;
 using SunamoTest;
 using System.Text;
@@ -24,13 +27,13 @@ public class PHWinTests
         var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"a.txt");
         if (!File.Exists(path))
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < 200; i++)
             {
-                sb.AppendLine(i.ToString());
+                stringBuilder.AppendLine(i.ToString());
             }
 
-            File.WriteAllText(path, sb.ToString());
+            File.WriteAllText(path, stringBuilder.ToString());
         }
 
         return path;

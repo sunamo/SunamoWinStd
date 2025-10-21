@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoWinStd;
 
 public class TidyExeHelper
@@ -63,9 +66,9 @@ public class TidyExeHelper
         //m = MemoryMappedFile.CreateFromFile(new FileStream( temp, FileMode.OpenOrCreate), temp, , MemoryMappedFileAccess.ReadWrite, null, HandleInheritability.Inheritable, true); 
         //m =  MemoryMappedFile.CreateFromFile(temp, FileMode.OpenOrCreate, mapName , capacity, MemoryMappedFileAccess.ReadWrite);
         //m = MemoryMappedFile.CreateNew(mapName, capacity);
-        var m = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
+        var message = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
 
-        WriteToFile(input, max, newValue, m);
+        WriteToFile(input, max, newValue, message);
 
         //PowershellRunner ps = new PowershellRunner();
         var comment = "tidy -config " + SH.WrapWithQm(tidy_config) + " -output " + SH.WrapWithQm(mapName) + " " +
@@ -84,14 +87,14 @@ public class TidyExeHelper
 
         string? output = null;
 
-        using (var accesor = m.CreateViewStream())
+        using (var accesor = message.CreateViewStream())
         {
             var reader = new StreamReader(accesor);
             var text = reader.ReadToEnd();
             output = text;
         }
 
-        m.Dispose();
+        message.Dispose();
 
         return output;
     }

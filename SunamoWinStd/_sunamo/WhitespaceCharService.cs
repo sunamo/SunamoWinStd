@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoWinStd._sunamo;
 
 internal class WhitespaceCharService
@@ -12,8 +15,8 @@ internal class WhitespaceCharService
         whiteSpaceChars = new List<char>(whiteSpacesCodes.Count);
         foreach (var item in whiteSpacesCodes)
         {
-            var s = char.ConvertFromUtf32(item);
-            var ch = Convert.ToChar(s);
+            var text = char.ConvertFromUtf32(item);
+            var ch = Convert.ToChar(text);
             whiteSpaceChars.Add(ch);
         }
     }

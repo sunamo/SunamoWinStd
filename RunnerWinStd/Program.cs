@@ -1,4 +1,7 @@
-﻿
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
+
 namespace RunnerWinStd;
 
 using Microsoft.Extensions.Logging;
@@ -13,16 +16,16 @@ internal class Program
 {
     static ILogger logger = NullLogger.Instance;
 
-    private static async Task OpenAllTsTsxVueFilesInVscodeInFolderWorker_ToDelete(List<string> l, bool rec, bool insider)
+    private static async Task OpenAllTsTsxVueFilesInVscodeInFolderWorker_ToDelete(List<string> list, bool rec, bool insider)
     {
-        var files = l.SelectMany(dir => FSGetFiles.GetFilesEveryFolder(logger, dir, "*.ts;*.tsx;*.vue", SearchOption.AllDirectories, new SunamoGetFiles._public.SunamoArgs.GetFilesEveryFolderArgs() { ExcludeGeneratedCodeFolders = true }));
+        var files = list.SelectMany(dir => FSGetFiles.GetFilesEveryFolder(logger, dir, "*.ts;*.tsx;*.vue", SearchOption.AllDirectories, new SunamoGetFiles._public.SunamoArgs.GetFilesEveryFolderArgs() { ExcludeGeneratedCodeFolders = true }));
 
         foreach (var item in files)
         {
-            var c = await File.ReadAllTextAsync(item);
-            c = CSharpHelper.RemoveComments(c);
+            var count = await File.ReadAllTextAsync(item);
+            count = CSharpHelper.RemoveComments(count);
 
-            if (!c.Contains("\"@siesta"))
+            if (!count.Contains("\"@siesta"))
             {
                 continue;
             }

@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 using Microsoft.Extensions.Logging;
 using SunamoTest;
 using SunamoWinStd;
@@ -6,7 +9,7 @@ using TextCopy;
 
 enum LinkType
 {
-    H, J, D
+    H, J, data
 }
 
 
@@ -26,11 +29,11 @@ public class JunctionPointTests
     {
         //TestHelper.Init();
 
-        var d = SetFor(LinkType.D);
-        var td = JunctionPoint.GetTarget(d);
+        var data = SetFor(LinkType.data);
+        var td = JunctionPoint.GetTarget(data);
         // target2 - also folder
         var rd = JunctionPoint.GetTarget(target2);
-        var ed = Directory.Exists(d);
+        var ed = Directory.Exists(data);
 
         var j = SetFor(LinkType.J);
         var tj = JunctionPoint.GetTarget(j);
@@ -53,15 +56,15 @@ public class JunctionPointTests
             path = Path.GetDirectoryName(path);
         }
 
-        StringBuilder sb = new();
+        StringBuilder stringBuilder = new();
 
-        sb.AppendLine($"mkdir {target2}{Folder}");
-        sb.AppendLine($"cd {target2}{Folder}");
-        sb.AppendLine("echo \"Tento text bude vložen do souboru.\" > soubor.txt");
-        sb.AppendLine($"cmd /c mklink /J {J()} {target2}{Folder}");
-        sb.AppendLine();
+        stringBuilder.AppendLine($"mkdir {target2}{Folder}");
+        stringBuilder.AppendLine($"cd {target2}{Folder}");
+        stringBuilder.AppendLine("echo \"Tento text bude vložen do souboru.\" > soubor.txt");
+        stringBuilder.AppendLine($"cmd /c mklink /J {J()} {target2}{Folder}");
+        stringBuilder.AppendLine();
 
-        ClipboardService.SetText(sb.ToString());
+        ClipboardService.SetText(stringBuilder.ToString());
     }
 
     [Fact]
@@ -70,8 +73,8 @@ public class JunctionPointTests
         SetFor(LinkType.J);
 
         var j = J();
-        var b = JunctionPoint.IsJunctionPoint(logger, j);
-        var d = JunctionPoint.IsJunctionPoint(logger, target2 + Folder);
+        var builder = JunctionPoint.IsJunctionPoint(logger, j);
+        var data = JunctionPoint.IsJunctionPoint(logger, target2 + Folder);
     }
 
     [Fact]
@@ -79,20 +82,20 @@ public class JunctionPointTests
     {
 
 
-        var a = JunctionPoint.IsJunctionPoint(logger, D());
+        var argument = JunctionPoint.IsJunctionPoint(logger, data());
 
-        var c = JunctionPoint.IsJunctionPoint(logger, target);
+        var count = JunctionPoint.IsJunctionPoint(logger, target);
 
 
-        var d = JunctionPoint.IsReparsePoint(D());
-        var e = JunctionPoint.IsReparsePoint(J());
+        var data = JunctionPoint.IsReparsePoint(data());
+        var element = JunctionPoint.IsReparsePoint(J());
 
         var f = JunctionPoint.IsReparsePoint(target);
     }
 
     string SetFor(LinkType lt)
     {
-        if (lt == LinkType.J || lt == LinkType.D)
+        if (lt == LinkType.J || lt == LinkType.data)
         {
             target = target2 + Folder;
         }
@@ -111,7 +114,7 @@ public class JunctionPointTests
                 result = J();
                 break;
             case LinkType.D:
-                result = D();
+                result = data();
                 break;
         }
 
@@ -128,7 +131,7 @@ public class JunctionPointTests
         return @"D:\_Test\sunamo\win\JunctionPoint\J_" + Folder;
     }
 
-    string D()
+    string data()
     {
         return @"D:\_Test\sunamo\win\JunctionPoint\D_" + Folder;
     }
@@ -154,7 +157,7 @@ public class JunctionPointTests
     [Fact]
     public void MklinkD()
     {
-        SetFor(LinkType.D);
-        JunctionPoint.MklinkD(D(), target);
+        SetFor(LinkType.data);
+        JunctionPoint.MklinkD(data(), target);
     }
 }

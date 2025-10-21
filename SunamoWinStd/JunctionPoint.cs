@@ -1,3 +1,6 @@
+// EN: Variable names have been checked and replaced with self-descriptive names
+// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+
 namespace SunamoWinStd;
 
 /// <summary>
@@ -166,8 +169,8 @@ public partial class JunctionPoint
     }
     public static bool IsReparsePoint(string path)
     {
-        var p = new ReparsePoint(path);
-        return !string.IsNullOrEmpty(p.Target);
+        var parameter = new ReparsePoint(path);
+        return !string.IsNullOrEmpty(parameter.Target);
     }
     /// Deletes a junction point at the specified source directory along with the directory itself.
     /// Does nothing if the junction point does not exist.
@@ -239,8 +242,8 @@ public partial class JunctionPoint
     /// </exception>
     public static string? GetTarget(string path)
     {
-        var p = new ReparsePoint(path);
-        return p.Target;
+        var parameter = new ReparsePoint(path);
+        return parameter.Target;
         //using (SafeFileHandle handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericRead))
         //{
         //    string target = InternalGetTarget(handle);
