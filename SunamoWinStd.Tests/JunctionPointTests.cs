@@ -9,7 +9,7 @@ using TextCopy;
 
 enum LinkType
 {
-    H, J, data
+    H, J, D
 }
 
 
@@ -29,11 +29,11 @@ public class JunctionPointTests
     {
         //TestHelper.Init();
 
-        var data = SetFor(LinkType.data);
-        var td = JunctionPoint.GetTarget(data);
+        var dataPath = SetFor(LinkType.D);
+        var dataTarget = JunctionPoint.GetTarget(dataPath);
         // target2 - also folder
         var rd = JunctionPoint.GetTarget(target2);
-        var ed = Directory.Exists(data);
+        var ed = Directory.Exists(dataPath);
 
         var j = SetFor(LinkType.J);
         var tj = JunctionPoint.GetTarget(j);
@@ -87,7 +87,7 @@ public class JunctionPointTests
         var count = JunctionPoint.IsJunctionPoint(logger, target);
 
 
-        var data = JunctionPoint.IsReparsePoint(data());
+        var isDataReparsePoint = JunctionPoint.IsReparsePoint(data());
         var element = JunctionPoint.IsReparsePoint(J());
 
         var f = JunctionPoint.IsReparsePoint(target);
@@ -95,7 +95,7 @@ public class JunctionPointTests
 
     string SetFor(LinkType lt)
     {
-        if (lt == LinkType.J || lt == LinkType.data)
+        if (lt == LinkType.J || lt == LinkType.D)
         {
             target = target2 + Folder;
         }
@@ -157,7 +157,7 @@ public class JunctionPointTests
     [Fact]
     public void MklinkD()
     {
-        SetFor(LinkType.data);
+        SetFor(LinkType.D);
         JunctionPoint.MklinkD(data(), target);
     }
 }

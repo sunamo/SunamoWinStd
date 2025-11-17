@@ -16,8 +16,8 @@ internal class WhitespaceCharService
         foreach (var item in whiteSpacesCodes)
         {
             var text = char.ConvertFromUtf32(item);
-            var ch = Convert.ToChar(text);
-            whiteSpaceChars.Add(ch);
+            var charValue = Convert.ToChar(text);
+            whiteSpaceChars.Add(charValue);
         }
     }
     internal readonly List<int> whiteSpacesCodes = new(new[]
