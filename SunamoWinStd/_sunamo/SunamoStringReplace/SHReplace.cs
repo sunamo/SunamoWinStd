@@ -1,6 +1,7 @@
+namespace SunamoWinStd._sunamo.SunamoStringReplace;
+
 // EN: Variable names have been checked and replaced with self-descriptive names
 // CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-namespace SunamoWinStd._sunamo.SunamoStringReplace;
 internal class SHReplace
 {
     internal static string ReplaceAll(string vstup, string zaCo, params string[] co)

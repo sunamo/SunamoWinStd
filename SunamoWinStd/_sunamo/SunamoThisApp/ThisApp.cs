@@ -1,6 +1,7 @@
+namespace SunamoWinStd._sunamo.SunamoThisApp;
+
 // EN: Variable names have been checked and replaced with self-descriptive names
 // CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-namespace SunamoWinStd._sunamo.SunamoThisApp;
 internal class ThisApp
 {
     internal static void Success(string v, params string[] o)
