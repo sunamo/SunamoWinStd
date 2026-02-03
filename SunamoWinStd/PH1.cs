@@ -227,6 +227,8 @@ public partial class PH
     //}
     internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool throwExWhenError, int? openOnLine)
     {
+        arguments = SH.WrapWithChar(arguments.TrimEnd('"').TrimStart('"'), '"');
+
         if (openOnLine != null)
         {
             arguments = $"-g {arguments}:{openOnLine}";

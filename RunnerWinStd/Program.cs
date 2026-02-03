@@ -12,35 +12,11 @@ using SunamoWinStd;
 using SunamoWinStd.Tests;
 using System.Threading.Tasks;
 
-internal class Program
+internal partial class Program
 {
     static ILogger logger = NullLogger.Instance;
 
-    private static async Task OpenAllTsTsxVueFilesInVscodeInFolderWorker_ToDelete(List<string> list, bool rec, bool insider)
-    {
-        var files = list.SelectMany(dir => FSGetFiles.GetFilesEveryFolder(logger, dir, "*.ts;*.tsx;*.vue", SearchOption.AllDirectories, new SunamoGetFiles._public.SunamoArgs.GetFilesEveryFolderArgs() { ExcludeGeneratedCodeFolders = true }));
-
-        foreach (var item in files)
-        {
-            var count = await File.ReadAllTextAsync(item);
-            count = CSharpHelper.RemoveComments(count);
-
-            if (!count.Contains("\"@siesta"))
-            {
-                continue;
-            }
-
-            if (insider)
-            {
-                PHWin.CodeInsider(logger, item);
-            }
-            else
-            {
-                PHWin.Code(logger, item);
-            }
-            Thread.Sleep(500);
-        }
-    }
+    
 
     static void Main()
     {
@@ -50,11 +26,13 @@ internal class Program
         //t.OpenInBrowserTest();
 
         //t.CodeTest();
-        OpenAllTsTsxVueFilesInVscodeInFolderWorker_ToDelete([@"C:\Proj_Net\_ZaPo\portal-ui\src\shared\"], true, false);
+        //OpenAllTsTsxVueFilesInVscodeInFolderWorker_ToDelete([@"C:\Proj_Net\_ZaPo\portal-ui\src\shared\"], true, false);
 
         //t.CodeTest();
         //t.CodiumTest();
         //t.CodeInsiderTest();
+
+        PHWin.Codium(logger, @"D:\Downloads\At ziji duchove.srt");
 
         //t.CodiumTest();
 
