@@ -3,7 +3,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version>26.2.5.1</Version>
+    <Version>26.2.7.2</Version>
     <Description>Windows-specific code on net9.0 moniker</Description>
     <Authors>www.sunamo.cz</Authors>
     <Copyright>www.sunamo.cz</Copyright>
@@ -12,13 +12,18 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <PackageReleaseNotes>feat: Enable SourceLink and added debug symbols</PackageReleaseNotes>
+    <PackageReleaseNotes>feat: Enable debug symbols</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedAllSources>true</EmbedAllSources>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup>
-    <DebugType>embedded</DebugType>
+    <DebugType>portable</DebugType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
