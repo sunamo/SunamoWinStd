@@ -1,10 +1,17 @@
 namespace SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
 
+/// <summary>
+/// Tracks the registration state and count for progress reporting.
+/// </summary>
 internal class ProgressState
 {
-    internal bool isRegistered { get; set; } = false;
-    internal event Action<int> AnotherSong;
-    internal event Action<int> OverallSongs;
-    internal event Action WriteProgressBarEnd;
-    internal int n = 0;
+    /// <summary>
+    /// Whether this progress state has been registered with a progress reporter.
+    /// </summary>
+    internal bool IsRegistered { get; set; } = false;
+
+    /// <summary>
+    /// The current count for progress tracking.
+    /// </summary>
+    internal int Count { get; set; } = 0;
 }

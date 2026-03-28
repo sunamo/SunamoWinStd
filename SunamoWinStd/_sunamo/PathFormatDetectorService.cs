@@ -2,26 +2,26 @@ namespace SunamoWinStd._sunamo;
 
 internal class PathFormatDetectorService(ILogger logger)
 {
-    internal bool IsWindowsPathFormat(string argValue)
+    internal bool IsWindowsPathFormat(string path)
     {
-        if (string.IsNullOrWhiteSpace(argValue)) return false;
-        var badFormat = false;
-        if (argValue.Length < 3) return badFormat;
-        if (!char.IsLetter(argValue[0])) badFormat = true;
-        if (char.IsLetter(argValue[1])) badFormat = true;
-        if (argValue.Length > 2)
-            if (argValue[1] != '\\' && argValue[2] != '\\')
-                badFormat = true;
-        return !badFormat;
+        if (string.IsNullOrWhiteSpace(path)) return false;
+        var isBadFormat = false;
+        if (path.Length < 3) return isBadFormat;
+        if (!char.IsLetter(path[0])) isBadFormat = true;
+        if (char.IsLetter(path[1])) isBadFormat = true;
+        if (path.Length > 2)
+            if (path[1] != '\\' && path[2] != '\\')
+                isBadFormat = true;
+        return !isBadFormat;
     }
 
     /// <summary>
-    /// Return true if Windows, false if Unix
+    /// Returns true if Windows path, false if Unix path, null if undetermined.
     /// </summary>
-    /// <param name="path"></param>
-    /// <param name="logIfIsNotUnixOrWindowsPath"></param>
-    /// <returns></returns>
-    internal bool? DetectPathType(string path, bool logIfIsNotUnixOrWindowsPath = false)
+    /// <param name="path">The path to detect format for.</param>
+    /// <param name="isLoggingIfNotUnixOrWindowsPath">Whether to log an error if the path format cannot be determined.</param>
+    /// <returns>True for Windows, false for Unix, null for undetermined.</returns>
+    internal bool? DetectPathType(string path, bool isLoggingIfNotUnixOrWindowsPath = false)
     {
         if (IsWindowsPathFormat(path))
         {
@@ -38,10 +38,7 @@ internal class PathFormatDetectorService(ILogger logger)
         }
         else if (path.Contains('\\') && path.Contains('/'))
         {
-            // Obsahuje oba oddělovače - může být složitější případ (např. UNC cesty ve Windows,
-            // nebo záměrná kombinace). Zde můžeme upřednostnit Windows, nebo vrátit neurčito.
-            // Záleží na konkrétním případu použití.
-            if (logIfIsNotUnixOrWindowsPath)
+            if (isLoggingIfNotUnixOrWindowsPath)
             {
                 logger.LogError(path + " - Contains both \\ and /");
             }
@@ -50,7 +47,7 @@ internal class PathFormatDetectorService(ILogger logger)
         }
         else
         {
-            if (logIfIsNotUnixOrWindowsPath)
+            if (isLoggingIfNotUnixOrWindowsPath)
             {
                 logger.LogError(path + " - Invalid path or does not contain separators");
             }

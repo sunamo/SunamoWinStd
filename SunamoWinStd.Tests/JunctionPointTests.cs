@@ -1,163 +1,213 @@
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-
 using Microsoft.Extensions.Logging;
 using SunamoTest;
 using SunamoWinStd;
 using System.Text;
 using TextCopy;
 
+/// <summary>
+/// Type of symbolic link to create.
+/// </summary>
 enum LinkType
 {
-    H, J, D
+    /// <summary>
+    /// Hard link (/H).
+    /// </summary>
+    HardLink,
+    /// <summary>
+    /// Junction (/J).
+    /// </summary>
+    Junction,
+    /// <summary>
+    /// Directory symbolic link (/D).
+    /// </summary>
+    Directory
 }
 
 
+/// <summary>
+/// Tests for junction point creation, detection, and target resolution.
+/// </summary>
 public class JunctionPointTests
 {
-    ILogger logger = TestLogger.Instance;
+    private ILogger logger = TestLogger.Instance;
     /// <summary>
-    /// Nastavuje se v metodě SetFor
+    /// Set in the SetFor method.
     /// </summary>
-    string target = null;
-    const string target2 = @"D:\_Test\sunamo\win\JunctionPoint\";
-    string Folder => "Folder";
-    string File => "File";
+    private string? target = null;
+    private const string testBasePath = @"D:\_Test\sunamo\win\JunctionPoint\";
+    private string FolderName => "Folder";
+    private string FileName => "File";
 
+    /// <summary>
+    /// Tests getting the target of junction points created with different link types.
+    /// </summary>
     [Fact]
     public void GetTargetTest()
     {
-        //TestHelper.Init();
+        var directoryLinkPath = SetFor(LinkType.Directory);
+        Assert.NotNull(directoryLinkPath);
+        var directoryTarget = JunctionPoint.GetTarget(directoryLinkPath!);
+        var basePathTarget = JunctionPoint.GetTarget(testBasePath);
+        var isDirectoryLinkExists = System.IO.Directory.Exists(directoryLinkPath);
 
-        var dataPath = SetFor(LinkType.D);
-        var dataTarget = JunctionPoint.GetTarget(dataPath);
-        // target2 - also folder
-        var rd = JunctionPoint.GetTarget(target2);
-        var ed = Directory.Exists(dataPath);
+        var junctionPath = SetFor(LinkType.Junction);
+        Assert.NotNull(junctionPath);
+        var junctionTarget = JunctionPoint.GetTarget(junctionPath!);
+        var isJunctionExists = System.IO.Directory.Exists(junctionPath);
 
-        var j = SetFor(LinkType.J);
-        var tj = JunctionPoint.GetTarget(j);
-        //var rj = JunctionPoint.GetTarget(target);
-        var ej = Directory.Exists(j);
+        SetFor(LinkType.HardLink);
+        var hardLinkPath = SetFor(LinkType.HardLink);
+        Assert.NotNull(hardLinkPath);
+        var hardLinkTarget = JunctionPoint.GetTarget(hardLinkPath!);
+        var targetResolved = JunctionPoint.GetTarget(target!);
+        var isHardLinkExists = System.IO.Directory.Exists(hardLinkPath);
 
-        SetFor(LinkType.H);
-        var h = SetFor(LinkType.H);
-        var th = JunctionPoint.GetTarget(h);
-        var rh = JunctionPoint.GetTarget(target);
-        var eh = Directory.Exists(h);
+        Assert.True(isDirectoryLinkExists || isJunctionExists || isHardLinkExists,
+            "At least one of the test link types should exist on disk");
     }
 
-    public void CreateWithMklink()
+    /// <summary>
+    /// Creates mklink commands for testing and copies them to clipboard.
+    /// </summary>
+    private void CreateWithMklink()
     {
-        var path = target2;
-        while (!Directory.Exists(path))
+        var currentPath = testBasePath;
+        while (!System.IO.Directory.Exists(currentPath))
         {
-            Directory.CreateDirectory(path);
-            path = Path.GetDirectoryName(path);
+            System.IO.Directory.CreateDirectory(currentPath);
+            currentPath = Path.GetDirectoryName(currentPath)!;
         }
 
         StringBuilder stringBuilder = new();
 
-        stringBuilder.AppendLine($"mkdir {target2}{Folder}");
-        stringBuilder.AppendLine($"cd {target2}{Folder}");
-        stringBuilder.AppendLine("echo \"Tento text bude vložen do souboru.\" > soubor.txt");
-        stringBuilder.AppendLine($"cmd /c mklink /J {J()} {target2}{Folder}");
+        stringBuilder.AppendLine($"mkdir {testBasePath}{FolderName}");
+        stringBuilder.AppendLine($"cd {testBasePath}{FolderName}");
+        stringBuilder.AppendLine("echo \"This text will be inserted into the file.\" > file.txt");
+        stringBuilder.AppendLine($"cmd /c mklink /J {GetJunctionPath()} {testBasePath}{FolderName}");
         stringBuilder.AppendLine();
 
         ClipboardService.SetText(stringBuilder.ToString());
     }
 
+    /// <summary>
+    /// Tests that a junction point is correctly identified as a junction.
+    /// </summary>
     [Fact]
     public void IsJunctionPoint_Junction_Test()
     {
-        SetFor(LinkType.J);
+        SetFor(LinkType.Junction);
 
-        var j = J();
-        var builder = JunctionPoint.IsJunctionPoint(logger, j);
-        var data = JunctionPoint.IsJunctionPoint(logger, target2 + Folder);
+        var junctionPath = GetJunctionPath();
+        var isJunction = JunctionPoint.IsJunctionPoint(logger, junctionPath);
+        var isFolderJunction = JunctionPoint.IsJunctionPoint(logger, testBasePath + FolderName);
+
+        if (System.IO.Directory.Exists(junctionPath))
+        {
+            Assert.True(isJunction, "Junction path should be detected as a junction point");
+        }
+
+        Assert.False(isFolderJunction, "Regular folder should not be detected as a junction point");
     }
 
+    /// <summary>
+    /// Tests junction point and reparse point detection for different link types.
+    /// </summary>
     [Fact]
     public void IsJunctionPointTest()
     {
+        var directoryLinkPath = GetDirectoryLinkPath();
+        var junctionPath = GetJunctionPath();
 
+        var isDirectoryJunction = JunctionPoint.IsJunctionPoint(logger, directoryLinkPath);
+        var isDirectoryReparsePoint = JunctionPoint.IsReparsePoint(directoryLinkPath);
+        var isJunctionReparsePoint = JunctionPoint.IsReparsePoint(junctionPath);
 
-        var argument = JunctionPoint.IsJunctionPoint(logger, data());
+        if (System.IO.Directory.Exists(directoryLinkPath))
+        {
+            Assert.True(isDirectoryReparsePoint, "Directory link should be a reparse point");
+        }
 
-        var count = JunctionPoint.IsJunctionPoint(logger, target);
-
-
-        var isDataReparsePoint = JunctionPoint.IsReparsePoint(data());
-        var element = JunctionPoint.IsReparsePoint(J());
-
-        var f = JunctionPoint.IsReparsePoint(target);
+        if (System.IO.Directory.Exists(junctionPath))
+        {
+            Assert.True(isJunctionReparsePoint, "Junction should be a reparse point");
+        }
     }
 
-    string SetFor(LinkType lt)
+    private string? SetFor(LinkType linkType)
     {
-        if (lt == LinkType.J || lt == LinkType.D)
+        if (linkType == LinkType.Junction || linkType == LinkType.Directory)
         {
-            target = target2 + Folder;
+            target = testBasePath + FolderName;
         }
         else
         {
-            target = target2 + File;
+            target = testBasePath + FileName;
         }
 
-        string result = null;
-        switch (lt)
+        string? result = null;
+        switch (linkType)
         {
-            case LinkType.H:
-                result = H();
+            case LinkType.HardLink:
+                result = GetHardLinkPath();
                 break;
-            case LinkType.J:
-                result = J();
+            case LinkType.Junction:
+                result = GetJunctionPath();
                 break;
-            case LinkType.D:
-                result = data();
+            case LinkType.Directory:
+                result = GetDirectoryLinkPath();
                 break;
         }
 
         return result;
     }
 
-    string H()
+    private string GetHardLinkPath()
     {
-        return @"D:\_Test\sunamo\win\JunctionPoint\H_" + Folder;
+        return @"D:\_Test\sunamo\win\JunctionPoint\H_" + FolderName;
     }
 
-    string J()
+    private string GetJunctionPath()
     {
-        return @"D:\_Test\sunamo\win\JunctionPoint\J_" + Folder;
+        return @"D:\_Test\sunamo\win\JunctionPoint\J_" + FolderName;
     }
 
-    string data()
+    private string GetDirectoryLinkPath()
     {
-        return @"D:\_Test\sunamo\win\JunctionPoint\D_" + Folder;
+        return @"D:\_Test\sunamo\win\JunctionPoint\D_" + FolderName;
     }
 
+    /// <summary>
+    /// Tests creating a hard link with mklink /H.
+    /// </summary>
     [Fact]
-    public void MklinkH()
+    public void MklinkHardLinkTest()
     {
-
-        SetFor(LinkType.H);
-        JunctionPoint.MklinkH(H() + ".txt", target + ".txt");
+        SetFor(LinkType.HardLink);
+        var command = JunctionPoint.MklinkH(GetHardLinkPath() + ".txt", target! + ".txt");
+        Assert.NotNull(command);
     }
 
+    /// <summary>
+    /// Tests creating a junction with mklink /J.
+    /// </summary>
     [Fact]
-    public void MklinkJ()
+    public void MklinkJunctionTest()
     {
-
-        SetFor(LinkType.J);
-        var j = J();
-        JunctionPoint.Delete(logger, j);
-        JunctionPoint.MklinkJ(j, target);
+        SetFor(LinkType.Junction);
+        var junctionPath = GetJunctionPath();
+        JunctionPoint.Delete(logger, junctionPath);
+        var command = JunctionPoint.MklinkJ(junctionPath, target!);
+        Assert.NotNull(command);
     }
 
+    /// <summary>
+    /// Tests creating a directory symbolic link with mklink /D.
+    /// </summary>
     [Fact]
-    public void MklinkD()
+    public void MklinkDirectoryTest()
     {
-        SetFor(LinkType.D);
-        JunctionPoint.MklinkD(data(), target);
+        SetFor(LinkType.Directory);
+        var command = JunctionPoint.MklinkD(GetDirectoryLinkPath(), target!);
+        Assert.NotNull(command);
     }
 }

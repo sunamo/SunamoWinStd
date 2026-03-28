@@ -1,12 +1,22 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents an NTFS reparse point and resolves its target path.
+/// </summary>
 public class ReparsePoint
 {
+    /// <summary>
+    /// Type of NTFS reparse point tag.
+    /// </summary>
     public enum TagType
     {
+        /// <summary>Not a reparse point.</summary>
         None = 0,
+        /// <summary>A mounted drive volume.</summary>
         MountPoint = 1,
+        /// <summary>A symbolic link (file or directory).</summary>
         SymbolicLink = 2,
+        /// <summary>A directory junction point.</summary>
         JunctionPoint = 3
     }
     // This is based on the code at http://www.flexhex.com/docs/articles/hard-links.phtml

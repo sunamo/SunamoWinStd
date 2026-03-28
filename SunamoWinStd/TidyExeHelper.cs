@@ -1,10 +1,16 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Helper for formatting HTML using the tidy executable via memory-mapped files.
+/// </summary>
 public class TidyExeHelper
 {
-    //public static object FS { get; private set; }
-
-
+    /// <summary>
+    /// Generates a unique map info tuple with file info and map name.
+    /// </summary>
+    /// <param name="mapDirectory">Directory for the map file.</param>
+    /// <param name="fileExtension">File extension for the map file.</param>
+    /// <returns>Tuple of FileInfo and unique map name.</returns>
     public static Tuple<FileInfo, string> GenerateMapInfo(string mapDirectory, string fileExtension)
     {
         var uniqueMapName = Guid.NewGuid().ToString();
@@ -12,86 +18,83 @@ public class TidyExeHelper
         return Tuple.Create(new FileInfo(fileName), uniqueMapName);
     }
 
-    public static void WriteToFile(Tuple<FileInfo, string> mapInfo, string input)
+    /// <summary>
+    /// Writes input text to a memory-mapped file.
+    /// </summary>
+    /// <param name="mapInfo">Map info tuple containing file info and map name.</param>
+    /// <param name="text">Text to write.</param>
+    public static void WriteToFile(Tuple<FileInfo, string> mapInfo, string text)
     {
-        var max = int.MaxValue / 2;
-        var newValue = Encoding.UTF8.GetBytes(input);
-        long capacity = newValue.Length + max;
+        var maxOffset = int.MaxValue / 2;
+        var encodedBytes = Encoding.UTF8.GetBytes(text);
+        long capacity = encodedBytes.Length + maxOffset;
 
-        using (var mmf = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2,
+        using (var memoryMappedFile = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2,
                    capacity))
         {
-            WriteToFile(input, max, newValue, mmf);
+            WriteToFile(text, maxOffset, encodedBytes, memoryMappedFile);
         }
     }
 
-    private static void WriteToFile(string value, int max, byte[] newValue, MemoryMappedFile mmf)
+    private static void WriteToFile(string text, int maxOffset, byte[] encodedBytes, MemoryMappedFile memoryMappedFile)
     {
-        using (var accesor = mmf.CreateViewAccessor())
+        using (var accessor = memoryMappedFile.CreateViewAccessor())
         {
-            var newValueLength = BitConverter.GetBytes(value.Length);
-            accesor.WriteArray(0, newValueLength, 0, newValueLength.Length);
-            accesor.WriteArray(max, newValue, 0, newValue.Length);
+            var lengthBytes = BitConverter.GetBytes(text.Length);
+            accessor.WriteArray(0, lengthBytes, 0, lengthBytes.Length);
+            accessor.WriteArray(maxOffset, encodedBytes, 0, encodedBytes.Length);
         }
     }
 
+    /// <summary>
+    /// Formats HTML content using the tidy executable via PowerShell.
+    /// </summary>
+    /// <param name="text">HTML content to format.</param>
+    /// <param name="tidyConfigPath">Path to the tidy configuration file.</param>
+    /// <param name="powershellRunnerInvoke">Function to invoke PowerShell commands.</param>
+    /// <returns>Formatted HTML content.</returns>
     public static
 #if ASYNC
         async Task<string>
 #else
     string
 #endif
-        FormatHtml(string input, string tidy_config,
+        FormatHtml(string text, string tidyConfigPath,
             Func<List<string>, Task<List<List<string>>>> powershellRunnerInvoke)
     {
         var mapInfo = GenerateMapInfo(Path.GetTempPath(), ".txt");
-        //WriteToFile(mapInfo, "abc");
 
-        //var random = RandomHelper.RandomString(5, false, false, true, false);
-        var temp = Path.GetTempFileName();
-
-        int max, capacity;
-        max = capacity = 1024 * 1024 * 2;
+        int maxOffset, capacity;
+        maxOffset = capacity = 1024 * 1024 * 2;
 
         var mapName = mapInfo.Item2;
 
-        //var max = int.MaxValue / 2;
-        var newValue = Encoding.UTF8.GetBytes(input);
-        capacity = newValue.Length + max;
+        var encodedBytes = Encoding.UTF8.GetBytes(text);
+        capacity = encodedBytes.Length + maxOffset;
 
-        //mapName  cant be identical like path
-        //m = MemoryMappedFile.CreateFromFile(new FileStream( temp, FileMode.OpenOrCreate), temp, , MemoryMappedFileAccess.ReadWrite, null, HandleInheritability.Inheritable, true); 
-        //m =  MemoryMappedFile.CreateFromFile(temp, FileMode.OpenOrCreate, mapName , capacity, MemoryMappedFileAccess.ReadWrite);
-        //m = MemoryMappedFile.CreateNew(mapName, capacity);
-        var message = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
+        var memoryMappedFile = MemoryMappedFile.CreateFromFile(mapInfo.Item1.FullName, FileMode.Create, mapInfo.Item2, capacity);
 
-        WriteToFile(input, max, newValue, message);
+        WriteToFile(text, maxOffset, encodedBytes, memoryMappedFile);
 
-        //PowershellRunner ps = new PowershellRunner();
-        var comment = "tidy -config " + SH.WrapWithQm(tidy_config) + " -output " + SH.WrapWithQm(mapName) + " " +
+        var command = "tidy -config " + SH.WrapWithQm(tidyConfigPath) + " -output " + SH.WrapWithQm(mapName) + " " +
                       SH.WrapWithQm(mapName);
-        //comment = "tidy -config \"D:\\pa\\tidy\\tidy_config.txt\" -output \"D:\\pa\\tidy\\1_Out.html\" \"D:\\pa\\tidy\\1.html\"";
-        var result =
+        var commandResult =
 #if ASYNC
             await
 #endif
-                powershellRunnerInvoke(new List<string>([comment]));
-
-        if (result[0].Count > 0)
-        {
-        }
+                powershellRunnerInvoke(new List<string>([command]));
 
 
         string? output = null;
 
-        using (var accesor = message.CreateViewStream())
+        using (var viewStream = memoryMappedFile.CreateViewStream())
         {
-            var reader = new StreamReader(accesor);
-            var text = reader.ReadToEnd();
-            output = text;
+            var reader = new StreamReader(viewStream);
+            var readText = reader.ReadToEnd();
+            output = readText;
         }
 
-        message.Dispose();
+        memoryMappedFile.Dispose();
 
         return output;
     }

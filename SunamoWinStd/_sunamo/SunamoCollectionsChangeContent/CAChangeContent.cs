@@ -1,41 +1,53 @@
 namespace SunamoWinStd._sunamo.SunamoCollectionsChangeContent;
 
+/// <summary>
+/// Internal collection content change utility methods.
+/// </summary>
 internal class CAChangeContent
 {
-    internal static List<string> ChangeContent0(ChangeContentArgsWinStd? a, List<string> files_in, Func<string, string> func)
+    /// <summary>
+    /// Applies a transformation function to every element in the list and optionally removes null/empty entries.
+    /// </summary>
+    /// <param name="args">Configuration for null/empty removal. Can be null.</param>
+    /// <param name="list">The list to transform.</param>
+    /// <param name="func">The transformation function to apply to each element.</param>
+    /// <returns>The transformed list.</returns>
+    internal static List<string> ChangeContent0(ChangeContentArgsWinStd? args, List<string> list, Func<string, string> func)
     {
-        for (int i = 0; i < files_in.Count; i++)
+        for (int i = 0; i < list.Count; i++)
         {
-            files_in[i] = func.Invoke(files_in[i]);
+            list[i] = func.Invoke(list[i]);
         }
 
-        RemoveNullOrEmpty(a, files_in);
+        RemoveNullOrEmpty(args, list);
 
-        return files_in;
+        return list;
     }
 
-
-
-    private static void RemoveNullOrEmpty(ChangeContentArgsWinStd? a, List<string> files_in)
+    /// <summary>
+    /// Removes null and/or empty entries from the list based on the configuration.
+    /// </summary>
+    /// <param name="args">Configuration specifying which entries to remove.</param>
+    /// <param name="list">The list to clean up.</param>
+    private static void RemoveNullOrEmpty(ChangeContentArgsWinStd? args, List<string> list)
     {
-        if (a != null)
+        if (args != null)
         {
-            if (a.removeNull)
+            if (args.IsRemovingNull)
             {
-                files_in.Remove(null);
+                list.Remove(null!);
             }
 
-            if (a.removeEmpty)
+            if (args.IsRemovingEmpty)
             {
-                for (int i = files_in.Count - 1; i >= 0; i--)
+                for (int i = list.Count - 1; i >= 0; i--)
                 {
-                    if (files_in[i].Trim() == string.Empty)
+                    if (list[i].Trim() == string.Empty)
                     {
-                        files_in.RemoveAt(i);
+                        list.RemoveAt(i);
                     }
                 }
             }
         }
     }
-
 }

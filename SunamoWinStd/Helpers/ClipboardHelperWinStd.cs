@@ -1,16 +1,15 @@
 namespace SunamoWinStd.Helpers;
 
-public class ClipboardHelperWinStd //: IClipboardHelper
+/// <summary>
+/// Clipboard helper for Windows using TextCopy library.
+/// </summary>
+public class ClipboardHelperWinStd
 {
-    //static TextCopyClipboard textCopy = new TextCopyClipboard();
-    /// <summary>
-    /// Schválně jsem to dal malým - místo Instance musím používat CreateInstance
-    /// </summary>
     private static ClipboardHelperWinStd? instance = null;
     /// <summary>
-    /// Už to nechat jako property, jako to bylo prvně, než jsem to změnil na metodu
-    /// Aha musí to být metoda protože to předávám jako Func< IClipboardHelper></IClipboardHelper>
+    /// Gets or creates the singleton instance. Must be a method because it is passed as Func.
     /// </summary>
+    /// <returns>The singleton instance.</returns>
     public static ClipboardHelperWinStd Instance()
     {
         if (instance == null)
@@ -19,41 +18,77 @@ public class ClipboardHelperWinStd //: IClipboardHelper
         }
         return instance;
     }
+    /// <summary>
+    /// Checks if the clipboard contains text. Always returns true for this implementation.
+    /// </summary>
+    /// <returns>True.</returns>
     public bool ContainsText()
     {
         return true;
     }
 
+    /// <summary>
+    /// Gets clipboard text split into lines.
+    /// </summary>
+    /// <returns>List of lines from clipboard text.</returns>
     public List<string> GetLines()
     {
         return SHGetLines.GetLines(GetText());
     }
+    /// <summary>
+    /// Gets the current clipboard text.
+    /// </summary>
+    /// <returns>Clipboard text or null.</returns>
     public string? GetText()
     {
         return ClipboardService.GetText();
     }
-    public void SetLines(List<string> d)
+    /// <summary>
+    /// Sets clipboard text from a list of lines joined by newlines.
+    /// </summary>
+    /// <param name="list">Lines to set.</param>
+    public void SetLines(List<string> list)
     {
-        SetText(string.Join(Environment.NewLine, d));
+        SetText(string.Join(Environment.NewLine, list));
     }
-    public void SetList(List<string> d)
+    /// <summary>
+    /// Sets clipboard text from a list joined by newlines.
+    /// </summary>
+    /// <param name="list">Items to set.</param>
+    public void SetList(List<string> list)
     {
-        SetText(string.Join(Environment.NewLine, d));
+        SetText(string.Join(Environment.NewLine, list));
     }
-    public void SetText(string s)
+    /// <summary>
+    /// Sets clipboard text.
+    /// </summary>
+    /// <param name="text">Text to set.</param>
+    public void SetText(string text)
     {
-        ClipboardService.SetText(s);
+        ClipboardService.SetText(text);
     }
+    /// <summary>
+    /// Sets clipboard text from a StringBuilder.
+    /// </summary>
+    /// <param name="stringBuilder">StringBuilder containing the text.</param>
     public void SetText(StringBuilder stringBuilder)
     {
         SetText(stringBuilder.ToString());
     }
-    public void SetText2(string s)
+    /// <summary>
+    /// Sets clipboard text (alternative method).
+    /// </summary>
+    /// <param name="text">Text to set.</param>
+    public void SetText2(string text)
     {
-        SetText(s);
+        SetText(text);
     }
-    public void SetText3(string s)
+    /// <summary>
+    /// Sets clipboard text (alternative method).
+    /// </summary>
+    /// <param name="text">Text to set.</param>
+    public void SetText3(string text)
     {
-        SetText(s);
+        SetText(text);
     }
 }

@@ -2,151 +2,127 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
+    /// <summary>
+    /// Adds the default browser to the browser paths dictionary.
+    /// </summary>
     public static void AddBrowser()
     {
-        AddBrowser(defBr);
+        AddBrowser(defaultBrowser);
     }
-    public static string AddBrowser(Browsers prohlizec)
+    /// <summary>
+    /// Adds the specified browser executable path to the browser paths dictionary.
+    /// </summary>
+    /// <param name="browser">The browser type to add.</param>
+    /// <returns>The executable path of the browser, or empty string if not found.</returns>
+    public static string AddBrowser(Browsers browser)
     {
-        if (path.Count != countOfBrowsers)
+        if (BrowserPaths.Count != browserCount)
         {
-            if (path.ContainsKey(prohlizec)) return path[prohlizec];
-            var builder = string.Empty;
-            switch (prohlizec)
+            if (BrowserPaths.ContainsKey(browser)) return BrowserPaths[browser];
+            var browserPath = string.Empty;
+            switch (browser)
             {
-                case Browsers.Chrome: //1
-                    builder = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.Chrome:
+                    browserPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.Firefox: //2
-                    builder = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
-                    if (!File.Exists(builder)) builder = @"C:\Program Files\Mozilla Firefox\firefox.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.Firefox:
+                    browserPath = @"C:\Program Files (x86)\Mozilla Firefox\firefox.exe";
+                    if (!File.Exists(browserPath)) browserPath = @"C:\Program Files\Mozilla Firefox\firefox.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.EdgeBeta: //3
-                    //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
-                    builder = @"C:\Program Files (x86)\Microsoft\Edge Beta\Application\msedge.exe"; //WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge beta\application", "msedge.exe");
+                case Browsers.EdgeBeta:
+                    browserPath = @"C:\Program Files (x86)\Microsoft\Edge Beta\Application\msedge.exe";
                     break;
-                case Browsers.Opera: //4
-                    // Opera has version also when is installing to PF, it cant be changed
-                    //b = @"C:\Program Files\Opera\65.0.3467.78\opera.exe";
-                    builder = WindowsOSHelper.FileIn(@"C:\Program Files\Opera\", "opera.exe");
-                    if (!File.Exists(builder))
-                        builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera", "opera.exe");
-                    NullIfNotExists(ref builder);
+                case Browsers.Opera:
+                    browserPath = WindowsOSHelper.FileIn(@"C:\Program Files\Opera\", "opera.exe");
+                    if (!File.Exists(browserPath))
+                        browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera", "opera.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.Vivaldi: //5
-                    builder = @"C:\Program Files\Vivaldi\Application\vivaldi.exe";
-                    if (!File.Exists(builder)) builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, "Vivaldi", "vivaldi.exe");
-                    NullIfNotExists(ref builder);
+                case Browsers.Vivaldi:
+                    browserPath = @"C:\Program Files\Vivaldi\Application\vivaldi.exe";
+                    if (!File.Exists(browserPath)) browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, "Vivaldi", "vivaldi.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
-                //case Browsers.InternetExplorer:
-                //    builder = @"C:\Program Files (x86)\Internet Explorer\iexplore.exe";
-                //    break;
-                //case Browsers.Maxthon:
-                //    builder = @"C:\Program Files (x86)\Maxthon5\Bin\Maxthon.exe";
-                //    if (!File.Exists(builder))
-                //    {
-                //        builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Maxthon\Application", "Maxthon.exe");
-                //    }
-                //    NullIfNotExists(ref builder);
-                //    break;
-                case Browsers.Slimjet: //6
-                    //b = @"C:\Program Files\Iridium\iridium.exe";
-                    builder = @"C:\Program Files\Slimjet\slimjet.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.Slimjet:
+                    browserPath = @"C:\Program Files\Slimjet\slimjet.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.WaterFox: //7
-                    //b = @"C:\Program Files\Falkon\falkon.exe";
-                    builder = @"C:\Program Files\Waterfox\waterfox.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.WaterFox:
+                    browserPath = @"C:\Program Files\Waterfox\waterfox.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.OperaGX: //8
-                    builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera GX", "opera.exe");
-                    NullIfNotExists(ref builder);
+                case Browsers.OperaGX:
+                    browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Opera GX", "opera.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
-                //case Browsers.Seznam: //7
-                //    builder = WindowsOSHelper.FileIn(UserFoldersWin.Roaming, @"Seznam Browser", "Seznam.cz.exe");
-                //    NullIfNotExists(ref builder);
-                //    break;
-                //case Browsers.Chromium: //8
-                //    builder = @"D:\paSync\_browsers\Chromium\chrome.exe";
-                //    NullIfNotExists(ref builder);
-                //    break;
-                case Browsers.ChromeCanary: //9
-                    builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Google\Chrome SxS", "chrome.exe");
-                    NullIfNotExists(ref builder);
+                case Browsers.ChromeCanary:
+                    browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Google\Chrome SxS", "chrome.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.Tor: //10
-                    builder = @"D:\Desktop\Tor Browser\Browser\firefox.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.Tor:
+                    browserPath = @"D:\Desktop\Tor Browser\Browser\firefox.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.Bravebrowser: //11
-                    builder = @"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.Bravebrowser:
+                    browserPath = @"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                //case Browsers.PaleMoon:
-                //    builder = @"C:\Program Files\Pale Moon\palemoon.exe";
-                //    NullIfNotExists(ref builder);
-                //    break;
-                case Browsers.ChromeBeta: //12
-                    builder = @"C:\Program Files\Google\Chrome Beta\Application\chrome.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.ChromeBeta:
+                    browserPath = @"C:\Program Files\Google\Chrome Beta\Application\chrome.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.EdgeDev: //13
-                    //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
-                    builder = @"C:\Program Files (x86)\Microsoft\Edge Dev\Application\msedge.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.EdgeDev:
+                    browserPath = @"C:\Program Files (x86)\Microsoft\Edge Dev\Application\msedge.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.EdgeCanary: //14
-                    builder = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge sxs\application", "msedge.exe");
-                    NullIfNotExists(ref builder);
+                case Browsers.EdgeCanary:
+                    browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"microsoft\edge sxs\application", "msedge.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
-                //15
                 case Browsers.ChromeDev:
-                    builder = @"C:\Program Files\Google\Chrome Dev\Application\chrome.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Program Files\Google\Chrome Dev\Application\chrome.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Min:
-                    builder = @"C:\Users\r\AppData\Local\min\min.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Users\r\AppData\Local\min\min.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Basilisk:
-                    builder = @"C:\Program Files\Basilisk\basilisk.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Program Files\Basilisk\basilisk.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.NawerWhale:
-                    builder = @"C:\Program Files\Naver\Naver Whale\Application\whale.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Program Files\Naver\Naver Whale\Application\whale.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.KMeleon:
-                    builder = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.PaleMoon:
-                    builder = @"C:\Program Files\Pale Moon\palemoon.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Program Files\Pale Moon\palemoon.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.LibreWolf:
-                    builder = @"C:\Program Files\LibreWolf\librewolf.exe";
-                    NullIfNotExists(ref builder);
+                    browserPath = @"C:\Program Files\LibreWolf\librewolf.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
-                case Browsers.EdgeStable: //254
-                    // tady se to skutečně jmenuje MicrosoftEdge.exe
-                    builder = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
-                    if (!File.Exists(builder))
-                        //C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe
-                        builder = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
-                    NullIfNotExists(ref builder);
+                case Browsers.EdgeStable:
+                    browserPath = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";
+                    if (!File.Exists(browserPath))
+                        browserPath = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+                    NullIfNotExists(ref browserPath);
                     break;
                 default:
-                    ThrowEx.NotImplementedCase(prohlizec);
+                    ThrowEx.NotImplementedCase(browser);
                     break;
             }
-            if (builder == null) builder = string.Empty;
-            path.Add(prohlizec, builder);
-            return builder;
+            if (browserPath == null) browserPath = string.Empty;
+            BrowserPaths.Add(browser, browserPath);
+            return browserPath;
         }
-        return path[prohlizec];
+        return BrowserPaths[browser];
     }
 }

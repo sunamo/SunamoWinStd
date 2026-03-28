@@ -2,39 +2,57 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
-    public static void CodeInsider(ILogger logger, string defFile, bool throwExWhenError = false, int? openOnLine = null)
+    /// <summary>
+    /// Opens a file in VS Code Insiders.
+    /// </summary>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="filePath">File path to open.</param>
+    /// <param name="isThrowingOnError">Whether to throw on error.</param>
+    /// <param name="openOnLine">Optional line number to open at.</param>
+    public static void CodeInsider(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
-        PH.RunVsCode(logger, CodeInsiderExe, defFile, throwExWhenError, openOnLine);
+        PH.RunVsCode(logger, CodeInsiderExe, filePath, isThrowingOnError, openOnLine);
     }
-    public static void Codium(ILogger logger, string defFile, bool throwExWhenError = false, int? openOnLine = null)
+    /// <summary>
+    /// Opens a file in VSCodium.
+    /// </summary>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="filePath">File path to open.</param>
+    /// <param name="isThrowingOnError">Whether to throw on error.</param>
+    /// <param name="openOnLine">Optional line number to open at.</param>
+    public static void Codium(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
-        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
-        //PH.RunFromPath(logger, CodiumExe, defFile, false, throwExWhenError);
-        PH.RunVsCode(logger, CodiumExe, defFile, throwExWhenError, openOnLine);
+        if (string.IsNullOrWhiteSpace(filePath)) ThrowEx.InvalidParameter(filePath, "filePath");
+        PH.RunVsCode(logger, CodiumExe, filePath, isThrowingOnError, openOnLine);
     }
 
-    static bool? existsCursor = null;
+    private static bool? isCursorAvailable = null;
 
-    public static void Code(ILogger logger, string defFile, bool throwExWhenError = false, int? openOnLine = null)
+    /// <summary>
+    /// Opens a file in VS Code or Cursor (if installed).
+    /// </summary>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="filePath">File path to open.</param>
+    /// <param name="isThrowingOnError">Whether to throw on error.</param>
+    /// <param name="openOnLine">Optional line number to open at.</param>
+    public static void Code(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
-        if (string.IsNullOrWhiteSpace(defFile)) ThrowEx.InvalidParameter(defFile, "defFile");
+        if (string.IsNullOrWhiteSpace(filePath)) ThrowEx.InvalidParameter(filePath, "filePath");
 
-        // Kontrola existence Cursor.exe v běžné instalační cestě
         var userName = Environment.UserName;
         var cursorPath = Path.Combine($@"C:\Users\{userName}\AppData\Local\Programs\cursor", "Cursor.exe");
 
-        if (existsCursor == null)
+        if (isCursorAvailable == null)
         {
-            existsCursor = File.Exists(cursorPath);
+            isCursorAvailable = File.Exists(cursorPath);
         }
 
-        if (existsCursor.Value)
+        if (isCursorAvailable.Value)
         {
-            // Použití Cursor s parametry podobnými VS Code
-            var arguments = defFile;
+            var arguments = filePath;
             if (openOnLine != null)
             {
-                arguments = $"-g {defFile}:{openOnLine}";
+                arguments = $"-g {filePath}:{openOnLine}";
             }
 
             try
@@ -44,18 +62,16 @@ partial class PHWin
             catch (Exception ex)
             {
                 logger.LogError($"Failed to start Cursor: {ex.Message}");
-                if (throwExWhenError)
+                if (isThrowingOnError)
                 {
                     throw;
                 }
-                // Fall back to VS Code if Cursor fails
-                PH.RunVsCode(logger, CodeExe, defFile, throwExWhenError, openOnLine);
+                PH.RunVsCode(logger, CodeExe, filePath, isThrowingOnError, openOnLine);
             }
         }
         else
         {
-            // Fall back to VS Code if Cursor doesn't exist
-            PH.RunVsCode(logger, CodeExe, defFile, throwExWhenError, openOnLine);
+            PH.RunVsCode(logger, CodeExe, filePath, isThrowingOnError, openOnLine);
         }
     }
 }

@@ -1,43 +1,57 @@
 namespace SunamoWinStd._sunamo.SunamoThisApp;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// Provides application-level status reporting through a centralized event.
+/// </summary>
 internal class ThisApp
 {
-    internal static void Success(string v, params string[] o)
+    /// <summary>
+    /// Reports a success status message.
+    /// </summary>
+    /// <param name="text">The format string for the message.</param>
+    /// <param name="args">Arguments for the format string.</param>
+    internal static void Success(string text, params string[] args)
     {
-        SetStatus(TypeOfMessage.Success, v, o);
+        SetStatus(TypeOfMessage.Success, text, args);
     }
 
-
-    internal static void Error(string v, params string[] o)
+    /// <summary>
+    /// Reports an error status message.
+    /// </summary>
+    /// <param name="text">The format string for the message.</param>
+    /// <param name="args">Arguments for the format string.</param>
+    internal static void Error(string text, params string[] args)
     {
-        SetStatus(TypeOfMessage.Error, v, o);
+        SetStatus(TypeOfMessage.Error, text, args);
     }
 
-    internal static void Warning(string v, params string[] o)
+    /// <summary>
+    /// Reports a warning status message.
+    /// </summary>
+    /// <param name="text">The format string for the message.</param>
+    /// <param name="args">Arguments for the format string.</param>
+    internal static void Warning(string text, params string[] args)
     {
-        SetStatus(TypeOfMessage.Warning, v, o);
+        SetStatus(TypeOfMessage.Warning, text, args);
     }
 
-
-
-    internal static void SetStatus(TypeOfMessage st, string status, params string[] args)
+    /// <summary>
+    /// Sets the application status by formatting the text and raising the StatusSet event.
+    /// </summary>
+    /// <param name="typeOfMessage">The type of status message.</param>
+    /// <param name="text">The format string for the message.</param>
+    /// <param name="args">Arguments for the format string.</param>
+    internal static void SetStatus(TypeOfMessage typeOfMessage, string text, params string[] args)
     {
-        var format = /*string.Format*/ string.Format(status, args);
-        if (format.Trim() != string.Empty)
+        var formattedText = string.Format(text, args);
+        if (formattedText.Trim() != string.Empty)
         {
-            if (StatusSetted == null)
-            {
-                // For unit tests
-                //////////DebugLogger.Instance.WriteLine(st + ": " + format);
-            }
-            else
-            {
-                StatusSetted(st, format);
-            }
+            StatusSet?.Invoke(typeOfMessage, formattedText);
         }
     }
 
-    internal static event Action<TypeOfMessage, string> StatusSetted;
+    /// <summary>
+    /// Event raised when the application status changes.
+    /// </summary>
+    internal static event Action<TypeOfMessage, string>? StatusSet;
 }

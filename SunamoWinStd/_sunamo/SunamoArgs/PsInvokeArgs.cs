@@ -1,34 +1,34 @@
 namespace SunamoWinStd._sunamo.SunamoArgs;
 
+/// <summary>
+/// Arguments for PowerShell command invocation, controlling output and caching behavior.
+/// </summary>
 internal class PsInvokeArgs
 {
+    /// <summary>
+    /// Default instance with all default settings.
+    /// </summary>
     internal static readonly PsInvokeArgs Def = new PsInvokeArgs();
-    internal bool writePb = false;
+
     /// <summary>
-    /// earlier false
+    /// Whether to display a progress bar during execution.
     /// </summary>
-    internal bool immediatelyToStatus = false;
-    internal List<string> addBeforeEveryCommand = null;
-    // nemůžu to dát do #if DEBUG protože se mi to nepromítne do nuget package
-    // nevím proč furt dělám takové hloupé chyby které mě stojí čas
-    //#if DEBUG
+    internal bool IsWritingProgressBar { get; set; } = false;
+
     /// <summary>
-    /// pokud soubor existuje, provede load a tím urychlí vykonávání
-    /// pokud neexistuje tak vykoná příkazy a save
-    ///
-    /// nepracuje nijak s datem poslední změny
+    /// Whether to write output immediately to status. Earlier was false.
     /// </summary>
-    //
-    internal string pathToSaveLoadPsOutput = null;
-    //[Conditional("DEBUG")]
-    //internal string GetPathToSaveLoadPsOutput()
-    //{
-    //    return pathToSaveLoadPsOutput;
-    //}
-    //[Conditional("DEBUG")]
-    //internal void SetPathToSaveLoadPsOutput(string value)
-    //{
-    //    pathToSaveLoadPsOutput = value;
-    //}
-    //#endif
+    internal bool IsImmediatelyWritingToStatus { get; set; } = false;
+
+    /// <summary>
+    /// Commands to prepend before every PowerShell command.
+    /// </summary>
+    internal List<string>? AddBeforeEveryCommand { get; set; } = null;
+
+    /// <summary>
+    /// If the file exists, performs load and thus speeds up execution.
+    /// If the file does not exist, executes commands and saves.
+    /// Does not work with the last modification date in any way.
+    /// </summary>
+    internal string? PathToSaveLoadPsOutput { get; set; } = null;
 }

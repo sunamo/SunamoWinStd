@@ -1,94 +1,92 @@
 namespace SunamoWinStd._sunamo.SunamoFileSystem;
 
+/// <summary>
+/// Internal file system utility methods.
+/// </summary>
 internal class FS
 {
-    internal static bool TryDeleteFile(string item)
+    /// <summary>
+    /// Tries to delete a file. Returns true if successful, false otherwise.
+    /// </summary>
+    /// <param name="filePath">The path of the file to delete.</param>
+    /// <returns>True if the file was deleted successfully.</returns>
+    internal static bool TryDeleteFile(string filePath)
     {
-        // TODO: To all code message logging as here
-
         try
         {
-            // If file won't exists, wont throw any exception
-            File.Delete(item);
+            File.Delete(filePath);
             return true;
         }
-        catch
+        catch (Exception ex)
         {
-            //ThisApp.Error(Translate.FromKey(XlfKeys.FileCanTBeDeleted) + ": " + item);
+            Console.WriteLine("File cannot be deleted: " + filePath + " " + ex.Message);
             return false;
         }
     }
-    internal static void CreateUpfoldersPsysicallyUnlessThere(string nad)
+
+    /// <summary>
+    /// Creates parent directories for the specified path if they do not exist.
+    /// </summary>
+    /// <param name="path">The path whose parent directories should be created.</param>
+    internal static void CreateUpfoldersPhysicallyUnlessThere(string path)
     {
-        CreateFoldersPsysicallyUnlessThere(Path.GetDirectoryName(nad));
+        CreateFoldersPhysicallyUnlessThere(Path.GetDirectoryName(path));
     }
 
-    internal static void CreateFoldersPsysicallyUnlessThere(string nad)
+    /// <summary>
+    /// Creates the specified directory and all parent directories if they do not exist.
+    /// </summary>
+    /// <param name="path">The directory path to create.</param>
+    internal static void CreateFoldersPhysicallyUnlessThere(string? path)
     {
-        ThrowEx.IsNullOrEmpty("nad", nad);
-        //ThrowEx.IsNotWindowsPathFormat("nad", nad);
+        ThrowEx.IsNullOrEmpty("path", path!);
 
-
-        if (Directory.Exists(nad))
+        if (Directory.Exists(path))
         {
             return;
         }
 
-        List<string> slozkyKVytvoreni = new List<string>
+        List<string> foldersToCreate = new List<string>
         {
-            nad
+            path!
         };
 
         while (true)
         {
-            nad = Path.GetDirectoryName(nad);
+            path = Path.GetDirectoryName(path);
 
-            // TODO: Tady to nefunguje pro UWP/UAP apps protoze nemaji pristup k celemu disku. Zjistit co to je UWP/UAP/... a jak v nem ziskat/overit jakoukoliv slozku na disku
-            if (Directory.Exists(nad))
+            if (Directory.Exists(path))
             {
                 break;
             }
 
-            string kopia = nad;
-            slozkyKVytvoreni.Add(kopia);
+            foldersToCreate.Add(path!);
         }
 
-        slozkyKVytvoreni.Reverse();
-        foreach (string item in slozkyKVytvoreni)
+        foldersToCreate.Reverse();
+        foreach (string item in foldersToCreate)
         {
-            string folder = item;
-            if (!Directory.Exists(folder))
+            if (!Directory.Exists(item))
             {
-                Directory.CreateDirectory(folder);
+                Directory.CreateDirectory(item);
             }
         }
     }
 
-
-
-
-
-
-
     /// <summary>
-    ///     Usage: Exceptions.FileWasntFoundInDirectory
+    /// Ensures the path ends with a backslash and has an uppercase first character.
+    /// Usage: Exceptions.FileWasntFoundInDirectory
     /// </summary>
-    /// <param name="v"></param>
-    /// <returns></returns>
-    #region WithEndSlash
-    internal static string WithEndSlash(ref string v)
+    /// <param name="path">The path to ensure ends with a backslash.</param>
+    /// <returns>The path with a trailing backslash.</returns>
+    internal static string WithEndSlash(ref string path)
     {
-        if (v != string.Empty)
+        if (path != string.Empty)
         {
-            v = v.TrimEnd('\\') + '\\';
+            path = path.TrimEnd('\\') + '\\';
         }
 
-        SH.FirstCharUpper(ref v);
-        return v;
+        SH.FirstCharUpper(ref path);
+        return path;
     }
-
-    #endregion
-
-
-
 }

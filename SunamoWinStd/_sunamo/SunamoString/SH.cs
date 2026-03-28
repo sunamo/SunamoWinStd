@@ -1,52 +1,84 @@
 namespace SunamoWinStd._sunamo.SunamoString;
 
+/// <summary>
+/// Internal string helper utility methods.
+/// </summary>
 internal class SH
 {
-    internal static void FirstCharUpper(ref string nazevPP)
+    /// <summary>
+    /// Converts the first character of the text to upper case (ref overload).
+    /// </summary>
+    /// <param name="text">The text to modify.</param>
+    internal static void FirstCharUpper(ref string text)
     {
-        nazevPP = FirstCharUpper(nazevPP);
+        text = FirstCharUpper(text);
     }
 
-
-    internal static string FirstCharUpper(string nazevPP)
+    /// <summary>
+    /// Returns the text with the first character converted to upper case.
+    /// </summary>
+    /// <param name="text">The input text.</param>
+    /// <returns>The text with the first character upper-cased.</returns>
+    internal static string FirstCharUpper(string text)
     {
-        if (nazevPP.Length == 1)
+        if (text.Length == 1)
         {
-            return nazevPP.ToUpper();
+            return text.ToUpper();
         }
 
-        string sb = nazevPP.Substring(1);
-        return nazevPP[0].ToString().ToUpper() + sb;
+        string remainder = text.Substring(1);
+        return text[0].ToString().ToUpper() + remainder;
     }
 
-    internal static string WrapWithQm(string commitMessage, bool alsoIfIsWhitespaceOrEmpty = true)
+    /// <summary>
+    /// Wraps the text in double-quote characters.
+    /// </summary>
+    /// <param name="text">The text to wrap.</param>
+    /// <param name="isWrappingWhitespaceOrEmpty">Whether to wrap even if the text is whitespace or empty.</param>
+    /// <returns>The quoted text.</returns>
+    internal static string WrapWithQm(string text, bool isWrappingWhitespaceOrEmpty = true)
     {
-        return WrapWithChar(commitMessage, '"', alsoIfIsWhitespaceOrEmpty);
+        return WrapWithChar(text, '"', isWrappingWhitespaceOrEmpty);
     }
 
+    /// <summary>
+    /// Wraps the text with the specified character.
+    /// </summary>
+    /// <param name="text">The text to wrap.</param>
+    /// <param name="wrapChar">The character to wrap with.</param>
+    /// <param name="isTrimming">Whether to trim the text before wrapping.</param>
+    /// <param name="isWrappingWhitespaceOrEmpty">Whether to wrap even if the text is whitespace or empty.</param>
+    /// <returns>The wrapped text, or empty string if the text is whitespace/empty and wrapping is disabled.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string WrapWithChar(string value, char v, bool _trimWrapping = false, bool alsoIfIsWhitespaceOrEmpty = true)
+    internal static string WrapWithChar(string text, char wrapChar, bool isTrimming = false, bool isWrappingWhitespaceOrEmpty = true)
     {
-        if (string.IsNullOrWhiteSpace(value) && !alsoIfIsWhitespaceOrEmpty)
+        if (string.IsNullOrWhiteSpace(text) && !isWrappingWhitespaceOrEmpty)
         {
             return string.Empty;
         }
 
-        // TODO: Make with StringBuilder, because of WordAfter and so
-        return WrapWith(_trimWrapping ? value.Trim() : value, v.ToString());
+        return WrapWith(isTrimming ? text.Trim() : text, wrapChar.ToString());
     }
 
+    /// <summary>
+    /// Wraps the text with the specified wrapper string on both sides.
+    /// </summary>
+    /// <param name="text">The text to wrap.</param>
+    /// <param name="wrapper">The string to prepend and append.</param>
+    /// <returns>The wrapped text.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static string WrapWith(string value, string h)
+    internal static string WrapWith(string text, string wrapper)
     {
-        return h + value + h;
+        return wrapper + text + wrapper;
     }
 
-
-
-    internal static string NullToStringOrDefault(object n)
+    /// <summary>
+    /// Returns a string representation of the value, or "(null)" if the value is null.
+    /// </summary>
+    /// <param name="value">The value to convert.</param>
+    /// <returns>String representation prefixed with a space.</returns>
+    internal static string NullToStringOrDefault(object? value)
     {
-
-        return n == null ? " " + "(null)" : " " + n;
+        return value == null ? " " + "(null)" : " " + value;
     }
 }

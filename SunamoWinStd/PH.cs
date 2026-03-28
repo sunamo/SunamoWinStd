@@ -1,43 +1,44 @@
 namespace SunamoWinStd;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// Process helper class for running and managing system processes.
+/// </summary>
 public partial class PH
 {
-    private static Type type = typeof(PH);
     /// <summary>
-    ///     https://stackoverflow.com/a/12393522
-    ///     Return SE or output if everything gone good
+    ///     Runs an executable found on the system PATH.
+    ///     Returns standard error or output if everything went well.
     /// </summary>
-    public static string? RunFromPath(ILogger logger, string exe, string arguments, bool withOutput, bool throwExWhenError = false)
+    /// <param name="logger">Logger instance for diagnostics.</param>
+    /// <param name="exe">Executable name to find on PATH.</param>
+    /// <param name="arguments">Arguments to pass to the executable.</param>
+    /// <param name="isWithOutput">Whether to capture and return output.</param>
+    /// <param name="isThrowingOnError">Whether to throw if the executable is not found.</param>
+    /// <returns>Process output or null if not found.</returns>
+    public static string? RunFromPath(ILogger logger, string exe, string arguments, bool isWithOutput, bool isThrowingOnError = false)
     {
         PHWin.BreakIfTen();
-        var enviromentPath = Environment.GetEnvironmentVariable("PATH");
-        if (enviromentPath == null)
+        var environmentPath = Environment.GetEnvironmentVariable("PATH");
+        if (environmentPath == null)
         {
             logger.LogWarning("PATH is null");
             return null;
         }
 
-        var paths = enviromentPath.Split(';'); // SHSplit.SplitChar(enviromentPath, ';');
-#if DEBUG
-        var wc = paths.Where(d => d.Contains("Microsoft VS Code Insiders"));
-        paths.Reverse();
-#endif
-        var paths2 = paths.Select(x => Path.Combine(x, exe));
-        var files = paths2.Where(x => File.Exists(x));
-        var fi = files.FirstOrDefault();
-        var exePath = fi;
+        var paths = environmentPath.Split(';');
+        var combinedPaths = paths.Select(pathEntry => Path.Combine(pathEntry, exe));
+        var existingFiles = combinedPaths.Where(filePath => File.Exists(filePath));
+        var exePath = existingFiles.FirstOrDefault();
         if (!string.IsNullOrWhiteSpace(exePath))
         {
-            if (withOutput)
+            if (isWithOutput)
                 return RunWithOutput(exe, arguments);
             Process.Start(exe, arguments);
             return string.Empty;
         }
 
         logger.LogError(exe + " is not in the path!");
-        if (throwExWhenError)
+        if (isThrowingOnError)
         {
             throw new Exception(exe + " is not in the path!");
         }
@@ -45,78 +46,91 @@ public partial class PH
         return null;
     }
 
-    public static bool ExecCmd(string cmd)
+    /// <summary>
+    /// Executes a command via cmd.exe.
+    /// </summary>
+    /// <param name="command">The command to execute.</param>
+    /// <returns>True if the process completed without output to stderr.</returns>
+    public static bool ExecCmd(string command)
     {
-        string output;
-        var builder = ExecCmd(cmd, out output);
-        return builder;
+        var isSuccess = ExecCmd(command, out _);
+        return isSuccess;
     }
 
     /// <summary>
-    ///     Executes command
+    ///     Executes command via cmd.exe and captures output.
     /// </summary>
-    /// <param name = "cmd">command to be executed</param>
-    /// <param name = "output">output which application produced</param>
-    /// <param name = "transferEnvVars">true - if retain PATH environment variable from executed command</param>
-    /// <returns>true if process exited with code 0</returns>
-    public static bool ExecCmd(string cmd, out string output, bool transferEnvVars = false)
+    /// <param name="command">Command to be executed.</param>
+    /// <param name="output">Output which the application produced.</param>
+    /// <param name="isTransferringEnvVars">True if retaining PATH environment variable from executed command.</param>
+    /// <returns>True if process exited with empty error output.</returns>
+    public static bool ExecCmd(string command, out string output, bool isTransferringEnvVars = false)
     {
-        ProcessStartInfo processInfo;
-        if (transferEnvVars)
-            cmd = cmd + " && echo --VARS-- && set";
-        processInfo = new ProcessStartInfo("cmd.exe", "/c " + cmd);
-        processInfo.CreateNoWindow = true;
-        processInfo.UseShellExecute = false;
-        processInfo.RedirectStandardError = true;
-        processInfo.RedirectStandardOutput = true;
-        output = RunWithOutput(processInfo, transferEnvVars);
+        ProcessStartInfo processStartInfo;
+        if (isTransferringEnvVars)
+            command = command + " && echo --VARS-- && set";
+        processStartInfo = new ProcessStartInfo("cmd.exe", "/c " + command);
+        processStartInfo.CreateNoWindow = true;
+        processStartInfo.UseShellExecute = false;
+        processStartInfo.RedirectStandardError = true;
+        processStartInfo.RedirectStandardOutput = true;
+        output = RunWithOutput(processStartInfo, isTransferringEnvVars);
         return string.IsNullOrEmpty(output);
     }
 
+    /// <summary>
+    /// Runs an executable and returns its output.
+    /// </summary>
+    /// <param name="exe">Executable path or name.</param>
+    /// <param name="arguments">Arguments to pass.</param>
+    /// <returns>Combined standard output and error.</returns>
     public static string RunWithOutput(string exe, string arguments)
     {
         return RunWithOutput(new ProcessStartInfo { FileName = exe, Arguments = arguments, UseShellExecute = false });
     }
 
-    public static string RunWithOutput(ProcessStartInfo processInfo, bool transferEnvVars = false)
+    /// <summary>
+    /// Runs a process with the given start info and returns its output.
+    /// </summary>
+    /// <param name="processStartInfo">Process start information.</param>
+    /// <param name="isTransferringEnvVars">Whether to transfer environment variables from the process output.</param>
+    /// <returns>Combined standard output and error.</returns>
+    public static string RunWithOutput(ProcessStartInfo processStartInfo, bool isTransferringEnvVars = false)
     {
-        Process process;
-        process = new Process();
+        var process = new Process();
         string output = string.Empty;
-        processInfo.RedirectStandardError = true;
-        processInfo.RedirectStandardOutput = true;
-        processInfo.CreateNoWindow = true;
-        processInfo.UseShellExecute = false;
-        // Executing long lasting operation in batch file will hang the process, as it will wait standard output / error pipes to be processed.
-        // We process these pipes here asynchronously.
-        var so = new StringBuilder();
-        process.OutputDataReceived += (sender, args) =>
+        processStartInfo.RedirectStandardError = true;
+        processStartInfo.RedirectStandardOutput = true;
+        processStartInfo.CreateNoWindow = true;
+        processStartInfo.UseShellExecute = false;
+        var standardOutput = new StringBuilder();
+        process.OutputDataReceived += (sender, eventArgs) =>
         {
-            so.AppendLine(args.Data);
+            standardOutput.AppendLine(eventArgs.Data);
         };
-        var se = new StringBuilder();
-        process.ErrorDataReceived += (sender, args) =>
+        var standardError = new StringBuilder();
+        process.ErrorDataReceived += (sender, eventArgs) =>
         {
-            se.AppendLine(args.Data);
+            standardError.AppendLine(eventArgs.Data);
         };
-        process.StartInfo = processInfo;
+        process.StartInfo = processStartInfo;
         process.Start();
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
         process.WaitForExit();
-        output = so.ToString();
-        var error = se.ToString();
-        if (transferEnvVars)
+        output = standardOutput.ToString();
+        var error = standardError.ToString();
+        if (isTransferringEnvVars)
         {
-            var result = new Regex("--VARS--(.*)", RegexOptions.Singleline);
-            var match = result.Match(output);
+            var varsRegex = new Regex("--VARS--(.*)", RegexOptions.Singleline);
+            var match = varsRegex.Match(output);
             if (match.Success)
             {
-                output = result.Replace(output, "");
-                foreach (Match m2 in new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(match.Groups[1].ToString()))
+                output = varsRegex.Replace(output, "");
+                foreach (Match envMatch in new Regex("(.*?)=([^\r]*)", RegexOptions.Multiline).Matches(match.Groups[1].ToString()))
                 {
-                    var key = m2.Groups[1].Value;
-                    var value = m2.Groups[2].Value;
+                    var key = envMatch.Groups[1].Value;
+                    var value = envMatch.Groups[2].Value;
                     Environment.SetEnvironmentVariable(key, value);
                 }
             }
@@ -128,14 +142,13 @@ public partial class PH
         if (exitCode != 0)
             Console.WriteLine("Error: " + output + "\r\n" + error);
         process.Close();
-        //return exitCode == 0;
         return output;
     }
 
     /// <summary>
-    ///     Exe must be in path
+    ///     Starts a command via cmd.exe. The executable must be on PATH.
     /// </summary>
-    /// <param name = "p"></param>
+    /// <param name="parameter">The command parameter to execute.</param>
     public static void Start(string parameter)
     {
         try
@@ -148,12 +161,17 @@ public partial class PH
         }
     }
 
-    public static void Start(string exe, string args)
+    /// <summary>
+    /// Starts an executable with arguments via cmd.exe.
+    /// </summary>
+    /// <param name="exe">The executable to run.</param>
+    /// <param name="arguments">Arguments for the executable.</param>
+    public static void Start(string exe, string arguments)
     {
         try
         {
-            var arg = "/c " + exe + " " + args;
-            Process.Start("cmd.exe", arg);
+            var commandArguments = "/c " + exe + " " + arguments;
+            Process.Start("cmd.exe", commandArguments);
         }
         catch (Exception ex)
         {
@@ -161,14 +179,19 @@ public partial class PH
         }
     }
 
-    public static void StartHidden(string parameter, string k)
+    /// <summary>
+    /// Starts a hidden command process in the specified working directory.
+    /// </summary>
+    /// <param name="parameter">The command parameter to execute.</param>
+    /// <param name="workingDirectory">The working directory for the process.</param>
+    public static void StartHidden(string parameter, string workingDirectory)
     {
         try
         {
             var process = new Process();
             var startInfo = new ProcessStartInfo();
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            startInfo.WorkingDirectory = k;
+            startInfo.WorkingDirectory = workingDirectory;
             startInfo.FileName = "cmd.exe";
             startInfo.Arguments = "/C " + parameter;
             process.StartInfo = startInfo;
@@ -180,28 +203,26 @@ public partial class PH
         }
     }
 
-    //public static void Uri(string v)
-    //{
-    //    v = NormalizeUri(v);
-    //    v = v.Trim();
-    //    //Must UrlDecode for https://mapy.cz/?q=Antala+Sta%c5%a1ka+1087%2f3%2c+Hav%c3%ad%c5%99ov&sourceid=Searchmodule_1
-    //    // to fulfillment RFC 3986 and RFC 3987 https://docs.microsoft.com/en-us/dotnet/api/system.uri.iswellformeduristring?view=netframework-4.8
-    //    v = WebUtility.UrlDecode(v);
-    //    if (System.Uri.IsWellFormedUriString(v, UriKind.RelativeOrAbsolute))
-    //        PHWin.OpenInBrowser(v);
-    //}
-    public static string NormalizeUri(string v)
+    /// <summary>
+    /// Normalizes a URI by replacing URL-encoded quotes.
+    /// </summary>
+    /// <param name="uri">The URI to normalize.</param>
+    /// <returns>The normalized URI.</returns>
+    public static string NormalizeUri(string uri)
     {
-        // Without this cant search for google apps
-        v = SHReplace.ReplaceAll(v, "%22", "\"");
-        return v;
+        uri = SHReplace.ReplaceAll(uri, "%22", "\"");
+        return uri;
     }
 
-    public static void KillProcess(Process pr)
+    /// <summary>
+    /// Kills the specified process.
+    /// </summary>
+    /// <param name="process">The process to kill.</param>
+    public static void KillProcess(Process process)
     {
         try
         {
-            pr.Kill();
+            process.Kill();
         }
         catch (Exception ex)
         {
@@ -210,43 +231,34 @@ public partial class PH
         }
     }
 
+    /// <summary>
+    /// Terminates all processes with the specified name.
+    /// </summary>
+    /// <param name="name">The process name to terminate.</param>
+    /// <returns>Number of processes terminated.</returns>
     public static int Terminate(string name)
     {
-        var deleted = 0;
+        var terminatedCount = 0;
         foreach (var process in Process.GetProcessesByName(name))
         {
             KillProcess(process);
-            deleted++;
+            terminatedCount++;
         }
 
-        return deleted;
+        return terminatedCount;
     }
 
-    //public static string RunFromPath2(string exe, string arguments)
-    //{
-    //    // Commented due to 'StringDictionary' does not contain a definition for 'Replace'
-    //    ProcessStartInfo psi = new ProcessStartInfo(exe);
-    //    psi.Arguments = arguments;
-    //    var dictionary = psi.EnvironmentVariables;
-    //    // Manipulate dictionary...\
-    //    psi.EnvironmentVariables["PATH"] = dictionary.Replace(@"\\", @"\");
-    //    return RunWithOutput(exe, arguments);
-    //}
     /// <summary>
-    ///     Exe must be in path
+    ///     Runs an executable found on PATH. The executable must be on PATH.
     /// </summary>
-    /// <param name = "exe"></param>
-    /// <param name = "fileWithoutQm"></param>
+    /// <param name="exe">The executable name.</param>
+    /// <param name="fileWithoutQm">The file path to pass as argument (will be wrapped in quotes).</param>
     public static void RunFromPath3(string exe, string fileWithoutQm)
     {
-        var pi = new ProcessStartInfo();
-        pi.FileName = exe;
-        pi.Arguments = SH.WrapWithQm(fileWithoutQm);
-        // To use env variables
-        pi.UseShellExecute = true;
-        Process.Start(pi);
-    //var cmd = exe + "" + SH.WrapWithQm(fileWithoutQm);
-    //Process.Start(@"C:\Windows\System32\cmd.exe", "/c " + cmd);
-    //PH.ExecCmd(cmd);
+        var processStartInfo = new ProcessStartInfo();
+        processStartInfo.FileName = exe;
+        processStartInfo.Arguments = SH.WrapWithQm(fileWithoutQm);
+        processStartInfo.UseShellExecute = true;
+        Process.Start(processStartInfo);
     }
 }

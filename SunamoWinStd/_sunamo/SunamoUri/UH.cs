@@ -1,26 +1,39 @@
 namespace SunamoWinStd._sunamo.SunamoUri;
 
+/// <summary>
+/// Internal URI helper utility methods.
+/// </summary>
 internal class UH
 {
-    internal static string AppendHttpIfNotExists(string p)
+    /// <summary>
+    /// Prepends "http://" to the URL if it does not already start with "http".
+    /// </summary>
+    /// <param name="url">The URL to process.</param>
+    /// <returns>The URL with "http://" prefix ensured.</returns>
+    internal static string AppendHttpIfNotExists(string url)
     {
-        string p2 = p;
-        if (!p.StartsWith("http"))
+        string result = url;
+        if (!url.StartsWith("http"))
         {
-            p2 = "http://" + p;
+            result = "http://" + url;
         }
 
-        return p2;
+        return result;
     }
 
-    internal static string AppendHttpsIfNotExists(string p)
+    /// <summary>
+    /// Prepends "https://" to the URL if it does not already start with "https".
+    /// </summary>
+    /// <param name="url">The URL to process.</param>
+    /// <returns>The URL with "https://" prefix ensured.</returns>
+    internal static string AppendHttpsIfNotExists(string url)
     {
-        string p2 = p;
-        if (!p.StartsWith("https"))
+        string result = url;
+        if (!url.StartsWith("https"))
         {
-            p2 = "https://" + p;
+            result = "https://" + url;
         }
 
-        return p2;
+        return result;
     }
 }

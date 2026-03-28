@@ -1,31 +1,40 @@
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
-
 using Microsoft.Extensions.Logging;
 using SunamoTest;
 using System.Text;
 
 namespace SunamoWinStd.Tests;
+
+/// <summary>
+/// Tests for PHWin browser and editor opening functionality.
+/// </summary>
 public class PHWinTests
 {
-    ILogger logger = TestLogger.Instance;
+    private ILogger logger = TestLogger.Instance;
 
+    /// <summary>
+    /// Tests opening a file in VS Code.
+    /// </summary>
+    [Fact]
     public void CodeTest()
     {
-        var path = CreateTestFile();
-        PHWin.Code(logger, path, true);
+        var filePath = CreateTestFile();
+        PHWin.Code(logger, filePath, true);
     }
 
+    /// <summary>
+    /// Tests opening a file in VS Code at a specific line.
+    /// </summary>
+    [Fact]
     public void CodeWithLineTest()
     {
-        var path = CreateTestFile();
-        PHWin.Code(logger, path, true, 150);
+        var filePath = CreateTestFile();
+        PHWin.Code(logger, filePath, true, 150);
     }
 
     private string CreateTestFile()
     {
-        var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"a.txt");
-        if (!File.Exists(path))
+        var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), @"a.txt");
+        if (!File.Exists(filePath))
         {
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < 200; i++)
@@ -33,27 +42,41 @@ public class PHWinTests
                 stringBuilder.AppendLine(i.ToString());
             }
 
-            File.WriteAllText(path, stringBuilder.ToString());
+            File.WriteAllText(filePath, stringBuilder.ToString());
         }
 
-        return path;
+        return filePath;
     }
 
+    /// <summary>
+    /// Tests opening a file in VS Code Insiders.
+    /// </summary>
+    [Fact]
     public void CodeInsiderTest()
     {
-        var path = CreateTestFile();
-        PHWin.CodeInsider(logger, path, true);
+        var filePath = CreateTestFile();
+        PHWin.CodeInsider(logger, filePath, true);
     }
 
+    /// <summary>
+    /// Tests opening a file in VSCodium.
+    /// </summary>
+    [Fact]
     public void CodiumTest()
     {
-        var path = CreateTestFile();
-        PHWin.Codium(logger, path, true);
+        var filePath = CreateTestFile();
+        PHWin.Codium(logger, filePath, true);
     }
 
+    /// <summary>
+    /// Tests opening a URL in the default browser.
+    /// </summary>
+    [Fact]
     public void OpenInBrowserTest()
     {
         PHWin.AddBrowser();
-        PHWin.OpenInBrowser(logger, @"D:\OneDrive\sunamo\SeznamkaCz\Output\EveryProcessedAd.html");
+        var testFilePath = Path.Combine(Path.GetTempPath(), "TestBrowserOpen.html");
+        File.WriteAllText(testFilePath, "<html><body><h1>Test</h1></body></html>");
+        PHWin.OpenInBrowser(logger, testFilePath);
     }
 }

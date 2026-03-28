@@ -29,15 +29,14 @@ public partial class JunctionPoint
     ///     Command to delete the reparse point data base.
     /// </summary>
     private const int FSCTL_DELETE_REPARSE_POINT = 0x000900AC;
-    private static Type type = typeof(JunctionPoint);
     /// <summary>
-    ///     /H = Only files
-    ///     If exists, will rewrite.
-    ///     /J vytváří vždy adresář, jde pak dle toho poznat i ve FS
-    ///     /H pracuje adekvátně se soubory
+    ///     Creates a hard link (/H) using mklink. Only works for files.
+    ///     /H always creates a file link (recognizable in file system).
+    ///     If the target exists, it will be overwritten.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="target"></param>
+    /// <param name="source">Source path for the hard link.</param>
+    /// <param name="target">Target file path that the link points to.</param>
+    /// <returns>The mklink command string.</returns>
     public static
 #if ASYNC
         string
@@ -50,6 +49,11 @@ public partial class JunctionPoint
         var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
         return command;
     }
+    /// <summary>
+    /// Gets paths and targets of all junction points in the specified folder.
+    /// </summary>
+    /// <param name="folderFrom">Folder to scan for junction points.</param>
+    /// <returns>Dictionary mapping junction point paths to their targets.</returns>
     public static Dictionary<string, string> PathsAndTargetsOfAll(string folderFrom)
     {
         var dict = new Dictionary<string, string>();
@@ -63,10 +67,11 @@ public partial class JunctionPoint
         return dict;
     }
     /// <summary>
-    ///     Only folders
+    ///     Creates a junction (/J) using mklink. Only works for directories.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="target"></param>
+    /// <param name="source">Source path for the junction.</param>
+    /// <param name="target">Target directory path that the junction points to.</param>
+    /// <returns>The mklink command string.</returns>
     public static
 #if ASYNC
         string
@@ -77,17 +82,17 @@ public partial class JunctionPoint
     {
         if (!Directory.Exists(target))
         {
-            var f = File.Exists(Path.Combine(target, "_.txt"));
             ThrowEx.DirectoryExists(target);
         }
         var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
         return command;
     }
     /// <summary>
-    ///     Only folders
+    ///     Creates a directory symbolic link (/D) using mklink. Only works for directories.
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="target"></param>
+    /// <param name="source">Source path for the symbolic link.</param>
+    /// <param name="target">Target directory path that the link points to.</param>
+    /// <returns>The mklink command string.</returns>
     public static
 #if ASYNC
         string
@@ -101,27 +106,28 @@ public partial class JunctionPoint
         return command;
     }
     /// <summary>
-    ///     For files use mklink, this can be use only for directory
+    ///     For files use mklink, this can be use only for directory.
     ///     Creates a junction point from the specified directory to the specified target directory.
     /// </summary>
     /// <remarks>
     ///     Only works on NTFS.
     /// </remarks>
-    /// <param name="junctionPoint">The junction point path</param>
-    /// <param name="targetDir">The target directory</param>
-    /// <param name="overwrite">If true overwrites an existing reparse point or empty directory</param>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="junctionPoint">The junction point path.</param>
+    /// <param name="targetDir">The target directory.</param>
+    /// <param name="isOverwriting">If true overwrites an existing reparse point or empty directory.</param>
     /// <exception cref="IOException">
     ///     Thrown when the junction point could not be created or when
-    ///     an existing directory was found and <paramref name="overwrite" /> if false
+    ///     an existing directory was found and <paramref name="isOverwriting" /> is false.
     /// </exception>
-    public static void Create(ILogger logger, string junctionPoint, string targetDir, bool overwrite)
+    public static void Create(ILogger logger, string junctionPoint, string targetDir, bool isOverwriting)
     {
         targetDir = Path.GetFullPath(targetDir);
         if (!Directory.Exists(targetDir))
             throw new Exception("TargetPathDoesNotExistOrIsNotADirectory");
         if (Directory.Exists(junctionPoint))
         {
-            if (!overwrite)
+            if (!isOverwriting)
                 throw new Exception("DirectoryAlreadyExistsAndOverwriteParameterIsFalse");
         }
         else
@@ -150,12 +156,12 @@ public partial class JunctionPoint
             {
                 Marshal.StructureToPtr(reparseDataBuffer, inBuffer, false);
                 int bytesReturned;
-                var result = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_SET_REPARSE_POINT,
+                var createResult = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_SET_REPARSE_POINT,
                     inBuffer, targetDirBytes.Length + 20, nint.Zero, 0, out bytesReturned, nint.Zero);
-                if (!result)
+                if (!createResult)
                 {
-                    var err = Marshal.GetLastWin32Error();
-                    ThrowLastWin32Error(logger, err, "UnableToCreateJunctionPoint");
+                    var errorCode = Marshal.GetLastWin32Error();
+                    ThrowLastWin32Error(logger, errorCode, "UnableToCreateJunctionPoint");
                 }
             }
             finally
@@ -164,18 +170,25 @@ public partial class JunctionPoint
             }
         }
     }
+    /// <summary>
+    /// Checks if the specified path is a reparse point (junction, symlink, etc.).
+    /// </summary>
+    /// <param name="path">Path to check.</param>
+    /// <returns>True if the path is a reparse point.</returns>
     public static bool IsReparsePoint(string path)
     {
-        var parameter = new ReparsePoint(path);
-        return !string.IsNullOrEmpty(parameter.Target);
+        var reparsePoint = new ReparsePoint(path);
+        return !string.IsNullOrEmpty(reparsePoint.Target);
     }
-    /// Deletes a junction point at the specified source directory along with the directory itself.
-    /// Does nothing if the junction point does not exist.
+    /// <summary>
+    ///     Deletes a junction point at the specified source directory along with the directory itself.
+    ///     Does nothing if the junction point does not exist.
     /// </summary>
     /// <remarks>
     ///     Only works on NTFS.
     /// </remarks>
-    /// <param name="junctionPoint">The junction point path</param>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="junctionPoint">The junction point path.</param>
     public static void Delete(ILogger logger, string junctionPoint)
     {
         if (!Directory.Exists(junctionPoint))
@@ -200,12 +213,12 @@ public partial class JunctionPoint
             {
                 Marshal.StructureToPtr(reparseDataBuffer, inBuffer, false);
                 int bytesReturned;
-                var result = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_DELETE_REPARSE_POINT,
+                var deleteResult = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_DELETE_REPARSE_POINT,
                     inBuffer, 8, nint.Zero, 0, out bytesReturned, nint.Zero);
-                if (!result)
+                if (!deleteResult)
                 {
-                    var err = Marshal.GetLastWin32Error();
-                    ThrowLastWin32Error(logger, err, "UnableToDeleteJunctionPoint");
+                    var errorCode = Marshal.GetLastWin32Error();
+                    ThrowLastWin32Error(logger, errorCode, "UnableToDeleteJunctionPoint");
                 }
             }
             finally
@@ -224,29 +237,22 @@ public partial class JunctionPoint
     }
     /// <summary>
     ///     Gets the target of the specified junction point.
-    ///     Is working for /j,/d (folders)
-    ///     Is not working for /h (file) - see GetTargetTest
-    ///     If A1 is not /j,/d,/h, return null
+    ///     Works for /j and /d (folders).
+    ///     Does not work for /h (file) - see GetTargetTest.
+    ///     If the path is not /j, /d, or /h, returns null.
     /// </summary>
     /// <remarks>
     ///     Only works on NTFS.
     /// </remarks>
-    /// <param name="junctionPoint">The junction point path</param>
-    /// <returns>The target of the junction point</returns>
+    /// <param name="path">The junction point or reparse point path.</param>
+    /// <returns>The target of the junction point, or null.</returns>
     /// <exception cref="IOException">
     ///     Thrown when the specified path does not
-    ///     exist, is invalid, is not a junction point, or some other error occurs
+    ///     exist, is invalid, is not a junction point, or some other error occurs.
     /// </exception>
     public static string? GetTarget(string path)
     {
-        var parameter = new ReparsePoint(path);
-        return parameter.Target;
-        //using (SafeFileHandle handle = OpenReparsePoint(junctionPoint, EFileAccess.GenericRead))
-        //{
-        //    string target = InternalGetTarget(handle);
-        //    if (target == null)
-        //        throw new Exception(Translate.FromKey(XlfKeys.PathIsNotAJunctionPoint)+".");
-        //    return target;
-        //}
+        var reparsePoint = new ReparsePoint(path);
+        return reparsePoint.Target;
     }
 }

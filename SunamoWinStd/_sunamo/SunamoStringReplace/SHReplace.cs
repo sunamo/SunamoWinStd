@@ -1,30 +1,32 @@
 namespace SunamoWinStd._sunamo.SunamoStringReplace;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// Internal string replacement utility methods.
+/// </summary>
 internal class SHReplace
 {
-    internal static string ReplaceAll(string vstup, string zaCo, params string[] co)
+    /// <summary>
+    /// Replaces all occurrences of the specified patterns in the text with the replacement string.
+    /// Returns early if any pattern is null or empty.
+    /// </summary>
+    /// <param name="text">The source text.</param>
+    /// <param name="replacement">The replacement string.</param>
+    /// <param name="patterns">The patterns to replace.</param>
+    /// <returns>The text with all patterns replaced.</returns>
+    internal static string ReplaceAll(string text, string replacement, params string[] patterns)
     {
-        //Stupid, zaCo can be null
-
-        //if (string.IsNullOrEmpty(zaCo))
-        //{
-        //    return vstup;
-        //}
-
-        foreach (var item in co)
+        foreach (var item in patterns)
         {
             if (string.IsNullOrEmpty(item))
             {
-                return vstup;
+                return text;
             }
         }
 
-        foreach (var item in co)
+        foreach (var item in patterns)
         {
-            vstup = vstup.Replace(item, zaCo);
+            text = text.Replace(item, replacement);
         }
-        return vstup;
+        return text;
     }
 }

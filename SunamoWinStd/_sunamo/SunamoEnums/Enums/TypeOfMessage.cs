@@ -1,26 +1,35 @@
 namespace SunamoWinStd._sunamo.SunamoEnums.Enums;
 
 /// <summary>
-///     Error/Warning are in tbLastErrorOrWarning, other in tbLastOtherMessage
-///     Musí být zde kvůli cl které je withoutDep
+///     Message type classification. Error/Warning go to tbLastErrorOrWarning, others to tbLastOtherMessage.
+///     Must be here because of cl which is withoutDep.
 /// </summary>
 internal enum TypeOfMessage
 {
     /// <summary>
-    ///     tbLastErrorOrWarning
+    ///     Error message, displayed in tbLastErrorOrWarning.
     /// </summary>
     Error,
 
     /// <summary>
-    ///     tbLastErrorOrWarning
+    ///     Warning message, displayed in tbLastErrorOrWarning.
     /// </summary>
     Warning,
+    /// <summary>
+    ///     Informational message.
+    /// </summary>
     Information,
 
     /// <summary>
-    ///     Returned if from text cant determine value
+    ///     Returned if from text the value cannot be determined.
     /// </summary>
     Ordinal,
+    /// <summary>
+    ///     Appeal type message.
+    /// </summary>
     Appeal,
+    /// <summary>
+    ///     Success message.
+    /// </summary>
     Success
 }

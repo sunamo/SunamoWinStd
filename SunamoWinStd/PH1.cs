@@ -1,26 +1,30 @@
 namespace SunamoWinStd;
 
-// EN: Variable names have been checked and replaced with self-descriptive names
-// CZ: Názvy proměnných byly zkontrolovány a nahrazeny samopopisnými názvy
+/// <summary>
+/// Extended process helper with additional search and termination methods.
+/// </summary>
 public partial class PH
 {
-    /// <param name = "exe"></param>
-    /// <param name = "arguments"></param>
-    /// <returns></returns>
+    /// <summary>
+    /// Runs an executable from the system PATH with better extension detection.
+    /// </summary>
+    /// <param name="exe">The executable name.</param>
+    /// <param name="arguments">Arguments to pass.</param>
+    /// <returns>Process output.</returns>
     public static string RunFromPathBetter(string exe, string arguments)
     {
-        var enviromentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
-        var paths = enviromentPath.Split(';');
-        foreach (var thisPath in paths)
+        var environmentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+        var paths = environmentPath.Split(';');
+        foreach (var currentPath in paths)
         {
-            var thisFile = Path.Combine(thisPath, exe);
+            var currentFile = Path.Combine(currentPath, exe);
             string[] executableExtensions =
             {
                 ".exe"
-            }; // , ".com", ".bat", ".sh", ".vbs", ".vbscript", ".vbe", ".js", ".rb", ".cmd", ".cpl", ".ws", ".wsf", ".msc", ".gadget"
+            };
             foreach (var extension in executableExtensions)
             {
-                var fullFile = thisFile + extension;
+                var fullFile = currentFile + extension;
                 try
                 {
                     if (File.Exists(fullFile))
@@ -36,14 +40,14 @@ public partial class PH
             }
         }
 
-        foreach (var thisPath in paths)
+        foreach (var currentPath in paths)
         {
-            var thisFile = Path.Combine(thisPath, exe);
+            var currentFile = Path.Combine(currentPath, exe);
             try
             {
-                if (File.Exists(thisFile))
+                if (File.Exists(currentFile))
                 {
-                    exe = thisFile;
+                    exe = currentFile;
                     break;
                 }
             }
@@ -56,26 +60,40 @@ public partial class PH
         return RunWithOutput(exe, arguments);
     }
 
+    /// <summary>
+    /// Checks if a process with the given name is already running (more than one instance).
+    /// </summary>
+    /// <param name="name">The process name to check.</param>
+    /// <returns>True if more than one instance is running.</returns>
     public static bool IsAlreadyRunning(string name)
     {
-        IList<string> pr = Process.GetProcessesByName(name).Select(d => d.ProcessName).ToList();
-        //var processes = Process.GetProcesses(name).Where(text => text.ProcessName.Contains(name)).Select(d => d.ProcessName);
-        return pr.Count() > 1;
+        IList<string> processNames = Process.GetProcessesByName(name).Select(process => process.ProcessName).ToList();
+        return processNames.Count() > 1;
     }
 
+    /// <summary>
+    /// Checks if an executable exists on the system PATH.
+    /// </summary>
+    /// <param name="fileName">The file name to check.</param>
+    /// <returns>True if the file exists on PATH.</returns>
     public static bool ExistsOnPath(string fileName)
     {
         return GetFullPath(fileName) != null;
     }
 
+    /// <summary>
+    /// Gets the full path of a file by searching the system PATH.
+    /// </summary>
+    /// <param name="fileName">The file name to find.</param>
+    /// <returns>Full path if found, null otherwise.</returns>
     public static string? GetFullPath(string fileName)
     {
         if (File.Exists(fileName))
             return Path.GetFullPath(fileName);
-        var values = Environment.GetEnvironmentVariable("PATH") ?? "";
-        foreach (var path in values.Split(Path.PathSeparator))
+        var environmentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
+        foreach (var pathEntry in environmentPath.Split(Path.PathSeparator))
         {
-            var fullPath = Path.Combine(path, fileName);
+            var fullPath = Path.Combine(pathEntry, fileName);
             if (File.Exists(fullPath))
                 return fullPath;
         }
@@ -83,149 +101,142 @@ public partial class PH
         return null;
     }
 
+    /// <summary>
+    /// Returns names of processes whose name contains the specified string.
+    /// </summary>
+    /// <param name="name">The substring to search for in process names.</param>
+    /// <returns>List of matching process names.</returns>
     public static List<string> ProcessesWithNameContains(string name)
     {
-        var processes = GetProcessesNames(true);
-        var text = processes.Where(d => d.Contains(name.ToLower())).ToList(); //CA.ReturnWhichContains(processes, name.ToLower());
-        return text;
-    }
-
-    public static int TerminateProcessesWithNameContains(string name)
-    {
-        var text = ProcessesWithNameContains(name);
-        var ended = 0;
-        foreach (var item in text)
-            ended += Terminate(item);
-        return ended;
+        var processNames = GetProcessesNames(true);
+        var matchingProcesses = processNames.Where(processName => processName.Contains(name.ToLower())).ToList();
+        return matchingProcesses;
     }
 
     /// <summary>
-    ///     without extensions and all lower
+    /// Terminates all processes whose name contains the specified string.
     /// </summary>
-    /// <param name = "name"></param>
-    /// <returns></returns>
+    /// <param name="name">The substring to search for in process names.</param>
+    /// <returns>Number of processes terminated.</returns>
+    public static int TerminateProcessesWithNameContains(string name)
+    {
+        var matchingProcesses = ProcessesWithNameContains(name);
+        var terminatedCount = 0;
+        foreach (var item in matchingProcesses)
+            terminatedCount += Terminate(item);
+        return terminatedCount;
+    }
+
+    /// <summary>
+    ///     Terminates processes with the exact name (without extensions, all lower case).
+    /// </summary>
+    /// <param name="name">The process name to terminate.</param>
+    /// <returns>Number of processes terminated.</returns>
     public static int TerminateProcessesWithName(string name)
     {
         name = name.ToLower();
         name = Path.GetFileNameWithoutExtension(name);
-        var processes = GetProcessesNames(true);
-        var ended = 0;
-        if (processes.Contains(name))
-            ended += Terminate(name);
-        return ended;
+        var processNames = GetProcessesNames(true);
+        var terminatedCount = 0;
+        if (processNames.Contains(name))
+            terminatedCount += Terminate(name);
+        return terminatedCount;
     }
 
     /// <summary>
-    ///     Alternative is FileUtil.WhoIsLocking
+    ///     Shuts down processes that occupy a file handle. Alternative is FileUtil.WhoIsLocking.
     /// </summary>
-    /// <param name = "fileName"></param>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="fileName">The file name to check.</param>
     public static void ShutdownProcessWhichOccupyFileHandleExe(ILogger logger, string fileName)
     {
-        var pr2 = FindProcessesWhichOccupyFileHandleExe(logger, fileName);
-        foreach (var pr in pr2)
-            KillProcess(pr);
+        var foundProcesses = FindProcessesWhichOccupyFileHandleExe(logger, fileName);
+        foreach (var process in foundProcesses)
+            KillProcess(process);
     }
 
     /// <summary>
-    ///     Alternative is FileUtil.WhoIsLocking
-    ///     A2 must be even is not used
+    ///     Finds processes that occupy a file handle using handle64.exe. Alternative is FileUtil.WhoIsLocking.
     /// </summary>
-    /// <param name = "fileName"></param>
-    /// <returns></returns>
-    public static List<Process> FindProcessesWhichOccupyFileHandleExe(ILogger logger, string fileName, bool throwEx = true)
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="fileName">The file name to check.</param>
+    /// <param name="isThrowingOnError">Whether to throw if handle64.exe fails.</param>
+    /// <returns>List of processes occupying the file handle.</returns>
+    public static List<Process> FindProcessesWhichOccupyFileHandleExe(ILogger logger, string fileName, bool isThrowingOnError = true)
     {
-        var pr2 = new List<Process>();
-        var tool = new Process();
-        tool.StartInfo.FileName = "handle64.exe";
-        tool.StartInfo.Arguments = fileName + " /accepteula";
-        tool.StartInfo.UseShellExecute = false;
-        tool.StartInfo.RedirectStandardOutput = true;
-        tool.StartInfo.WorkingDirectory = @"";
+        var foundProcesses = new List<Process>();
+        var handleProcess = new Process();
+        handleProcess.StartInfo.FileName = "handle64.exe";
+        handleProcess.StartInfo.Arguments = fileName + " /accepteula";
+        handleProcess.StartInfo.UseShellExecute = false;
+        handleProcess.StartInfo.RedirectStandardOutput = true;
+        handleProcess.StartInfo.WorkingDirectory = @"";
         try
         {
-            tool.Start();
+            handleProcess.Start();
         }
         catch (Win32Exception ex)
         {
             logger.LogError(Exceptions.TextOfExceptions(ex));
-            if (throwEx)
+            if (isThrowingOnError)
             {
-                throw ex;
+                throw;
             }
         }
 
-        tool.WaitForExit();
-        string? outputTool = null;
+        handleProcess.WaitForExit();
+        string? handleOutput = null;
         try
         {
-            outputTool = tool.StandardOutput.ReadToEnd();
+            handleOutput = handleProcess.StandardOutput.ReadToEnd();
         }
         catch (Exception ex)
         {
             if (ex.Message.Contains("NoProcessIsAssociatedWithThisObject"))
             {
                 ThisApp.Warning("PleaseAddHandle64ExeToPATH");
-                return pr2;
+                return foundProcesses;
             }
         }
 
-        if (outputTool == null)
+        if (handleOutput == null)
         {
             return new List<Process>();
         }
 
-        var matchPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";
-        var matches = Regex.Matches(outputTool, matchPattern);
+        var pidPattern = @"(?<=\s+piD:\s+)\b(\d+)\b(?=\s+)";
+        var matches = Regex.Matches(handleOutput, pidPattern);
         foreach (Match match in matches)
         {
-            var pr = Process.GetProcessById(int.Parse(match.Value));
-            pr2.Add(pr);
+            var process = Process.GetProcessById(int.Parse(match.Value));
+            foundProcesses.Add(process);
         }
 
-        return pr2;
+        return foundProcesses;
     }
 
-    //public static void StartAllUri(List<string> all)
-    //{
-    //    foreach (var item in all) Uri(UH.AppendHttpIfNotExists(item));
-    //}
-    public static List<string> GetProcessesNames(bool lower)
-    {
-        var parameter = Process.GetProcesses().Select(d => d.ProcessName).ToList();
-        if (lower)
-            CA.ToLower(parameter);
-        return parameter;
-    }
-
-    ///// <summary>
-    /////     For search one term in all uris use UriWebServices.SearchInAll
-    ///// </summary>
-    ///// <param name="carModels"></param>
-    ///// <param name="v"></param>
-    //public static void StartAllUri(List<string> carModels)
-    //{
-    //    PHWin.AddBrowser();
-    //    foreach (var item in carModels)
-    //    {
-    //        PHWin.OpenInBrowser(item);
-    //    }
-    //}
-    //public static void StartAllUri(List<string> carModels, Func<string, string> spritMonitor)
-    //{
-    //    carModels = CAChangeContent.ChangeContent0(null, carModels, spritMonitor);
-    //    carModels = CAChangeContent.ChangeContent0(null, carModels, NormalizeUri);
-    //    StartAllUri(carModels);
-    //}
     /// <summary>
-    ///     Start all uri in clipboard, splitted by whitespace
+    /// Gets names of all running processes.
     /// </summary>
-     //public static void StartAllUri(string text)
-    //{
-    //    //var text = ClipboardHelper.GetText();
-    //    var uris = SHSplit.SplitByWhiteSpaces(text);
-    //    StartAllUri(uris);
-    //}
-    internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool throwExWhenError, int? openOnLine)
+    /// <param name="isLowerCase">Whether to convert names to lower case.</param>
+    /// <returns>List of process names.</returns>
+    public static List<string> GetProcessesNames(bool isLowerCase)
+    {
+        var processNames = Process.GetProcesses().Select(process => process.ProcessName).ToList();
+        if (isLowerCase)
+            CA.ToLower(processNames);
+        return processNames;
+    }
+
+    /// <summary>
+    /// Runs VS Code (or compatible editor) with a file path, opening at a specific line if specified.
+    /// </summary>
+    /// <param name="logger">Logger instance.</param>
+    /// <param name="codeExe">The VS Code executable name.</param>
+    /// <param name="arguments">The file path to open.</param>
+    /// <param name="isThrowingOnError">Whether to throw on error.</param>
+    /// <param name="openOnLine">Line number to open at.</param>
+    internal static void RunVsCode(ILogger logger, string codeExe, string arguments, bool isThrowingOnError, int? openOnLine)
     {
         arguments = SH.WrapWithChar(arguments.TrimEnd('"').TrimStart('"'), '"');
 
@@ -234,6 +245,6 @@ public partial class PH
             arguments = $"-g {arguments}:{openOnLine}";
         }
 
-        PH.RunFromPath(logger, codeExe, arguments, false, throwExWhenError);
+        PH.RunFromPath(logger, codeExe, arguments, false, isThrowingOnError);
     }
 }

@@ -1,62 +1,85 @@
 namespace SunamoWinStd._sunamo.SunamoStringGetLines;
 
+/// <summary>
+/// Internal helper for splitting text into lines by various newline characters.
+/// </summary>
 internal class SHGetLines
 {
-    internal static List<string> GetLines(string? p)
+    /// <summary>
+    /// Splits the text into lines using all common newline character combinations.
+    /// </summary>
+    /// <param name="text">The text to split into lines.</param>
+    /// <returns>List of lines.</returns>
+    internal static List<string> GetLines(string? text)
     {
-        if (p == null)
+        if (text == null)
         {
             return new List<string>();
         }
 
-        var parts = p.Split(new string[] { "\r\n", "\n\r" }, StringSplitOptions.None).ToList();
-        SplitByUnixNewline(parts);
-        return parts;
+        var lines = text.Split(new string[] { "\r\n", "\n\r" }, StringSplitOptions.None).ToList();
+        SplitByUnixNewline(lines);
+        return lines;
     }
 
-    private static void SplitByUnixNewline(List<string> d)
+    /// <summary>
+    /// Further splits lines by standalone CR and LF characters.
+    /// </summary>
+    /// <param name="list">The list to split further.</param>
+    private static void SplitByUnixNewline(List<string> list)
     {
-        SplitBy(d, "\r");
-        SplitBy(d, "\n");
+        SplitBy(list, "\r");
+        SplitBy(list, "\n");
     }
 
-    private static void SplitBy(List<string> d, string v)
+    /// <summary>
+    /// Splits list entries that contain the specified separator into multiple entries.
+    /// </summary>
+    /// <param name="list">The list of strings to process.</param>
+    /// <param name="separator">The separator to split by.</param>
+    private static void SplitBy(List<string> list, string separator)
     {
-        for (int i = d.Count - 1; i >= 0; i--)
+        for (int i = list.Count - 1; i >= 0; i--)
         {
-            if (v == "\r")
+            if (separator == "\r")
             {
-                var rn = d[i].Split(new string[] { "\r\n" }, StringSplitOptions.None);
-                var nr = d[i].Split(new string[] { "\n\r" }, StringSplitOptions.None);
+                var crlfSplit = list[i].Split(new string[] { "\r\n" }, StringSplitOptions.None);
+                var lfcrSplit = list[i].Split(new string[] { "\n\r" }, StringSplitOptions.None);
 
-                if (rn.Length > 1)
+                if (crlfSplit.Length > 1)
                 {
-                    ThrowEx.Custom("cannot contain any \r\name, pass already split by this pattern");
+                    ThrowEx.Custom("cannot contain any \\r\\n, pass already split by this pattern");
                 }
-                else if (nr.Length > 1)
+                else if (lfcrSplit.Length > 1)
                 {
-                    ThrowEx.Custom("cannot contain any \n\r, pass already split by this pattern");
+                    ThrowEx.Custom("cannot contain any \\n\\r, pass already split by this pattern");
                 }
             }
 
-            var name = d[i].Split(new string[] { v }, StringSplitOptions.None);
+            var splitParts = list[i].Split(new string[] { separator }, StringSplitOptions.None);
 
-            if (name.Length > 1)
+            if (splitParts.Length > 1)
             {
-                InsertOnIndex(d, name.ToList(), i);
+                InsertOnIndex(list, splitParts.ToList(), i);
             }
         }
     }
 
-    private static void InsertOnIndex(List<string> d, List<string> r, int i)
+    /// <summary>
+    /// Replaces the element at the specified index with the reversed contents of the insert list.
+    /// </summary>
+    /// <param name="list">The target list to modify.</param>
+    /// <param name="insertList">The list of elements to insert.</param>
+    /// <param name="index">The index at which to perform the replacement.</param>
+    private static void InsertOnIndex(List<string> list, List<string> insertList, int index)
     {
-        r.Reverse();
+        insertList.Reverse();
 
-        d.RemoveAt(i);
+        list.RemoveAt(index);
 
-        foreach (var item in r)
+        foreach (var item in insertList)
         {
-            d.Insert(i, item);
+            list.Insert(index, item);
         }
     }
 }
