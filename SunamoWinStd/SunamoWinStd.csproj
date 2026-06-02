@@ -3,7 +3,7 @@
     <OutputType>Library</OutputType>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Version>26.5.18.4</Version>
+    <Version>26.5.31.3</Version>
     <Description>Windows-specific code on net9.0 moniker</Description>
     <Authors>www.sunamo.cz</Authors>
     <Copyright>www.sunamo.cz</Copyright>

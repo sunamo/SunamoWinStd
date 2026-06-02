@@ -86,7 +86,7 @@ partial class PHWin
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Min:
-                    browserPath = @"C:\Users\r\AppData\Local\min\min.exe";
+                    browserPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"min\min.exe");
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Basilisk:
@@ -108,6 +108,42 @@ partial class PHWin
                 case Browsers.LibreWolf:
                     browserPath = @"C:\Program Files\LibreWolf\librewolf.exe";
                     NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.ChromeStable:
+                    browserPath = @"C:\Program Files\Google\Chrome\Application\chrome.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Arc:
+                    browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Arc", "Arc.exe");
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Zen:
+                    browserPath = @"C:\Program Files\Zen Browser\zen.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.AvastBrowser:
+                    browserPath = @"C:\Program Files\Avast Software\Browser\Application\AvastBrowser.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Comodo:
+                    browserPath = @"C:\Program Files\Comodo\Dragon\dragon.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Mullvad:
+                    browserPath = @"C:\Program Files\Mullvad Browser\App\mullvadbrowser.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Floorp:
+                    browserPath = @"C:\Program Files\Floorp\floorp.exe";
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Sidekick:
+                    browserPath = WindowsOSHelper.FileIn(UserFoldersWin.Local, @"Programs\Sidekick", "Sidekick.exe");
+                    NullIfNotExists(ref browserPath);
+                    break;
+                case Browsers.Midori:
+                    break;
+                case Browsers.Comet:
                     break;
                 case Browsers.EdgeStable:
                     browserPath = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";

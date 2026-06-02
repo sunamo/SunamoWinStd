@@ -47,6 +47,26 @@ public enum Browsers : byte
     PaleMoon = 21,
     /// <summary>LibreWolf browser.</summary>
     LibreWolf = 22,
+    /// <summary>Google Chrome Stable channel (explicit stable alias).</summary>
+    ChromeStable = 23,
+    /// <summary>Arc browser.</summary>
+    Arc = 24,
+    /// <summary>Zen browser.</summary>
+    Zen = 25,
+    /// <summary>Avast Secure Browser.</summary>
+    AvastBrowser = 26,
+    /// <summary>Comodo Dragon browser.</summary>
+    Comodo = 27,
+    /// <summary>Mullvad Browser.</summary>
+    Mullvad = 28,
+    /// <summary>Floorp browser.</summary>
+    Floorp = 29,
+    /// <summary>Sidekick browser.</summary>
+    Sidekick = 30,
+    /// <summary>Midori browser.</summary>
+    Midori = 31,
+    /// <summary>Comet browser.</summary>
+    Comet = 32,
     /// <summary>Microsoft Edge Stable channel.</summary>
     EdgeStable = 254,
     /// <summary>No browser selected.</summary>
