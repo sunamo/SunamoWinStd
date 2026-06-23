@@ -85,7 +85,7 @@ public static class FileUtil
     private struct RM_UNIQUE_PROCESS
     {
         public int dwProcessId;
-        public FILETIME ProcessStartTime;
+        public System.Runtime.InteropServices.ComTypes.FILETIME ProcessStartTime;
     }
     private enum RM_APP_TYPE
     {

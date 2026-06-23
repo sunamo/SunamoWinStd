@@ -33,7 +33,7 @@ public partial class PHWin
     public static Editor PreferredEditor { get; set; } = Editor.Code;
     static PHWin()
     {
-        var browsers = Enum.GetValues<Browsers>().ToList();
+        var browsers = ((Browsers[])Enum.GetValues(typeof(Browsers))).ToList();
         browserCount = browsers.Count;
     }
     private static
@@ -72,7 +72,7 @@ public partial class PHWin
     {
         if (BrowserPaths.Count == 0)
         {
-            var allBrowsers = Enum.GetValues<Browsers>();
+            var allBrowsers = ((Browsers[])Enum.GetValues(typeof(Browsers)));
             foreach (var item in allBrowsers)
                 if (item != Browsers.None)
                     AddBrowser(item);
@@ -101,8 +101,17 @@ public partial class PHWin
         {
 
             text = PH.NormalizeUri(text);
-            if (!text.StartsWith("http")) text = "https://" + text;
-            if (!Uri.TryCreate(text, new UriCreationOptions(), out var _))
+            if (!text.StartsWith("http"))
+            {
+                if (isForceAttemptingHttps)
+                    text = "https://" + text;
+                else
+                {
+                    logger.LogWarning("Skipping non-URL value: " + text);
+                    return;
+                }
+            }
+            if (!Uri.TryCreate(text, UriKind.Absolute, out var _))
             {
                 logger.LogError($"Can't create uri from " + text);
                 if (isThrowingIfNotValidUrl)

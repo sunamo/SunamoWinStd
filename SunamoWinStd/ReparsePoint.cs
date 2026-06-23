@@ -46,8 +46,9 @@ public class ReparsePoint
     /// <param name="path">Full path of the reparse point</param>
     public ReparsePoint(string path)
     {
-        Debug.Assert(!string.IsNullOrEmpty(path) && path.Length > 2 && path[1] == ':' && path[2] == '\\');
         normalisedTarget = "";
+        if (string.IsNullOrEmpty(path) || path.Length <= 2 || path[1] != ':' || path[2] != '\\')
+            return; // invalid path — Target stays null, Tag stays None
         Tag = TagType.None;
         bool success;
         int lastError;
@@ -67,7 +68,7 @@ public class ReparsePoint
                 tokenPrivileges.PrivilegeCount = 1;
                 tokenPrivileges.Privileges[0].Attributes = SE_PRIVILEGE_ENABLED;
                 success = AdjustTokenPrivileges(token, false, ref tokenPrivileges, Marshal.SizeOf(tokenPrivileges),
-                    nint.Zero, nint.Zero);
+                    0, 0);
                 lastError = Marshal.GetLastWin32Error();
             }
 
@@ -78,17 +79,17 @@ public class ReparsePoint
         {
             // Open the file and get its handle
             var handle = CreateFile(path, FileAccess.Read, FileShare.None, 0, FileMode.Open,
-                FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, nint.Zero);
+                FILE_FLAG_OPEN_REPARSE_POINT | FILE_FLAG_BACKUP_SEMANTICS, 0);
             lastError = Marshal.GetLastWin32Error();
-            if (handle.ToInt32() >= 0)
+            if ((int)handle >= 0)
             {
                 var buffer = new REPARSE_DATA_BUFFER();
                 // Make up the control code - see CTL_CODE on ntddk.h
                 var controlCode = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) |
                                   (FSCTL_GET_REPARSE_POINT << 2) | METHOD_BUFFERED;
                 uint bytesReturned;
-                success = DeviceIoControl(handle, controlCode, nint.Zero, 0, out buffer,
-                    MAXIMUM_REPARSE_DATA_BUFFER_SIZE, out bytesReturned, nint.Zero);
+                success = DeviceIoControl(handle, controlCode, 0, 0, out buffer,
+                    MAXIMUM_REPARSE_DATA_BUFFER_SIZE, out bytesReturned, 0);
                 lastError = Marshal.GetLastWin32Error();
                 if (success)
                 {
@@ -97,9 +98,8 @@ public class ReparsePoint
                     // Note that according to http://wesnerm.blogs.com/net_undocumented/2006/10/symbolic_links_.html
                     // Symbolic links store relative paths, while junctions use absolute paths
                     // however, they can in fact be either, and may or may not have a leading \.
-                    Debug.Assert(
-                        buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK || buffer.ReparseTag == IO_REPARSE_TAG_MOUNT_POINT,
-                        "Unrecognised reparse tag"); // We only recognise these two
+                    if (buffer.ReparseTag != IO_REPARSE_TAG_SYMLINK && buffer.ReparseTag != IO_REPARSE_TAG_MOUNT_POINT)
+                        return; // unrecognised reparse tag — Target stays null
                     if (buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK)
                     {
                         // for some reason symlinks seem to have an extra two characters on the front

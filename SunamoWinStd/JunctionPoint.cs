@@ -47,7 +47,11 @@ public partial class JunctionPoint
     {
         if (!File.Exists(target)) ThrowEx.DirectoryExists(target);
         var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
+#if ASYNC
         return command;
+#else
+        return new List<string> { command };
+#endif
     }
     /// <summary>
     /// Gets paths and targets of all junction points in the specified folder.
@@ -85,7 +89,11 @@ public partial class JunctionPoint
             ThrowEx.DirectoryExists(target);
         }
         var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
+#if ASYNC
         return command;
+#else
+        return new List<string> { command };
+#endif
     }
     /// <summary>
     ///     Creates a directory symbolic link (/D) using mklink. Only works for directories.
@@ -103,7 +111,11 @@ public partial class JunctionPoint
     {
         if (!Directory.Exists(target)) ThrowEx.DirectoryExists(target);
         var command = "cmd /c mklink /D " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
+#if ASYNC
         return command;
+#else
+        return new List<string> { command };
+#endif
     }
     /// <summary>
     ///     For files use mklink, this can be use only for directory.
@@ -157,7 +169,7 @@ public partial class JunctionPoint
                 Marshal.StructureToPtr(reparseDataBuffer, inBuffer, false);
                 int bytesReturned;
                 var createResult = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_SET_REPARSE_POINT,
-                    inBuffer, targetDirBytes.Length + 20, nint.Zero, 0, out bytesReturned, nint.Zero);
+                    inBuffer, targetDirBytes.Length + 20, 0, 0, out bytesReturned, 0);
                 if (!createResult)
                 {
                     var errorCode = Marshal.GetLastWin32Error();
@@ -177,6 +189,8 @@ public partial class JunctionPoint
     /// <returns>True if the path is a reparse point.</returns>
     public static bool IsReparsePoint(string path)
     {
+        if (string.IsNullOrEmpty(path) || path.Length <= 2 || path[1] != ':' || path[2] != '\\')
+            return false;
         var reparsePoint = new ReparsePoint(path);
         return !string.IsNullOrEmpty(reparsePoint.Target);
     }
@@ -214,7 +228,7 @@ public partial class JunctionPoint
                 Marshal.StructureToPtr(reparseDataBuffer, inBuffer, false);
                 int bytesReturned;
                 var deleteResult = DeviceIoControl(handle.DangerousGetHandle(), FSCTL_DELETE_REPARSE_POINT,
-                    inBuffer, 8, nint.Zero, 0, out bytesReturned, nint.Zero);
+                    inBuffer, 8, 0, 0, out bytesReturned, 0);
                 if (!deleteResult)
                 {
                     var errorCode = Marshal.GetLastWin32Error();
