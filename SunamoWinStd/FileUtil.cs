@@ -1,8 +1,5 @@
 namespace SunamoWinStd;
 
-/// <summary>
-/// Provides utilities for detecting which processes have locks on files.
-/// </summary>
 public static class FileUtil
 {
     private const int RmRebootReasonNone = 0;
@@ -18,17 +15,6 @@ public static class FileUtil
     [DllImport("rstrtmgr.dll")]
     private static extern int RmGetList(uint dwSessionHandle, out uint pnProcInfoNeeded, ref uint pnProcInfo,
         [In][Out] RM_PROCESS_INFO[]? rgAffectedApps, ref uint lpdwRebootReasons);
-    /// <summary>
-    ///     Find out what process(es) have a lock on the specified file.
-    /// </summary>
-    /// <param name="path">Path of the file.</param>
-    /// <param name="isThrowingOnError">Whether to throw exceptions on errors.</param>
-    /// <returns>Processes locking the file</returns>
-    /// <remarks>
-    ///     See also:
-    ///     http://msdn.microsoft.com/en-us/library/windows/desktop/aa373661(v=vs.85).aspx
-    ///     http://wyupdate.googlecode.com/svn-history/r401/trunk/frmFilesInUse.cs (no copyright in code at time of viewing)
-    /// </remarks>
     public static List<Process> WhoIsLocking(string path, bool isThrowingOnError = true)
     {
         uint handle;

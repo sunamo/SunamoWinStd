@@ -2,18 +2,10 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
-    /// <summary>
-    /// Adds the default browser to the browser paths dictionary.
-    /// </summary>
     public static void AddBrowser()
     {
         AddBrowser(defaultBrowser);
     }
-    /// <summary>
-    /// Adds the specified browser executable path to the browser paths dictionary.
-    /// </summary>
-    /// <param name="browser">The browser type to add.</param>
-    /// <returns>The executable path of the browser, or empty string if not found.</returns>
     public static string AddBrowser(Browsers browser)
     {
         if (BrowserPaths.Count != browserCount)

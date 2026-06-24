@@ -1,22 +1,12 @@
 namespace SunamoWinStd;
 
-/// <summary>
-/// Represents an NTFS reparse point and resolves its target path.
-/// </summary>
 public class ReparsePoint
 {
-    /// <summary>
-    /// Type of NTFS reparse point tag.
-    /// </summary>
     public enum TagType
     {
-        /// <summary>Not a reparse point.</summary>
         None = 0,
-        /// <summary>A mounted drive volume.</summary>
         MountPoint = 1,
-        /// <summary>A symbolic link (file or directory).</summary>
         SymbolicLink = 2,
-        /// <summary>A directory junction point.</summary>
         JunctionPoint = 3
     }
     // This is based on the code at http://www.flexhex.com/docs/articles/hard-links.phtml
@@ -40,10 +30,6 @@ public class ReparsePoint
 
     private readonly string normalisedTarget;
 
-    /// <summary>
-    ///     Takes a full path to a reparse point and finds the target.
-    /// </summary>
-    /// <param name="path">Full path of the reparse point</param>
     public ReparsePoint(string path)
     {
         normalisedTarget = "";
@@ -170,14 +156,8 @@ public class ReparsePoint
         }
     }
 
-    /// <summary>
-    ///     Gets the actual target string, before normalising
-    /// </summary>
     public string? Target { get; } = null;
 
-    /// <summary>
-    ///     Gets the tag
-    /// </summary>
     public TagType Tag { get; }
 
     [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
@@ -187,7 +167,7 @@ public class ReparsePoint
         uint dwIoControlCode,
         nint lpInBuffer,
         uint nInBufferSize,
-        //IntPtr lpOutBuffer, 
+        //IntPtr lpOutBuffer,
         out REPARSE_DATA_BUFFER outBuffer,
         uint nOutBufferSize,
         out uint lpBytesReturned,
@@ -230,11 +210,6 @@ public class ReparsePoint
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CloseHandle(nint hObject);
 
-    /// <summary>
-    ///     This returns the normalised target, ie. if the actual target is relative it has been made absolute
-    ///     Note that it is not fully normalised in that .s and ..s may still be included.
-    /// </summary>
-    /// <returns>The normalised path</returns>
     public override string ToString()
     {
         return normalisedTarget;

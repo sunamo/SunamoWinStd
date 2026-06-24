@@ -15,12 +15,7 @@ internal class PathFormatDetectorService(ILogger logger)
         return !isBadFormat;
     }
 
-    /// <summary>
-    /// Returns true if Windows path, false if Unix path, null if undetermined.
-    /// </summary>
-    /// <param name="path">The path to detect format for.</param>
-    /// <param name="isLoggingIfNotUnixOrWindowsPath">Whether to log an error if the path format cannot be determined.</param>
-    /// <returns>True for Windows, false for Unix, null for undetermined.</returns>
+    // Returns true if Windows path, false if Unix path, null if undetermined.
     internal bool? DetectPathType(string path, bool isLoggingIfNotUnixOrWindowsPath = false)
     {
         if (IsWindowsPathFormat(path))

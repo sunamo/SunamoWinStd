@@ -1,18 +1,10 @@
 namespace SunamoWinStd._sunamo.SunamoStringGetLines;
 
-/// <summary>
-/// Internal helper for splitting text into lines by various newline characters.
-/// </summary>
 internal class SHGetLines
 {
-    /// <summary>
-    /// Splits the text into lines using all common newline character combinations.
-    /// </summary>
-    /// <param name="text">The text to split into lines.</param>
-    /// <returns>List of lines.</returns>
     internal static List<string> GetLines(string? text)
     {
-        if (text == null)
+        if (text is null)
         {
             return new List<string>();
         }
@@ -22,21 +14,12 @@ internal class SHGetLines
         return lines;
     }
 
-    /// <summary>
-    /// Further splits lines by standalone CR and LF characters.
-    /// </summary>
-    /// <param name="list">The list to split further.</param>
     private static void SplitByUnixNewline(List<string> list)
     {
         SplitBy(list, "\r");
         SplitBy(list, "\n");
     }
 
-    /// <summary>
-    /// Splits list entries that contain the specified separator into multiple entries.
-    /// </summary>
-    /// <param name="list">The list of strings to process.</param>
-    /// <param name="separator">The separator to split by.</param>
     private static void SplitBy(List<string> list, string separator)
     {
         for (int i = list.Count - 1; i >= 0; i--)
@@ -65,12 +48,6 @@ internal class SHGetLines
         }
     }
 
-    /// <summary>
-    /// Replaces the element at the specified index with the reversed contents of the insert list.
-    /// </summary>
-    /// <param name="list">The target list to modify.</param>
-    /// <param name="insertList">The list of elements to insert.</param>
-    /// <param name="index">The index at which to perform the replacement.</param>
     private static void InsertOnIndex(List<string> list, List<string> insertList, int index)
     {
         insertList.Reverse();
