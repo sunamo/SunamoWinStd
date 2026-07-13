@@ -90,7 +90,9 @@ partial class PHWin
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.KMeleon:
-                    browserPath = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
+                    browserPath = @"C:\Program Files (x86)\K-Meleon\k-meleon.exe";
+                    if (!File.Exists(browserPath)) browserPath = @"C:\Program Files\K-Meleon\k-meleon.exe";
+                    if (!File.Exists(browserPath)) browserPath = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.PaleMoon:
