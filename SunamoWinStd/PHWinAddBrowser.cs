@@ -119,7 +119,7 @@ partial class PHWin
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Comodo:
-                    browserPath = @"C:\Program Files\Comodo\Dragon\dragon.exe";
+                    browserPath = FirstExistingBrowser(@"Comodo\Dragon", "dragon.exe");
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.Mullvad:
@@ -137,6 +137,8 @@ partial class PHWin
                 case Browsers.Midori:
                     break;
                 case Browsers.Comet:
+                    browserPath = FirstExistingBrowser(@"Perplexity\Comet", "comet.exe");
+                    NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.EdgeStable:
                     browserPath = @"C:\Windows\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\MicrosoftEdge.exe";

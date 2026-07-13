@@ -95,22 +95,30 @@ public class PHWinTests
         }
     }
 
-    // Kdyz je K-Meleon nainstalovany, detekce ho musi najit (regrese: driv se hledal jen na
-    // neexistujici ceste D:\paSync\_browsers\KM-Goanna\k-meleon.exe).
-    [Fact]
-    public void KMeleonDetectedWhenInstalled()
+    // Kdyz je prohlizec nainstalovany kdekoliv ve standardnich korenech, detekce ho musi najit.
+    // Regrese: K-Meleon se driv hledal jen na neexistujici D:\paSync ceste, Comodo jen v Program Files
+    // (ne x86), Comet nemel detekci vubec.
+    [Theory]
+    [InlineData(Browsers.KMeleon, "K-Meleon", "k-meleon.exe")]
+    [InlineData(Browsers.Comodo, @"Comodo\Dragon", "dragon.exe")]
+    [InlineData(Browsers.Comet, @"Perplexity\Comet", "comet.exe")]
+    public void InstalledBrowserIsDetected(Browsers browser, string appFolder, string executableName)
     {
-        var known = new[]
+        var roots = new[]
         {
-            @"C:\Program Files (x86)\K-Meleon\k-meleon.exe",
-            @"C:\Program Files\K-Meleon\k-meleon.exe",
-            @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe",
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         };
-        if (!known.Any(File.Exists))
-            return; // na tomto stroji K-Meleon neni - nic netestujeme
+        bool installed = roots.Where(r => !string.IsNullOrEmpty(r))
+            .Select(r => Path.Combine(r, appFolder))
+            .Any(f => Directory.Exists(f) &&
+                      Directory.EnumerateFiles(f, executableName, SearchOption.AllDirectories).Any());
+        if (!installed)
+            return; // na tomto stroji neni nainstalovany - nic netestujeme
 
-        var path = PHWin.AddBrowser(Browsers.KMeleon);
-        Assert.False(string.IsNullOrEmpty(path), "K-Meleon je na disku, ale detekce vratila prazdnou cestu");
-        Assert.True(File.Exists(path), $"Detekovana K-Meleon cesta neexistuje: {path}");
+        var path = PHWin.AddBrowser(browser);
+        Assert.False(string.IsNullOrEmpty(path), $"{browser} je na disku, ale detekce vratila prazdnou cestu");
+        Assert.True(File.Exists(path), $"Detekovana {browser} cesta neexistuje: {path}");
     }
 }
