@@ -90,9 +90,8 @@ partial class PHWin
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.KMeleon:
-                    browserPath = @"C:\Program Files (x86)\K-Meleon\k-meleon.exe";
-                    if (!File.Exists(browserPath)) browserPath = @"C:\Program Files\K-Meleon\k-meleon.exe";
-                    if (!File.Exists(browserPath)) browserPath = @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe";
+                    browserPath = FirstExistingBrowser("K-Meleon", "k-meleon.exe",
+                        @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe");
                     NullIfNotExists(ref browserPath);
                     break;
                 case Browsers.PaleMoon:
@@ -154,5 +153,26 @@ partial class PHWin
             return browserPath;
         }
         return BrowserPaths[browser];
+    }
+
+    // Najde stejny prohlizec at je nainstalovany kdekoliv - prohleda standardni instalacni koreny
+    // (Program Files, Program Files (x86), AppData\Local, AppData\Local\Programs) v podslozce appFolder,
+    // plus libovolne dalsi napevno zadane fallback cesty. Vrati prvni existujici .exe, jinak null.
+    private static string? FirstExistingBrowser(string appFolder, string executableName, params string[] extraPaths)
+    {
+        var roots = new[]
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs"),
+        };
+        foreach (var root in roots)
+        {
+            if (string.IsNullOrEmpty(root)) continue;
+            var found = WindowsOSHelper.FileIn(Path.Combine(root, appFolder), executableName);
+            if (found != null) return found;
+        }
+        return extraPaths.FirstOrDefault(File.Exists);
     }
 }

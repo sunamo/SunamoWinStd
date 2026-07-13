@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SunamoTest;
+using SunamoWinStd._public.SunamoEnums.Enums;
 using System.Text;
 
 namespace SunamoWinStd.Tests;
@@ -78,5 +79,38 @@ public class PHWinTests
         var testFilePath = Path.Combine(Path.GetTempPath(), "TestBrowserOpen.html");
         File.WriteAllText(testFilePath, "<html><body><h1>Test</h1></body></html>");
         PHWin.OpenInBrowser(logger, testFilePath);
+    }
+
+    // Invariant "Pokud je empty, exe neexistuje na disku! A vice versa!" - kazda detekovana
+    // cesta musi byt bud prazdna, nebo ukazovat na skutecne existujici .exe.
+    [Fact]
+    public void EveryBrowserPathIsEmptyOrExists()
+    {
+        PHWin.AddBrowsers();
+        foreach (var kvp in PHWin.BrowserPaths)
+        {
+            if (!string.IsNullOrEmpty(kvp.Value))
+                Assert.True(File.Exists(kvp.Value),
+                    $"{kvp.Key} ma neprazdnou cestu, ktera ale na disku neexistuje: {kvp.Value}");
+        }
+    }
+
+    // Kdyz je K-Meleon nainstalovany, detekce ho musi najit (regrese: driv se hledal jen na
+    // neexistujici ceste D:\paSync\_browsers\KM-Goanna\k-meleon.exe).
+    [Fact]
+    public void KMeleonDetectedWhenInstalled()
+    {
+        var known = new[]
+        {
+            @"C:\Program Files (x86)\K-Meleon\k-meleon.exe",
+            @"C:\Program Files\K-Meleon\k-meleon.exe",
+            @"D:\paSync\_browsers\KM-Goanna\k-meleon.exe",
+        };
+        if (!known.Any(File.Exists))
+            return; // na tomto stroji K-Meleon neni - nic netestujeme
+
+        var path = PHWin.AddBrowser(Browsers.KMeleon);
+        Assert.False(string.IsNullOrEmpty(path), "K-Meleon je na disku, ale detekce vratila prazdnou cestu");
+        Assert.True(File.Exists(path), $"Detekovana K-Meleon cesta neexistuje: {path}");
     }
 }
