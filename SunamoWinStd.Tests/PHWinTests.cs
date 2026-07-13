@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SunamoTest;
+using SunamoWinStd._public.SunamoEnums.Enums;
 using System.Text;
 
 namespace SunamoWinStd.Tests;
@@ -78,5 +79,46 @@ public class PHWinTests
         var testFilePath = Path.Combine(Path.GetTempPath(), "TestBrowserOpen.html");
         File.WriteAllText(testFilePath, "<html><body><h1>Test</h1></body></html>");
         PHWin.OpenInBrowser(logger, testFilePath);
+    }
+
+    // Invariant "Pokud je empty, exe neexistuje na disku! A vice versa!" - kazda detekovana
+    // cesta musi byt bud prazdna, nebo ukazovat na skutecne existujici .exe.
+    [Fact]
+    public void EveryBrowserPathIsEmptyOrExists()
+    {
+        PHWin.AddBrowsers();
+        foreach (var kvp in PHWin.BrowserPaths)
+        {
+            if (!string.IsNullOrEmpty(kvp.Value))
+                Assert.True(File.Exists(kvp.Value),
+                    $"{kvp.Key} ma neprazdnou cestu, ktera ale na disku neexistuje: {kvp.Value}");
+        }
+    }
+
+    // Kdyz je prohlizec nainstalovany kdekoliv ve standardnich korenech, detekce ho musi najit.
+    // Regrese: K-Meleon se driv hledal jen na neexistujici D:\paSync ceste, Comodo jen v Program Files
+    // (ne x86), Comet nemel detekci vubec.
+    [Theory]
+    [InlineData(Browsers.KMeleon, "K-Meleon", "k-meleon.exe")]
+    [InlineData(Browsers.Comodo, @"Comodo\Dragon", "dragon.exe")]
+    [InlineData(Browsers.Comet, @"Perplexity\Comet", "comet.exe")]
+    public void InstalledBrowserIsDetected(Browsers browser, string appFolder, string executableName)
+    {
+        var roots = new[]
+        {
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        };
+        bool installed = roots.Where(r => !string.IsNullOrEmpty(r))
+            .Select(r => Path.Combine(r, appFolder))
+            .Any(f => Directory.Exists(f) &&
+                      Directory.EnumerateFiles(f, executableName, SearchOption.AllDirectories).Any());
+        if (!installed)
+            return; // na tomto stroji neni nainstalovany - nic netestujeme
+
+        var path = PHWin.AddBrowser(browser);
+        Assert.False(string.IsNullOrEmpty(path), $"{browser} je na disku, ale detekce vratila prazdnou cestu");
+        Assert.True(File.Exists(path), $"Detekovana {browser} cesta neexistuje: {path}");
     }
 }
