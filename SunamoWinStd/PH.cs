@@ -5,22 +5,22 @@ public partial class PH
     public static string? RunFromPath(ILogger logger, string exe, string arguments, bool isWithOutput, bool isThrowingOnError = false)
     {
         PHWin.BreakIfTen();
-        var environmentPath = Environment.GetEnvironmentVariable("PATH");
-        if (environmentPath == null)
+        var environmentPath = GetMergedPath();
+        if (string.IsNullOrWhiteSpace(environmentPath))
         {
             logger.LogWarning("PATH is null");
             return null;
         }
 
-        var paths = environmentPath.Split(';');
-        var combinedPaths = paths.Select(pathEntry => Path.Combine(pathEntry, exe));
+        var paths = environmentPath.Split(';', StringSplitOptions.RemoveEmptyEntries);
+        var combinedPaths = paths.Select(pathEntry => Path.Combine(pathEntry.Trim().Trim('"'), exe));
         var existingFiles = combinedPaths.Where(filePath => File.Exists(filePath));
         var exePath = existingFiles.FirstOrDefault();
         if (!string.IsNullOrWhiteSpace(exePath))
         {
             if (isWithOutput)
-                return RunWithOutput(exe, arguments);
-            Process.Start(exe, arguments);
+                return RunWithOutput(exePath, arguments);
+            Process.Start(exePath, arguments);
             return string.Empty;
         }
 
@@ -31,6 +31,21 @@ public partial class PH
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Spoji PATH procesu s PATH z registru (Machine + User), protoze proces zdedi PATH od rodice a po zmene PATH ve Windows je zastaraly.
+    /// </summary>
+    private static string GetMergedPath()
+    {
+        var parts = new[]
+        {
+            Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process),
+            Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User),
+            Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine)
+        };
+        var merged = string.Join(";", parts.Where(part => !string.IsNullOrWhiteSpace(part)));
+        return Environment.ExpandEnvironmentVariables(merged);
     }
 
     public static bool ExecCmd(string command)
