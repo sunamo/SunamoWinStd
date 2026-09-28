@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFrameworks>net10.0;net9.0;net8.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net9.0;net8.0;netstandard2.0;net9.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <Version>26.9.25.4</Version>
@@ -33,6 +33,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageReference Include="System.Management" Version="10.0.2" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
+    <PackageReference Include="SunamoPInvoke" Version="*" />
+    <PackageReference Include="SunamoSharedMisc" Version="*" />
+    <PackageReference Include="SunamoInterfaces" Version="*" />
     <None Include="readme.md" Pack="True" PackagePath="." />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="all" />
   </ItemGroup>
@@ -49,4 +52,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>$(DefineConstants);ASYNC</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net9.0-windows'">
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(TargetFramework)'!='net9.0-windows'">
+    <Compile Remove="Win\**" />
+  </ItemGroup>
 </Project>
