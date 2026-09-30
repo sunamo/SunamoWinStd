@@ -1,4 +1,4 @@
-namespace SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
+namespace SunamoWinStd.Win;
 
 /// <summary>
 /// Interface for reading and writing the system clipboard.
