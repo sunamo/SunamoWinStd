@@ -1,7 +1,6 @@
 using System.Collections.Specialized;
 using System.Windows.Forms;
 using Clipboard = System.Windows.Forms.Clipboard;
-using SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
 
 namespace SunamoWinStd.Win;
 
