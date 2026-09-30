@@ -1,6 +1,7 @@
 using System.Collections.Specialized;
 using System.Windows.Forms;
-using SunamoInterfaces.Interfaces;
+using Clipboard = System.Windows.Forms.Clipboard;
+using SunamoWinStd._sunamo.SunamoInterfaces.Interfaces;
 
 namespace SunamoWinStd.Win;
 
@@ -8,7 +9,7 @@ namespace SunamoWinStd.Win;
 /// WinForms/raw Win32 clipboard implementation of <see cref="IClipboardHelper"/>.
 /// Prefer <see cref="Helpers.ClipboardHelperWinStd"/> (TextCopy-based) for most projects;
 /// use this one only when the lower-level Win32 clipboard access it provides is needed
-/// (e.g. together with <see cref="SunamoInterfaces.Interfaces.IClipboardMonitor"/>, which
+/// (e.g. together with <see cref="IClipboardMonitor"/>, which
 /// relies on the same W32 clipboard APIs). Only available on Windows (WinForms) targets.
 /// </summary>
 public class ClipboardHelperWin : IClipboardHelper
@@ -201,7 +202,7 @@ public class ClipboardHelperWin : IClipboardHelper
         var filesToCut = new StringCollection();
         filesToCut.AddRange(filePaths);
 
-        var data = new DataObject(DataFormats.PreferredDropEffect, dropEffectStream);
+        var data = new DataObject("Preferred DropEffect", dropEffectStream);
         data.SetFileDropList(filesToCut);
 
         Clipboard.Clear();
