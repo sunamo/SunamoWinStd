@@ -2,6 +2,23 @@ namespace SunamoWinStd;
 
 public class TidyExeHelper
 {
+    private const string TidyConfigResourceName = "SunamoWinStd.Resources.tidy_config.txt";
+
+    /// <summary>
+    /// Writes the embedded tidy_config.txt next to the executing assembly and returns its full path.
+    /// </summary>
+    /// <returns>Full path of the written tidy configuration file.</returns>
+    public static string WriteTidyConfigToExecutableLocation()
+    {
+        var assembly = typeof(TidyExeHelper).Assembly;
+        var targetPath = Path.Combine(AppContext.BaseDirectory, "tidy_config.txt");
+        using var stream = assembly.GetManifestResourceStream(TidyConfigResourceName)
+            ?? throw new InvalidOperationException("Embedded resource not found: " + TidyConfigResourceName);
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        File.WriteAllText(targetPath, reader.ReadToEnd(), new UTF8Encoding(false));
+        return targetPath;
+    }
+
     public static Tuple<FileInfo, string> GenerateMapInfo(string mapDirectory, string fileExtension)
     {
         var uniqueMapName = Guid.NewGuid().ToString();

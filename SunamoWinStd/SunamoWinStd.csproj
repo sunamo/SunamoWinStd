@@ -40,6 +40,9 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources/tidy_config.txt" LogicalName="SunamoWinStd.Resources.tidy_config.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <Folder Include="_sunamo\SunamoExceptions\_AddedToAllCsproj\" />
     <Folder Include="_sunamo\SunamoInterfaces\Interfaces\SunamoPS\" />
   </ItemGroup>
