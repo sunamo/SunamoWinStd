@@ -33,9 +33,6 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.2" />
     <PackageReference Include="System.Management" Version="10.0.2" />
     <PackageReference Include="TextCopy" Version="6.2.1" />
-    <PackageReference Include="SunamoPInvoke" Version="*" />
-    <PackageReference Include="SunamoSharedMisc" Version="*" />
-    <PackageReference Include="SunamoInterfaces" Version="*" />
     <None Include="readme.md" Pack="True" PackagePath="." />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="all" />
   </ItemGroup>
