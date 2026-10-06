@@ -1,5 +1,10 @@
 # SunamoWinStd
 
+## Short description
+
+Windows specifický kód pro net9.0, například nástroje pro práci se soubory a procesy. Součást sbírky pinp s testy a Runnerem.
+
+
 Windows-specific code on net9.0 moniker
 
 ## Overview
