@@ -1,5 +1,8 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents the file util type.
+/// </summary>
 public static class FileUtil
 {
     private const int RmRebootReasonNone = 0;
@@ -14,7 +17,19 @@ public static class FileUtil
         uint nApplications, [In] RM_UNIQUE_PROCESS[]? rgApplications, uint nServices, string[]? rgsServiceNames);
     [DllImport("rstrtmgr.dll")]
     private static extern int RmGetList(uint dwSessionHandle, out uint pnProcInfoNeeded, ref uint pnProcInfo,
+        /// <summary>
+        /// Who is locking.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="isThrowingOnError">The is throwing on error.</param>
+        /// <returns>The who is locking result.</returns>
         [In][Out] RM_PROCESS_INFO[]? rgAffectedApps, ref uint lpdwRebootReasons);
+    /// <summary>
+    /// Finds processes that currently hold a lock on the given file or folder.
+    /// </summary>
+    /// <param name="path">The file or folder path.</param>
+    /// <param name="isThrowingOnError">Whether failures are thrown instead of swallowed.</param>
+    /// <returns>The processes locking the path.</returns>
     public static List<Process> WhoIsLocking(string path, bool isThrowingOnError = true)
     {
         uint handle;

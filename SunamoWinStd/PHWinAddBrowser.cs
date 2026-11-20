@@ -2,10 +2,18 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
+    /// <summary>
+    /// Add browser.
+    /// </summary>
     public static void AddBrowser()
     {
         AddBrowser(defaultBrowser);
     }
+    /// <summary>
+    /// Add browser.
+    /// </summary>
+    /// <param name="browser">The browser.</param>
+    /// <returns>The add browser result.</returns>
     public static string AddBrowser(Browsers browser)
     {
         if (BrowserPaths.Count != browserCount)

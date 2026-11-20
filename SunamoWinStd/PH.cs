@@ -1,7 +1,19 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents the PH type.
+/// </summary>
 public partial class PH
 {
+    /// <summary>
+    /// Run from path.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="exe">The exe.</param>
+    /// <param name="arguments">The arguments.</param>
+    /// <param name="isWithOutput">The is with output.</param>
+    /// <param name="isThrowingOnError">The is throwing on error.</param>
+    /// <returns>The run from path result.</returns>
     public static string? RunFromPath(ILogger logger, string exe, string arguments, bool isWithOutput, bool isThrowingOnError = false)
     {
         PHWin.BreakIfTen();
@@ -48,12 +60,24 @@ public partial class PH
         return Environment.ExpandEnvironmentVariables(merged);
     }
 
+    /// <summary>
+    /// Exec cmd.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <returns>The exec cmd result.</returns>
     public static bool ExecCmd(string command)
     {
         var isSuccess = ExecCmd(command, out _);
         return isSuccess;
     }
 
+    /// <summary>
+    /// Exec cmd.
+    /// </summary>
+    /// <param name="command">The command.</param>
+    /// <param name="output">The output.</param>
+    /// <param name="isTransferringEnvVars">The is transferring env vars.</param>
+    /// <returns>The exec cmd result.</returns>
     public static bool ExecCmd(string command, out string output, bool isTransferringEnvVars = false)
     {
         ProcessStartInfo processStartInfo;
@@ -68,11 +92,23 @@ public partial class PH
         return string.IsNullOrEmpty(output);
     }
 
+    /// <summary>
+    /// Run with output.
+    /// </summary>
+    /// <param name="exe">The exe.</param>
+    /// <param name="arguments">The arguments.</param>
+    /// <returns>The run with output result.</returns>
     public static string RunWithOutput(string exe, string arguments)
     {
         return RunWithOutput(new ProcessStartInfo { FileName = exe, Arguments = arguments, UseShellExecute = false });
     }
 
+    /// <summary>
+    /// Run with output.
+    /// </summary>
+    /// <param name="processStartInfo">The process start info.</param>
+    /// <param name="isTransferringEnvVars">The is transferring env vars.</param>
+    /// <returns>The run with output result.</returns>
     public static string RunWithOutput(ProcessStartInfo processStartInfo, bool isTransferringEnvVars = false)
     {
         var process = new Process();
@@ -123,6 +159,10 @@ public partial class PH
         return output;
     }
 
+    /// <summary>
+    /// Start.
+    /// </summary>
+    /// <param name="parameter">The parameter.</param>
     public static void Start(string parameter)
     {
         try
@@ -135,6 +175,11 @@ public partial class PH
         }
     }
 
+    /// <summary>
+    /// Start.
+    /// </summary>
+    /// <param name="exe">The exe.</param>
+    /// <param name="arguments">The arguments.</param>
     public static void Start(string exe, string arguments)
     {
         try
@@ -148,6 +193,11 @@ public partial class PH
         }
     }
 
+    /// <summary>
+    /// Start hidden.
+    /// </summary>
+    /// <param name="parameter">The parameter.</param>
+    /// <param name="workingDirectory">The working directory.</param>
     public static void StartHidden(string parameter, string workingDirectory)
     {
         try
@@ -167,12 +217,21 @@ public partial class PH
         }
     }
 
+    /// <summary>
+    /// Normalize uri.
+    /// </summary>
+    /// <param name="uri">The uri.</param>
+    /// <returns>The normalize uri result.</returns>
     public static string NormalizeUri(string uri)
     {
         uri = SHReplace.ReplaceAll(uri, "%22", "\"");
         return uri;
     }
 
+    /// <summary>
+    /// Kill process.
+    /// </summary>
+    /// <param name="process">The process.</param>
     public static void KillProcess(Process process)
     {
         try
@@ -186,6 +245,11 @@ public partial class PH
         }
     }
 
+    /// <summary>
+    /// Terminate.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The terminate result.</returns>
     public static int Terminate(string name)
     {
         var terminatedCount = 0;
@@ -198,6 +262,11 @@ public partial class PH
         return terminatedCount;
     }
 
+    /// <summary>
+    /// Run from path 3.
+    /// </summary>
+    /// <param name="exe">The exe.</param>
+    /// <param name="fileWithoutQm">The file without qm.</param>
     public static void RunFromPath3(string exe, string fileWithoutQm)
     {
         var processStartInfo = new ProcessStartInfo();

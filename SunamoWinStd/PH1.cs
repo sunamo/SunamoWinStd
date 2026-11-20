@@ -2,6 +2,12 @@ namespace SunamoWinStd;
 
 public partial class PH
 {
+    /// <summary>
+    /// Run from path better.
+    /// </summary>
+    /// <param name="exe">The exe.</param>
+    /// <param name="arguments">The arguments.</param>
+    /// <returns>The run from path better result.</returns>
     public static string RunFromPathBetter(string exe, string arguments)
     {
         var environmentPath = Environment.GetEnvironmentVariable("PATH") ?? "";
@@ -51,17 +57,32 @@ public partial class PH
         return RunWithOutput(exe, arguments);
     }
 
+    /// <summary>
+    /// Is already running.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The is already running result.</returns>
     public static bool IsAlreadyRunning(string name)
     {
         IList<string> processNames = Process.GetProcessesByName(name).Select(process => process.ProcessName).ToList();
         return processNames.Count() > 1;
     }
 
+    /// <summary>
+    /// Exists on path.
+    /// </summary>
+    /// <param name="fileName">The file name.</param>
+    /// <returns>The exists on path result.</returns>
     public static bool ExistsOnPath(string fileName)
     {
         return GetFullPath(fileName) != null;
     }
 
+    /// <summary>
+    /// Get full path.
+    /// </summary>
+    /// <param name="fileName">The file name.</param>
+    /// <returns>The get full path result.</returns>
     public static string? GetFullPath(string fileName)
     {
         if (File.Exists(fileName))
@@ -77,6 +98,11 @@ public partial class PH
         return null;
     }
 
+    /// <summary>
+    /// Processes with name contains.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The processes with name contains result.</returns>
     public static List<string> ProcessesWithNameContains(string name)
     {
         var processNames = GetProcessesNames(true);
@@ -84,6 +110,11 @@ public partial class PH
         return matchingProcesses;
     }
 
+    /// <summary>
+    /// Terminate processes with name contains.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The terminate processes with name contains result.</returns>
     public static int TerminateProcessesWithNameContains(string name)
     {
         var matchingProcesses = ProcessesWithNameContains(name);
@@ -94,6 +125,11 @@ public partial class PH
     }
 
     // Terminates processes with the exact name (without extensions, all lower case).
+    /// <summary>
+    /// Terminate processes with name.
+    /// </summary>
+    /// <param name="name">The name.</param>
+    /// <returns>The terminate processes with name result.</returns>
     public static int TerminateProcessesWithName(string name)
     {
         name = name.ToLower();
@@ -106,6 +142,11 @@ public partial class PH
     }
 
     // Shuts down processes that occupy a file handle. Alternative is FileUtil.WhoIsLocking.
+    /// <summary>
+    /// Shutdown process which occupy file handle exe.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="fileName">The file name.</param>
     public static void ShutdownProcessWhichOccupyFileHandleExe(ILogger logger, string fileName)
     {
         var foundProcesses = FindProcessesWhichOccupyFileHandleExe(logger, fileName);
@@ -114,6 +155,13 @@ public partial class PH
     }
 
     // Finds processes that occupy a file handle using handle64.exe. Alternative is FileUtil.WhoIsLocking.
+    /// <summary>
+    /// Find processes which occupy file handle exe.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="fileName">The file name.</param>
+    /// <param name="isThrowingOnError">The is throwing on error.</param>
+    /// <returns>The find processes which occupy file handle exe result.</returns>
     public static List<Process> FindProcessesWhichOccupyFileHandleExe(ILogger logger, string fileName, bool isThrowingOnError = true)
     {
         var foundProcesses = new List<Process>();
@@ -167,6 +215,11 @@ public partial class PH
         return foundProcesses;
     }
 
+    /// <summary>
+    /// Get processes names.
+    /// </summary>
+    /// <param name="isLowerCase">The is lower case.</param>
+    /// <returns>The get processes names result.</returns>
     public static List<string> GetProcessesNames(bool isLowerCase)
     {
         var processNames = Process.GetProcesses().Select(process => process.ProcessName).ToList();

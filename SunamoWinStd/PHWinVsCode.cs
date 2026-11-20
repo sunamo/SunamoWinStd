@@ -2,11 +2,25 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
+    /// <summary>
+    /// Code insider.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="isThrowingOnError">The is throwing on error.</param>
+    /// <param name="openOnLine">The open on line.</param>
     public static void CodeInsider(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
         PH.RunVsCode(logger, CodeInsiderExe, filePath, isThrowingOnError, openOnLine);
     }
 
+    /// <summary>
+    /// Codium.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="isThrowingOnError">The is throwing on error.</param>
+    /// <param name="openOnLine">The open on line.</param>
     public static void Codium(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
         if (string.IsNullOrWhiteSpace(filePath)) ThrowEx.InvalidParameter(filePath, "filePath");
@@ -15,6 +29,13 @@ partial class PHWin
 
     private static bool? isCursorAvailable = null;
 
+    /// <summary>
+    /// Code.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="filePath">The file path.</param>
+    /// <param name="isThrowingOnError">The is throwing on error.</param>
+    /// <param name="openOnLine">The open on line.</param>
     public static void Code(ILogger logger, string filePath, bool isThrowingOnError = false, int? openOnLine = null)
     {
         if (string.IsNullOrWhiteSpace(filePath)) ThrowEx.InvalidParameter(filePath, "filePath");
