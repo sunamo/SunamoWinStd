@@ -1,8 +1,8 @@
 namespace SunamoWinStd._public.SunamoEnums.Enums;
 
-// Poradi 1-30 odpovida prvnimu radku ouska "Mail accounts" v
+// Order 1-30 corresponds to the first row of the "Mail accounts" sheet in
 // https://docs.google.com/spreadsheets/d/1IaYPQoAFwJ0J5eB-8Bn6gyABE2PCl1nRyQDjGXl3-l0 (gid=144466497).
-// PaleMoon a EdgeStable v tomto radku nejsou, proto jsou zarazeny az za nej.
+// PaleMoon and EdgeStable are not in this line, so they are placed after it.
 public enum Browsers : byte
 {
     Chrome = 1,

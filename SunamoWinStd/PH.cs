@@ -34,7 +34,7 @@ public partial class PH
     }
 
     /// <summary>
-    /// Spoji PATH procesu s PATH z registru (Machine + User), protoze proces zdedi PATH od rodice a po zmene PATH ve Windows je zastaraly.
+    /// Merges the process PATH with the PATH from the registry (Machine + User), because the process inherits PATH from its parent and it becomes stale after PATH is changed in Windows.
     /// </summary>
     private static string GetMergedPath()
     {

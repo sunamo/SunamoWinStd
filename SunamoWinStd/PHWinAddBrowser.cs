@@ -157,9 +157,9 @@ partial class PHWin
         return BrowserPaths[browser];
     }
 
-    // Najde stejny prohlizec at je nainstalovany kdekoliv - prohleda standardni instalacni koreny
+    // Finds the same browser wherever it is installed - searches the standard installation roots
     // (Program Files, Program Files (x86), AppData\Local, AppData\Local\Programs) v podslozce appFolder,
-    // plus libovolne dalsi napevno zadane fallback cesty. Vrati prvni existujici .exe, jinak null.
+    // plus any other hardcoded fallback paths. Returns the first existing .exe, otherwise null.
     private static string? FirstExistingBrowser(string appFolder, string executableName, params string[] extraPaths)
     {
         var roots = new[]

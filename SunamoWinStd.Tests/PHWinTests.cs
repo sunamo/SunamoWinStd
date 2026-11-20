@@ -81,8 +81,8 @@ public class PHWinTests
         PHWin.OpenInBrowser(logger, testFilePath);
     }
 
-    // Invariant "Pokud je empty, exe neexistuje na disku! A vice versa!" - kazda detekovana
-    // cesta musi byt bud prazdna, nebo ukazovat na skutecne existujici .exe.
+    // Invariant "If empty, the exe does not exist on disk! And vice versa!" - each detected
+    // the path must be either empty or point to a really existing .exe.
     [Fact]
     public void EveryBrowserPathIsEmptyOrExists()
     {
@@ -95,9 +95,9 @@ public class PHWinTests
         }
     }
 
-    // Kdyz je prohlizec nainstalovany kdekoliv ve standardnich korenech, detekce ho musi najit.
-    // Regrese: K-Meleon se driv hledal jen na neexistujici D:\paSync ceste, Comodo jen v Program Files
-    // (ne x86), Comet nemel detekci vubec.
+    // When a browser is installed anywhere in the standard roots, detection must find it.
+    // Regression: K-Meleon used to be searched only in the nonexistent path D:\paSync, Comodo only in Program Files
+    // (not x86), Comet had no detection at all.
     [Theory]
     [InlineData(Browsers.KMeleon, "K-Meleon", "k-meleon.exe")]
     [InlineData(Browsers.Comodo, @"Comodo\Dragon", "dragon.exe")]
@@ -115,7 +115,7 @@ public class PHWinTests
             .Any(f => Directory.Exists(f) &&
                       Directory.EnumerateFiles(f, executableName, SearchOption.AllDirectories).Any());
         if (!installed)
-            return; // na tomto stroji neni nainstalovany - nic netestujeme
+            return; // not installed on this machine - we test nothing
 
         var path = PHWin.AddBrowser(browser);
         Assert.False(string.IsNullOrEmpty(path), $"{browser} je na disku, ale detekce vratila prazdnou cestu");
