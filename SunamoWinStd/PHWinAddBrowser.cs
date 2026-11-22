@@ -2,10 +2,18 @@ namespace SunamoWinStd;
 
 partial class PHWin
 {
+    /// <summary>
+    /// Add browser.
+    /// </summary>
     public static void AddBrowser()
     {
         AddBrowser(defaultBrowser);
     }
+    /// <summary>
+    /// Add browser.
+    /// </summary>
+    /// <param name="browser">The browser.</param>
+    /// <returns>The add browser result.</returns>
     public static string AddBrowser(Browsers browser)
     {
         if (BrowserPaths.Count != browserCount)
@@ -157,9 +165,9 @@ partial class PHWin
         return BrowserPaths[browser];
     }
 
-    // Najde stejny prohlizec at je nainstalovany kdekoliv - prohleda standardni instalacni koreny
+    // Finds the same browser wherever it is installed - searches the standard installation roots
     // (Program Files, Program Files (x86), AppData\Local, AppData\Local\Programs) v podslozce appFolder,
-    // plus libovolne dalsi napevno zadane fallback cesty. Vrati prvni existujici .exe, jinak null.
+    // plus any other hardcoded fallback paths. Returns the first existing .exe, otherwise null.
     private static string? FirstExistingBrowser(string appFolder, string executableName, params string[] extraPaths)
     {
         var roots = new[]

@@ -66,7 +66,6 @@ public class PHWinPi
 
             if (!W32.OpenProcessToken(shellProcessHandle, 0x0002, ref shellProcessTokenHandle)) return;
 
-            // Minimal set of rights required by CreateProcessWithTokenW (found experimentally;
             // contrary to the current documentation).
             const uint tokenRights = 395U;
             if (!W32.DuplicateTokenEx(shellProcessTokenHandle, tokenRights, IntPtr.Zero,

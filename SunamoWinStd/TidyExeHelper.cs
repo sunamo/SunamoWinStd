@@ -1,5 +1,8 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents the tidy exe helper type.
+/// </summary>
 public class TidyExeHelper
 {
     private const string TidyConfigResourceName = "SunamoWinStd.Resources.tidy_config.txt";
@@ -19,6 +22,12 @@ public class TidyExeHelper
         return targetPath;
     }
 
+    /// <summary>
+    /// Generate map info.
+    /// </summary>
+    /// <param name="mapDirectory">The map directory.</param>
+    /// <param name="fileExtension">The file extension.</param>
+    /// <returns>The generate map info result.</returns>
     public static Tuple<FileInfo, string> GenerateMapInfo(string mapDirectory, string fileExtension)
     {
         var uniqueMapName = Guid.NewGuid().ToString();
@@ -26,6 +35,11 @@ public class TidyExeHelper
         return Tuple.Create(new FileInfo(fileName), uniqueMapName);
     }
 
+    /// <summary>
+    /// Write to file.
+    /// </summary>
+    /// <param name="mapInfo">The map info.</param>
+    /// <param name="text">The text.</param>
     public static void WriteToFile(Tuple<FileInfo, string> mapInfo, string text)
     {
         var maxOffset = int.MaxValue / 2;
@@ -45,6 +59,13 @@ public class TidyExeHelper
         accessor.WriteArray(maxOffset, encodedBytes, 0, encodedBytes.Length);
     }
 
+    /// <summary>
+    /// Format html.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <param name="tidyConfigPath">The tidy config path.</param>
+    /// <param name="powershellRunnerInvoke">The powershell runner invoke.</param>
+    /// <returns>The format html result.</returns>
     public static
         async Task<string>
         FormatHtml(string text, string tidyConfigPath,

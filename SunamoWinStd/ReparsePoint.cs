@@ -1,12 +1,30 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents the reparse point type.
+/// </summary>
 public class ReparsePoint
 {
+    /// <summary>
+    /// Represents the tag type type.
+    /// </summary>
     public enum TagType
     {
+        /// <summary>
+        /// The none value.
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// The mount point value.
+        /// </summary>
         MountPoint = 1,
+        /// <summary>
+        /// The symbolic link value.
+        /// </summary>
         SymbolicLink = 2,
+        /// <summary>
+        /// The junction point value.
+        /// </summary>
         JunctionPoint = 3
     }
     // This is based on the code at http://www.flexhex.com/docs/articles/hard-links.phtml
@@ -30,6 +48,10 @@ public class ReparsePoint
 
     private readonly string normalisedTarget;
 
+    /// <summary>
+    /// Initializes a new instance of the reparse point class.
+    /// </summary>
+    /// <param name="path">The path.</param>
     public ReparsePoint(string path)
     {
         normalisedTarget = "";
@@ -105,7 +127,6 @@ public class ReparsePoint
                         Tag = subsString.StartsWith(@"\??\Volume") ? TagType.MountPoint : TagType.JunctionPoint;
                     }
 
-                    //Debug.Assert(!(string.IsNullOrEmpty(subsString) && string.IsNullOrEmpty(printString)), Translate.FromKey(XlfKeys.FailedToRetrieveParsePoint));
                     // the printstring should give us what we want
                     if (!string.IsNullOrEmpty(printString))
                     {
@@ -115,17 +136,12 @@ public class ReparsePoint
                     {
                         // if not we can use the substring with a bit of tweaking
                         normalisedTarget = subsString;
-                        //Debug.Assert(normalisedTarget.Length > 2, Translate.FromKey(XlfKeys.TargetStringTooShort));
                         //Debug.Assert(
                         //    normalisedTarget.StartsWith(@"\??\") && (normalisedTarget[5] == ':' || normalisedTarget.StartsWith(@"\??\Volume")) ||
-                        //    !normalisedTarget.StartsWith(@"\??\") && normalisedTarget[1] != ':',
-                        //    Translate.FromKey(XlfKeys.MalformedSubsString));
                         //// Junction points must be absolute
                         //Debug.Assert(
                         //        buffer.ReparseTag == IO_REPARSE_TAG_SYMLINK ||
                         //        normalisedTarget.StartsWith(@"\??\Volume") ||
-                        //        normalisedTarget[1] == ':',
-                        //    Translate.FromKey(XlfKeys.RelativeJunctionPoint));
                         if (normalisedTarget.StartsWith(@"\??\")) normalisedTarget = normalisedTarget.Substring(4);
                     }
 
@@ -156,8 +172,14 @@ public class ReparsePoint
         }
     }
 
+    /// <summary>
+    /// Gets the target.
+    /// </summary>
     public string? Target { get; } = null;
 
+    /// <summary>
+    /// Gets the tag.
+    /// </summary>
     public TagType Tag { get; }
 
     [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
@@ -210,6 +232,11 @@ public class ReparsePoint
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool CloseHandle(nint hObject);
 
+    /// <summary>
+    /// To string.
+    /// </summary>
+    /// <param name="UnmanagedType.Bool">The unmanaged type bool.</param>
+    /// <returns>The to string result.</returns>
     public override string ToString()
     {
         return normalisedTarget;

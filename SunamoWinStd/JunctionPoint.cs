@@ -1,5 +1,8 @@
 namespace SunamoWinStd;
 
+/// <summary>
+/// Represents the junction point type.
+/// </summary>
 public partial class JunctionPoint
 {
     private const int ERROR_REPARSE_ATTRIBUTE_CONFLICT = 4391;
@@ -8,6 +11,12 @@ public partial class JunctionPoint
     private const int ERROR_REPARSE_TAG_MISMATCH = 4394;
     private const int FSCTL_SET_REPARSE_POINT = 0x000900A4;
     private const int FSCTL_DELETE_REPARSE_POINT = 0x000900AC;
+    /// <summary>
+    /// Mklink h.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="target">The target.</param>
+    /// <returns>The mklink h result.</returns>
     public static
         string
         MklinkH(string source, string target)
@@ -16,6 +25,11 @@ public partial class JunctionPoint
         var command = "cmd /c mklink /H " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
         return command;
     }
+    /// <summary>
+    /// Paths and targets of all.
+    /// </summary>
+    /// <param name="folderFrom">The folder from.</param>
+    /// <returns>The paths and targets of all result.</returns>
     public static Dictionary<string, string> PathsAndTargetsOfAll(string folderFrom)
     {
         var dict = new Dictionary<string, string>();
@@ -28,6 +42,12 @@ public partial class JunctionPoint
         }
         return dict;
     }
+    /// <summary>
+    /// Mklink j.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="target">The target.</param>
+    /// <returns>The mklink j result.</returns>
     public static
         string
         MklinkJ(string source, string target)
@@ -39,6 +59,12 @@ public partial class JunctionPoint
         var command = "cmd /c mklink /J " + SH.WrapWithQm(source) + " " + SH.WrapWithQm(target);
         return command;
     }
+    /// <summary>
+    /// Mklink d.
+    /// </summary>
+    /// <param name="source">The source.</param>
+    /// <param name="target">The target.</param>
+    /// <returns>The mklink d result.</returns>
     public static
         string
         MklinkD(string source, string target)
@@ -50,6 +76,13 @@ public partial class JunctionPoint
     // For files use mklink, this can be used only for directory.
     // Creates a junction point from the specified directory to the specified target directory.
     // Only works on NTFS.
+    /// <summary>
+    /// Create.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="junctionPoint">The junction point.</param>
+    /// <param name="targetDir">The target dir.</param>
+    /// <param name="isOverwriting">The is overwriting.</param>
     public static void Create(ILogger logger, string junctionPoint, string targetDir, bool isOverwriting)
     {
         targetDir = Path.GetFullPath(targetDir);
@@ -100,6 +133,11 @@ public partial class JunctionPoint
             }
         }
     }
+    /// <summary>
+    /// Is reparse point.
+    /// </summary>
+    /// <param name="path">The path.</param>
+    /// <returns>The is reparse point result.</returns>
     public static bool IsReparsePoint(string path)
     {
         if (string.IsNullOrEmpty(path) || path.Length <= 2 || path[1] != ':' || path[2] != '\\')
@@ -108,6 +146,11 @@ public partial class JunctionPoint
         return !string.IsNullOrEmpty(reparsePoint.Target);
     }
     // Only works on NTFS.
+    /// <summary>
+    /// Delete.
+    /// </summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="junctionPoint">The junction point.</param>
     public static void Delete(ILogger logger, string junctionPoint)
     {
         if (!Directory.Exists(junctionPoint))
@@ -157,6 +200,11 @@ public partial class JunctionPoint
     // Gets the target of the specified junction point.
     // Works for /j and /d (folders). Does not work for /h (file).
     // Only works on NTFS.
+    /// <summary>
+    /// Get target.
+    /// </summary>
+    /// <param name="path">The path.</param>
+    /// <returns>The get target result.</returns>
     public static string? GetTarget(string path)
     {
         var reparsePoint = new ReparsePoint(path);
