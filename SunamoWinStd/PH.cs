@@ -194,6 +194,42 @@ public partial class PH
     }
 
     /// <summary>
+    /// Opens a file, folder or URI through the operating system shell (default app or browser), without cmd.exe, so that characters such as ampersand or space in the value are safe.
+    /// </summary>
+    /// <param name="fileNameOrUri">The file, folder or URI to open.</param>
+    /// <returns>The started process; null when the shell reused an existing process.</returns>
+    public static Process? StartShellExecute(string fileNameOrUri)
+    {
+        if (fileNameOrUri == null) throw new ArgumentNullException(nameof(fileNameOrUri));
+        return Process.Start(CreateShellExecuteStartInfo(fileNameOrUri));
+    }
+
+    /// <summary>
+    /// Opens every value through the operating system shell after it is converted to a URI.
+    /// </summary>
+    /// <param name="values">The values to open.</param>
+    /// <param name="toUri">Converts a value to the URI that is opened.</param>
+    public static void StartAllUri(IEnumerable<string> values, Func<string, string> toUri)
+    {
+        if (values == null) throw new ArgumentNullException(nameof(values));
+        if (toUri == null) throw new ArgumentNullException(nameof(toUri));
+        foreach (var item in values)
+        {
+            StartShellExecute(toUri(item));
+        }
+    }
+
+    /// <summary>
+    /// Creates the start info used by <see cref="StartShellExecute"/>.
+    /// </summary>
+    /// <param name="fileNameOrUri">The file, folder or URI to open.</param>
+    /// <returns>The start info with shell execute turned on.</returns>
+    public static ProcessStartInfo CreateShellExecuteStartInfo(string fileNameOrUri)
+    {
+        return new ProcessStartInfo(fileNameOrUri) { UseShellExecute = true };
+    }
+
+    /// <summary>
     /// Start hidden.
     /// </summary>
     /// <param name="parameter">The parameter.</param>
